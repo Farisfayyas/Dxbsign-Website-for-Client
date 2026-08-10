@@ -29,6 +29,23 @@ export const skylineImage: SiteImage = {
   height: 1602,
 };
 
+// Real client logos, scraped from the original site's homepage strip.
+// Overlaps partly with the confirmed named-client list (Etisalat, Crowne
+// Plaza) plus additional real past clients not previously surfaced.
+export const clientLogos: SiteImage[] = [
+  { src: "/images/clients/client-logo-01.png", alt: "Abu Dhabi Aircraft Technologies", width: 160, height: 80 },
+  { src: "/images/clients/client-logo-02.png", alt: "Abu Dhabi Farmers' Services Centre", width: 160, height: 80 },
+  { src: "/images/clients/client-logo-03.png", alt: "GAC", width: 160, height: 80 },
+  { src: "/images/clients/client-logo-04.png", alt: "Crowne Plaza Hotels & Resorts", width: 160, height: 80 },
+  { src: "/images/clients/client-logo-05.png", alt: "Etisalat", width: 160, height: 80 },
+  { src: "/images/clients/client-logo-06.png", alt: "Fast Rent a Car", width: 160, height: 80 },
+  { src: "/images/clients/client-logo-07.png", alt: "G4S", width: 160, height: 80 },
+  { src: "/images/clients/client-logo-08.png", alt: "Hyundai Engineering & Construction", width: 160, height: 80 },
+  { src: "/images/clients/client-logo-09.png", alt: "Jumeirah at Etihad Towers", width: 160, height: 80 },
+  { src: "/images/clients/client-logo-10.png", alt: "Zayed Higher Organization", width: 160, height: 80 },
+  { src: "/images/clients/client-logo-11.png", alt: "Omeir Travel Agency", width: 160, height: 80 },
+];
+
 export type ProjectCategory =
   | "flagpole"
   | "signboard"

@@ -7,6 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { CTABand } from "@/components/ui/CTABand";
 import { ProcessBand } from "@/components/ui/ProcessBand";
 import { NumberedCard } from "@/components/ui/NumberedCard";
+import { FlagpoleSpecs } from "@/components/services/FlagpoleSpecs";
 import { services } from "@/lib/site-config";
 import { breadcrumbJsonLd } from "@/lib/seo";
 
@@ -60,6 +61,8 @@ export default function ServicesPage() {
             </div>
           </div>
         </Reveal>
+
+        <FlagpoleSpecs />
 
         <ProcessBand />
 

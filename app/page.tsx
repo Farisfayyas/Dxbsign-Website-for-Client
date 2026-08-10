@@ -10,6 +10,7 @@ import { CTABand } from "@/components/ui/CTABand";
 import { ClientHonorRoll } from "@/components/ui/ClientHonorRoll";
 import { NumberedCard } from "@/components/ui/NumberedCard";
 import { FAQSection } from "@/components/ui/FAQSection";
+import { ClientLogoCarousel } from "@/components/home/ClientLogoCarousel";
 import { services, site, whyChooseUsShort } from "@/lib/site-config";
 import { heroImage, featuredProjects } from "@/lib/site-images";
 import { faqJsonLd } from "@/lib/seo";
@@ -30,46 +31,56 @@ export default function HomePage() {
       />
       <SiteHeader />
       <main>
-        {/* Hero */}
+        {/* Hero — staggered load-in, not just a static block */}
         <div className="grid min-h-[560px] grid-cols-1 lg:grid-cols-[1.1fr_1fr]">
           <div className="section-x flex flex-col justify-center gap-6 py-[clamp(32px,6vw,80px)]">
-            <div className="font-serif text-[12.5px] font-semibold uppercase tracking-[0.1em] text-[oklch(55%_0.08_250)]">
-              Est. {site.founded} · ICAD 3, Mussafah, Abu Dhabi
-            </div>
-            <h1 className="text-[clamp(34px,4.2vw,54px)] font-bold leading-[1.05] text-ink font-display">
-              {site.tagline}
-            </h1>
-            <p className="max-w-[480px] text-[17px] leading-relaxed text-ink/80">
-              Eighteen years supplying flagpoles, signboards, and safety signage to government, hospitality, and industrial clients across Abu Dhabi and the UAE. Design, manufacture, and installation under one roof.
-            </p>
-            <div className="mt-1.5 flex flex-wrap gap-3.5">
-              <Link
-                href="/contact"
-                className="bg-ink px-7 py-[15px] text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-ink-soft"
-              >
-                Request a Quote
-              </Link>
-              <Link
-                href="/projects"
-                className="border border-ink/30 px-7 py-[15px] text-sm font-semibold text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-ink/60"
-              >
-                View Projects
-              </Link>
-            </div>
-            <div className="mt-4 flex flex-wrap gap-8 border-t border-border-soft pt-5">
-              <div>
-                <div className="text-[26px] font-bold text-ink">{site.yearsInBusiness}</div>
-                <div className="text-xs text-ink/60">Years in Business</div>
+            <Reveal y={14}>
+              <div className="font-serif text-[12.5px] font-semibold uppercase tracking-[0.1em] text-[oklch(55%_0.08_250)]">
+                Est. {site.founded} · ICAD 3, Mussafah, Abu Dhabi
               </div>
-              <div>
-                <div className="text-[26px] font-bold text-ink">ISO 9001</div>
-                <div className="text-xs text-ink/60">Certified</div>
+            </Reveal>
+            <Reveal y={18} delay={0.08}>
+              <h1 className="text-[clamp(34px,4.2vw,54px)] font-bold leading-[1.05] text-ink font-display">
+                {site.tagline}
+              </h1>
+            </Reveal>
+            <Reveal y={16} delay={0.16}>
+              <p className="max-w-[480px] text-[17px] leading-relaxed text-ink/80">
+                Eighteen years supplying flagpoles, signboards, and safety signage to government, hospitality, and industrial clients across Abu Dhabi and the UAE. Design, manufacture, and installation under one roof.
+              </p>
+            </Reveal>
+            <Reveal y={14} delay={0.24}>
+              <div className="mt-1.5 flex flex-wrap gap-3.5">
+                <Link
+                  href="/contact"
+                  className="bg-ink px-7 py-[15px] text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-ink-soft"
+                >
+                  Request a Quote
+                </Link>
+                <Link
+                  href="/projects"
+                  className="border border-ink/30 px-7 py-[15px] text-sm font-semibold text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-ink/60"
+                >
+                  View Projects
+                </Link>
               </div>
-              <div>
-                <div className="text-[26px] font-bold text-ink">1,200+</div>
-                <div className="text-xs text-ink/60">Projects Delivered</div>
+            </Reveal>
+            <Reveal y={12} delay={0.32}>
+              <div className="mt-4 flex flex-wrap gap-8 border-t border-border-soft pt-5">
+                <div>
+                  <div className="text-[26px] font-bold text-ink">{site.yearsInBusiness}</div>
+                  <div className="text-xs text-ink/60">Years in Business</div>
+                </div>
+                <div>
+                  <div className="text-[26px] font-bold text-ink">ISO 9001</div>
+                  <div className="text-xs text-ink/60">Certified</div>
+                </div>
+                <div>
+                  <div className="text-[26px] font-bold text-ink">1,200+</div>
+                  <div className="text-xs text-ink/60">Projects Delivered</div>
+                </div>
               </div>
-            </div>
+            </Reveal>
           </div>
           <div className="relative min-h-[340px] overflow-hidden">
             <Image
@@ -78,11 +89,13 @@ export default function HomePage() {
               fill
               priority
               sizes="(min-width: 1024px) 45vw, 100vw"
-              className="object-cover"
+              className="object-cover scale-[1.08] [animation:hero-image-in_1.4s_cubic-bezier(0.16,1,0.3,1)_forwards]"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
           </div>
         </div>
+
+        <ClientLogoCarousel />
 
         {/* Credentials / clients band */}
         <Reveal>
