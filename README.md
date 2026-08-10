@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dubai Sign LLC — website
 
-## Getting Started
+Next.js (App Router) + TypeScript + Tailwind v4 rebuild of dxbsign.com,
+built from the approved Claude design handoff in `design-handoff/`
+(kept locally, not committed — see `.gitignore`).
 
-First, run the development server:
+## Stack
+
+Next.js 16 · React 19 · Tailwind CSS v4 · Framer Motion (interactions) ·
+Lenis (smooth scroll) · React Hook Form + Zod (contact form) · Resend
+(contact form email) · lucide-react (icons)
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Opens on whatever port you pass, e.g. `npm run dev -- -p 3100`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Contact form email setup (not yet configured)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The quote request form on `/contact` posts to `app/api/contact/route.ts`,
+which sends via [Resend](https://resend.com). Until it's configured, the
+form shows a friendly fallback message pointing people to phone/WhatsApp
+instead of failing silently. To enable email:
 
-## Learn More
+1. Create a free Resend account and verify the `dubaisign.ae` domain
+   (Settings → Domains) — without a verified domain, Resend only delivers
+   to the account owner's own inbox.
+2. Create an API key and copy `.env.local.example` to `.env.local`, then
+   paste the key in as `RESEND_API_KEY`.
+3. Update the `from` address in `app/api/contact/route.ts` to use the
+   verified domain (e.g. `quotes@dubaisign.ae`).
+4. Add `RESEND_API_KEY` to the Vercel project's environment variables too.
 
-To learn more about Next.js, take a look at the following resources:
+## Content still marked as placeholder / needs client confirmation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Carried over from the design handoff's own notes — grep for these before
+launch:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **"Est. 2008"** — back-calculated from "18 years in business," not an
+  independently confirmed founding year.
+- **"1,200+ Projects Delivered"** stat (Home hero) — not sourced from
+  real client data, needs a real number or should be removed.
+- **Projects/Gallery item titles & locations** — real photography from
+  the client's own site (see `lib/site-images.ts`), but the
+  title/location/category text next to each photo is still the design
+  handoff's placeholder copy (e.g. "Government Complex, Abu Dhabi") and
+  should be replaced with the real project details where known.
+- **"Why Choose Us" / "How We Work" copy** — drafted, not client-supplied;
+  read fine as generic B2B copy but worth a client read-through.
 
-## Deploy on Vercel
+## Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `app/` — routes (one folder per page) + `layout.tsx`, `globals.css`,
+  `sitemap.ts`, `robots.ts`, `opengraph-image.tsx`, `api/contact/`
+- `components/layout/` — SiteHeader, SiteFooter, WhatsAppFloat (every page)
+- `components/ui/` — shared building blocks (Reveal, CTABand, ProcessBand,
+  ClientHonorRoll, NumberedCard, FilterTabs, PhotoLightbox, FAQSection)
+- `components/projects/`, `components/gallery/`, `components/contact/` —
+  page-specific interactive pieces
+- `lib/site-config.ts` — single source of truth for business facts, nav,
+  services, credentials, FAQ copy
+- `lib/site-images.ts` — real-photo manifest (source path + alt text) for
+  every hero/project/gallery slot
+- `lib/seo.ts` — JSON-LD builders (LocalBusiness, FAQPage, BreadcrumbList)
+- `public/images/` — curated real photography copied in from the client's
+  original site; `public/llms.txt` — GEO summary for AI answer engines
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`build-spec.md` has the full research/decision trail from the design
+phase (arabesco.ae / hajster.com feature research, brand colors, mobile
+adaptation notes) if any of the "why" behind a choice isn't obvious from
+the code.

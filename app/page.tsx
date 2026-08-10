@@ -1,69 +1,193 @@
+import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { SiteFooter } from "@/components/layout/SiteFooter";
+import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
+import { Reveal } from "@/components/ui/Reveal";
+import { CTABand } from "@/components/ui/CTABand";
+import { ClientHonorRoll } from "@/components/ui/ClientHonorRoll";
+import { NumberedCard } from "@/components/ui/NumberedCard";
+import { FAQSection } from "@/components/ui/FAQSection";
+import { services, site, whyChooseUsShort } from "@/lib/site-config";
+import { heroImage, featuredProjects } from "@/lib/site-images";
+import { faqJsonLd } from "@/lib/seo";
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: "Flagpole & Signage Manufacturer, Abu Dhabi",
+  description: site.description,
+  alternates: { canonical: "/" },
+};
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+    <>
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd()) }}
+      />
+      <SiteHeader />
+      <main>
+        {/* Hero */}
+        <div className="grid min-h-[560px] grid-cols-1 lg:grid-cols-[1.1fr_1fr]">
+          <div className="section-x flex flex-col justify-center gap-6 py-[clamp(32px,6vw,80px)]">
+            <div className="font-serif text-[12.5px] font-semibold uppercase tracking-[0.1em] text-[oklch(55%_0.08_250)]">
+              Est. {site.founded} · ICAD 3, Mussafah, Abu Dhabi
+            </div>
+            <h1 className="text-[clamp(34px,4.2vw,54px)] font-bold leading-[1.05] text-ink font-display">
+              {site.tagline}
+            </h1>
+            <p className="max-w-[480px] text-[17px] leading-relaxed text-ink/80">
+              Eighteen years supplying flagpoles, signboards, and safety signage to government, hospitality, and industrial clients across Abu Dhabi and the UAE. Design, manufacture, and installation under one roof.
+            </p>
+            <div className="mt-1.5 flex flex-wrap gap-3.5">
+              <Link
+                href="/contact"
+                className="bg-ink px-7 py-[15px] text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-ink-soft"
+              >
+                Request a Quote
+              </Link>
+              <Link
+                href="/projects"
+                className="border border-ink/30 px-7 py-[15px] text-sm font-semibold text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-ink/60"
+              >
+                View Projects
+              </Link>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-8 border-t border-border-soft pt-5">
+              <div>
+                <div className="text-[26px] font-bold text-ink">{site.yearsInBusiness}</div>
+                <div className="text-xs text-ink/60">Years in Business</div>
+              </div>
+              <div>
+                <div className="text-[26px] font-bold text-ink">ISO 9001</div>
+                <div className="text-xs text-ink/60">Certified</div>
+              </div>
+              <div>
+                <div className="text-[26px] font-bold text-ink">1,200+</div>
+                <div className="text-xs text-ink/60">Projects Delivered</div>
+              </div>
+            </div>
+          </div>
+          <div className="relative min-h-[340px] overflow-hidden">
             <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+              src={heroImage.src}
+              alt={heroImage.alt}
+              fill
+              priority
+              sizes="(min-width: 1024px) 45vw, 100vw"
+              className="object-cover"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
+          </div>
         </div>
+
+        {/* Credentials / clients band */}
+        <Reveal>
+          <div className="bg-ink">
+            <div className="section-x grid grid-cols-1 items-start gap-12 py-[clamp(32px,5vw,56px)] lg:grid-cols-[auto_1fr]">
+              <div className="flex max-w-[280px] min-w-[220px] flex-col gap-4 border-[oklch(32%_0.01_250)] pr-10 lg:border-r">
+                <div className="font-serif text-2xl font-semibold leading-tight text-white">
+                  Flagpoles and signage for the UAE&rsquo;s most demanding organizations.
+                </div>
+                <div className="text-sm leading-relaxed text-[oklch(70%_0.01_250)]">
+                  From government ministries to national hospitality brands, our work is specified where compliance and finish matter most.
+                </div>
+              </div>
+              <div>
+                <div className="mb-4 font-serif text-xs font-semibold uppercase tracking-[0.1em] text-[oklch(68%_0.09_250)]">
+                  Trusted by Government &amp; Industry Leaders
+                </div>
+                <ClientHonorRoll />
+              </div>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* What We Manufacture */}
+        <Reveal>
+          <div className="section-x section-y">
+            <div className="mb-7 flex flex-wrap items-baseline justify-between gap-3">
+              <h2 className="text-[28px] font-bold text-ink">What We Manufacture</h2>
+              <Link href="/services" className="text-sm font-semibold text-blue hover:underline">
+                All services →
+              </Link>
+            </div>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-px bg-border">
+              {services.map((s) => (
+                <NumberedCard key={s.key} num={s.num} title={s.title} compact />
+              ))}
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Why Clients Choose */}
+        <Reveal>
+          <div className="section-x section-y grid grid-cols-1 gap-12 bg-mist lg:grid-cols-[1fr_1.2fr]">
+            <div>
+              <h2 className="mb-4 text-[28px] font-bold text-ink">Why Clients Choose Dubai Sign</h2>
+              <p className="mb-5 text-[15px] leading-relaxed text-ink/70">
+                Eighteen years of specification-led manufacturing for the UAE&rsquo;s most demanding clients.
+              </p>
+              <Link href="/about" className="text-sm font-semibold text-blue hover:underline">
+                Learn more about us →
+              </Link>
+            </div>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6">
+              {whyChooseUsShort.map((w) => (
+                <div key={w.title}>
+                  <div className="mb-1.5 text-[15px] font-semibold text-ink">{w.title}</div>
+                  <div className="text-sm leading-relaxed text-ink/75">{w.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Featured Projects */}
+        <Reveal>
+          <div className="section-x section-y">
+            <div className="mb-7 flex flex-wrap items-baseline justify-between gap-3">
+              <h2 className="text-[28px] font-bold text-ink">Featured Projects</h2>
+              <Link href="/projects" className="text-sm font-semibold text-blue hover:underline">
+                All projects →
+              </Link>
+            </div>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-7">
+              {featuredProjects.map((p) => (
+                <Link
+                  key={p.title + p.location}
+                  href="/projects"
+                  className="group block text-inherit no-underline transition-transform duration-250 hover:-translate-y-1"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden bg-mist">
+                    <Image
+                      src={p.image.src}
+                      alt={p.image.alt}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, 100vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                    />
+                  </div>
+                  <div className="mt-3.5 font-serif text-[11px] font-semibold uppercase tracking-[0.06em] text-[oklch(55%_0.08_250)]">
+                    {p.tag}
+                  </div>
+                  <div className="mt-1.5 text-base font-semibold text-ink">{p.title}</div>
+                  <div className="mt-1 text-[13px] text-ink/60">{p.location}</div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+
+        <FAQSection />
+
+        <CTABand heading="Need signage or flagpoles to specification?" variant="dark" />
       </main>
-    </div>
+      <SiteFooter />
+      <WhatsAppFloat />
+    </>
   );
 }

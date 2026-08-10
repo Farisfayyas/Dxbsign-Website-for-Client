@@ -1,0 +1,243 @@
+// Curated real photography, sourced from the client's own site
+// (projects/dxbsign/images/, catalogued by category during the original
+// scrape). Every slot below replaces a "PHOTO: ..." placeholder from the
+// approved design handoff with a specific real file + real alt text.
+
+export type SiteImage = {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+};
+
+// Home hero — real flagpole installation at a named client's premises
+// (Private Office of H.H. Sheikh Mohamed Bin Zayed Al Nahyan).
+export const heroImage: SiteImage = {
+  src: "/images/flagpoles/flagpole-05.jpg",
+  alt: "UAE flagpole installation at the entrance of a government office building in Abu Dhabi",
+  width: 1600,
+  height: 1067,
+};
+
+// About page hero band background — real Dubai night skyline.
+export const skylineImage: SiteImage = {
+  src: "/images/hero/hero-page-header-bg-dubai-skyline.png",
+  alt: "Dubai skyline at night",
+  width: 1900,
+  height: 260,
+};
+
+export type ProjectCategory =
+  | "flagpole"
+  | "signboard"
+  | "wayfinding"
+  | "traffic"
+  | "window";
+
+export type ProjectItem = {
+  category: ProjectCategory;
+  tag: string;
+  title: string;
+  location: string;
+  image: SiteImage;
+};
+
+export const featuredProjects: ProjectItem[] = [
+  {
+    category: "flagpole",
+    tag: "Flagpoles",
+    title: "Flagpole Installation",
+    location: "Government Complex, Abu Dhabi",
+    image: {
+      src: "/images/flagpoles/flagpole-01.png",
+      alt: "UAE and corporate flagpoles installed outside a government complex in Abu Dhabi",
+      width: 600,
+      height: 400,
+    },
+  },
+  {
+    category: "flagpole",
+    tag: "Flagpoles",
+    title: "Flagpole & Flag Package",
+    location: "Hotel Entrance, Abu Dhabi",
+    image: {
+      src: "/images/flagpoles/flagpole-03.png",
+      alt: "Corporate flagpole with custom flag at a hotel entrance, lined with palm trees",
+      width: 600,
+      height: 400,
+    },
+  },
+  {
+    category: "signboard",
+    tag: "Signboards",
+    title: "Illuminated 3D Signboard",
+    location: "Retail Plaza, Mussafah",
+    image: {
+      src: "/images/outdoor-signs/3d-signs/3d-sign-01.png",
+      alt: "Illuminated dimensional 3D signboard on a retail facade",
+      width: 600,
+      height: 400,
+    },
+  },
+];
+
+export const projects: ProjectItem[] = [
+  {
+    category: "flagpole",
+    tag: "Flagpoles",
+    title: "Flagpole Installation",
+    location: "Government Complex, Abu Dhabi",
+    image: {
+      src: "/images/flagpoles/flagpole-01.png",
+      alt: "UAE and corporate flagpoles installed outside a government complex in Abu Dhabi",
+      width: 600,
+      height: 400,
+    },
+  },
+  {
+    category: "flagpole",
+    tag: "Flagpoles",
+    title: "Flagpole Set",
+    location: "Corporate Headquarters, Abu Dhabi",
+    image: {
+      src: "/images/flagpoles/flagpole-02.png",
+      alt: "Set of corporate flagpoles outside a headquarters building",
+      width: 600,
+      height: 400,
+    },
+  },
+  {
+    category: "flagpole",
+    tag: "Flagpoles",
+    title: "Flagpole & Flag Package",
+    location: "Hotel Entrance, Abu Dhabi",
+    image: {
+      src: "/images/flagpoles/flagpole-03.png",
+      alt: "Corporate flagpole with custom flag at a hotel entrance, lined with palm trees",
+      width: 600,
+      height: 400,
+    },
+  },
+  {
+    category: "flagpole",
+    tag: "Flagpoles",
+    title: "Flagpole Installation",
+    location: "Municipal Building, Mussafah",
+    image: {
+      src: "/images/flagpoles/flagpole-04.png",
+      alt: "Flagpole installation outside a municipal building in Mussafah",
+      width: 600,
+      height: 400,
+    },
+  },
+  {
+    category: "flagpole",
+    tag: "Flagpoles",
+    title: "Flagpole Refurbishment",
+    location: "Industrial Facility, ICAD",
+    image: {
+      src: "/images/flagpoles/flagpole-06.png",
+      alt: "Refurbished flagpole at an industrial facility in ICAD",
+      width: 600,
+      height: 400,
+    },
+  },
+  {
+    category: "flagpole",
+    tag: "Flagpoles",
+    title: "Flagpole Entrance Package",
+    location: "Residential Community, Abu Dhabi",
+    image: {
+      src: "/images/flagpoles/flagpole-07.png",
+      alt: "Flagpole entrance package at a residential community in Abu Dhabi",
+      width: 600,
+      height: 400,
+    },
+  },
+  {
+    category: "signboard",
+    tag: "Signboards",
+    title: "Illuminated 3D Signboard",
+    location: "Retail Plaza, Mussafah",
+    image: {
+      src: "/images/outdoor-signs/3d-signs/3d-sign-01.png",
+      alt: "Illuminated dimensional 3D signboard on a retail facade",
+      width: 600,
+      height: 400,
+    },
+  },
+  {
+    category: "wayfinding",
+    tag: "Wayfinding",
+    title: "Wayfinding System",
+    location: "Hotel Complex, Abu Dhabi",
+    image: {
+      src: "/images/projects/projects-client-work-crowne-plaza-wayfinding.png",
+      alt: "Directional wayfinding sign for Crowne Plaza and Staybridge Suites parking",
+      width: 600,
+      height: 600,
+    },
+  },
+  {
+    category: "traffic",
+    tag: "Traffic & Safety",
+    title: "Traffic Signage Package",
+    location: "Residential Community, Abu Dhabi",
+    image: {
+      src: "/images/traffic-signs/traffic-sign-01.png",
+      alt: "Traffic and regulatory signage installed in a residential community",
+      width: 600,
+      height: 400,
+    },
+  },
+  {
+    category: "window",
+    tag: "Window Graphics",
+    title: "Window Graphics Installation",
+    location: "Corporate Office, Abu Dhabi",
+    image: {
+      src: "/images/window-graphics/window-graphics-01.png",
+      alt: "Window graphics installed on a corporate office storefront",
+      width: 600,
+      height: 400,
+    },
+  },
+];
+
+export type GalleryCategory =
+  | "flagpole"
+  | "signboard"
+  | "indoor"
+  | "outdoor"
+  | "traffic"
+  | "wayfinding"
+  | "window"
+  | "rollup";
+
+export type GalleryItem = {
+  category: GalleryCategory;
+  tag: string;
+  image: SiteImage;
+};
+
+export const galleryItems: GalleryItem[] = [
+  { category: "flagpole", tag: "Flagpole", image: { src: "/images/flagpoles/flagpole-01.png", alt: "UAE and corporate flagpoles outside a government complex", width: 500, height: 500 } },
+  { category: "flagpole", tag: "Flagpole", image: { src: "/images/flagpoles/flagpole-02.png", alt: "Corporate flagpole set outside a headquarters building", width: 500, height: 500 } },
+  { category: "flagpole", tag: "Flagpole", image: { src: "/images/flagpoles/flagpole-03.png", alt: "Flagpole with custom flag at a hotel entrance", width: 500, height: 500 } },
+  { category: "flagpole", tag: "Flagpole", image: { src: "/images/flagpoles/flagpole-04.png", alt: "Flagpole installation outside a municipal building", width: 500, height: 500 } },
+  { category: "flagpole", tag: "Flagpole", image: { src: "/images/flagpoles/flagpole-06.png", alt: "Refurbished flagpole at an industrial facility", width: 500, height: 500 } },
+  { category: "flagpole", tag: "Flagpole", image: { src: "/images/flagpoles/flagpole-07.png", alt: "Flagpole entrance package at a residential community", width: 500, height: 500 } },
+  { category: "flagpole", tag: "Flagpole", image: { src: "/images/flagpoles/flagpole-08.png", alt: "Flagpole installation, Abu Dhabi", width: 500, height: 500 } },
+  { category: "flagpole", tag: "Flagpole", image: { src: "/images/flagpoles/flagpole-09.png", alt: "Flagpole installation, Abu Dhabi", width: 500, height: 500 } },
+  { category: "flagpole", tag: "Flagpole", image: { src: "/images/flagpoles/flagpole-05.jpg", alt: "UAE flagpole at a government office entrance", width: 500, height: 500 } },
+  { category: "flagpole", tag: "Flagpole", image: { src: "/images/hero/hero-bg-01.png", alt: "Flagpoles flying against the Abu Dhabi skyline", width: 500, height: 500 } },
+  { category: "flagpole", tag: "Flagpole", image: { src: "/images/hero/hero-bg-02.png", alt: "Flagpole installation, Abu Dhabi", width: 500, height: 500 } },
+  { category: "signboard", tag: "Signboard", image: { src: "/images/signboards/signboard-01.jpg", alt: "Illuminated backlit reception signboard", width: 500, height: 500 } },
+  { category: "signboard", tag: "3D Sign", image: { src: "/images/outdoor-signs/3d-signs/3d-sign-02.png", alt: "Dimensional 3D branded signage on a building facade", width: 500, height: 500 } },
+  { category: "indoor", tag: "Indoor", image: { src: "/images/indoor-signs/reception/reception-01.png", alt: "Indoor reception signage", width: 500, height: 500 } },
+  { category: "outdoor", tag: "Outdoor", image: { src: "/images/projects/projects-client-work-souk-entrance.png", alt: "Dimensional entrance signage reading Souk", width: 500, height: 500 } },
+  { category: "traffic", tag: "Traffic & Safety", image: { src: "/images/traffic-signs/traffic-sign-02.png", alt: "Traffic and safety signage installation", width: 500, height: 500 } },
+  { category: "wayfinding", tag: "Wayfinding", image: { src: "/images/indoor-signs/wayfinding/wayfinding-01.png", alt: "Indoor wayfinding directional signage", width: 500, height: 500 } },
+  { category: "window", tag: "Window Graphics", image: { src: "/images/window-graphics/window-graphics-02.png", alt: "Window graphics on a storefront", width: 500, height: 500 } },
+  { category: "rollup", tag: "Displays", image: { src: "/images/displays/display-01.png", alt: "Roll-up display stand", width: 500, height: 500 } },
+];

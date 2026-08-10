@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.local.example
 
 # vercel
 .vercel
@@ -39,3 +40,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# reference material — not site source, kept locally only:
+# raw scraped photo library (curated subset lives in public/images/)
+/images/
+# Claude design handoff bundle (mockups + screenshots already built into the site)
+/design-handoff/
