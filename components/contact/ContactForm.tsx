@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { contactSchema, projectTypeOptions, type ContactFormValues } from "@/lib/contact-schema";
-import { site } from "@/lib/site-config";
+import { buildQuoteWhatsAppLink, site } from "@/lib/site-config";
 
 const inputClass =
   "border border-border-soft px-[14px] py-3 text-sm transition-colors duration-200 focus:border-blue focus:outline-none";
@@ -15,6 +15,7 @@ export function ContactForm() {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
@@ -106,13 +107,30 @@ export function ContactForm() {
         <div className="border border-red/30 bg-red/5 px-4 py-3 text-sm text-red">{serverError}</div>
       )}
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-fit bg-ink px-7 py-[15px] text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-ink-soft disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {isSubmitting ? "Sending…" : "Submit Request"}
-      </button>
+      <div className="flex flex-wrap items-center gap-4">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-fit bg-ink px-7 py-[15px] text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-ink-soft disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isSubmitting ? "Sending…" : "Submit Request"}
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            // Read current field values at click time — react-hook-form is
+            // uncontrolled, so a value bound at render time would go stale
+            // as the visitor types.
+            window.open(buildQuoteWhatsAppLink(getValues()), "_blank", "noopener,noreferrer");
+          }}
+          className="text-sm font-semibold text-whatsapp hover:underline"
+        >
+          Or send via WhatsApp instead →
+        </button>
+      </div>
+      <p className="text-xs text-ink/50">
+        WhatsApp opens with these details pre-filled — you still tap send yourself.
+      </p>
     </form>
   );
 }

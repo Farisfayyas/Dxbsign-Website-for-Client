@@ -73,6 +73,29 @@ export const whatsapp = {
   },
 };
 
+// Builds a wa.me link carrying whatever the visitor already typed into the
+// quote form, so the "send via WhatsApp instead" fallback doesn't lose
+// their details — WhatsApp has no API for a website to submit a message on
+// a visitor's behalf, so this still requires one tap to actually send, but
+// nothing has to be retyped.
+export function buildQuoteWhatsAppLink(values: {
+  name?: string;
+  company?: string;
+  projectType?: string;
+  message?: string;
+}) {
+  const lines = [
+    "Hi, I'd like to request a quote.",
+    "",
+    values.name && `Name: ${values.name}`,
+    values.company && `Company: ${values.company}`,
+    values.projectType && `Project type: ${values.projectType}`,
+    "",
+    values.message || "Hi, I'd like to enquire about flagpoles for my project.",
+  ].filter((line): line is string => Boolean(line) || line === "");
+  return `https://wa.me/${whatsapp.number}?text=${encodeURIComponent(lines.join("\n"))}`;
+}
+
 export const navItems = [
   { key: "home", label: "Home", href: "/" },
   { key: "about", label: "About", href: "/about" },

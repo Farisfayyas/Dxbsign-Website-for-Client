@@ -38,14 +38,21 @@ export async function POST(req: Request) {
   const { name, company, email, phone, projectType, message } = parsed.data;
   const resend = new Resend(apiKey);
 
+  // Destination is env-configurable rather than hardcoded — set
+  // CONTACT_FORM_TO_EMAIL to route requests wherever makes sense right now
+  // (e.g. your own inbox while testing, or the client's once they're
+  // ready to receive live enquiries directly). Falls back to the site's
+  // published contact address if unset.
+  const toEmail = process.env.CONTACT_FORM_TO_EMAIL || site.email;
+
   try {
     const { error } = await resend.emails.send({
       // TODO(Faris): swap for a verified sending domain (e.g.
       // quotes@dubaisign.ae) once dubaisign.ae is added and verified in
-      // the Resend dashboard — resend.dev only delivers to the account
-      // owner's own address until then. See .env.local.example.
+      // the Resend dashboard — resend.dev only delivers to the Resend
+      // account owner's own address until then. See .env.local.example.
       from: "Dubai Sign Website <onboarding@resend.dev>",
-      to: site.email,
+      to: toEmail,
       replyTo: email,
       subject: `New quote request from ${name}${company ? ` (${company})` : ""}`,
       text: [
