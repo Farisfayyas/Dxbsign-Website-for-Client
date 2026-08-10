@@ -19,6 +19,91 @@ export const heroImage: SiteImage = {
   height: 1067,
 };
 
+// Home hero slider — 3 real flagpole photos, auto-rotating.
+export const heroSlides: SiteImage[] = [
+  heroImage,
+  {
+    src: "/images/flagpoles/flagpole-04.png",
+    alt: "Three flagpoles flying UAE and corporate flags outside a modern glass-fronted building",
+    width: 1600,
+    height: 1067,
+  },
+  {
+    src: "/images/flagpoles/flagpole-01.png",
+    alt: "UAE and corporate flagpoles mounted outside a commercial building, lined with palm trees",
+    width: 1600,
+    height: 1067,
+  },
+];
+
+// "Engineered for the UAE's Climate" section — two offset photos.
+export const engineeredImages: [SiteImage, SiteImage] = [
+  {
+    src: "/images/flagpoles/flagpole-02.png",
+    alt: "Corporate flagpole set outside a headquarters building",
+    width: 900,
+    height: 1100,
+  },
+  {
+    src: "/images/flagpoles/flagpole-08.png",
+    alt: "Flagpole installation, Abu Dhabi",
+    width: 900,
+    height: 900,
+  },
+];
+
+// Services page — one representative real photo per product line.
+export const serviceImages: Record<string, SiteImage> = {
+  flagpoles: {
+    src: "/images/flagpoles/flagpole-03.png",
+    alt: "Flagpole with corporate flag lined with palm trees",
+    width: 600,
+    height: 450,
+  },
+  signboards: {
+    src: "/images/outdoor-signs/3d-signs/3d-sign-02.png",
+    alt: "Dimensional 3D branded signage on a building facade",
+    width: 600,
+    height: 450,
+  },
+  engraved: {
+    src: "/images/outdoor-signs/project-signs/project-sign-01.png",
+    alt: "Project identification signage at a development site",
+    width: 600,
+    height: 450,
+  },
+  indoor: {
+    src: "/images/indoor-signs/reception/reception-01.png",
+    alt: "Indoor reception signage",
+    width: 600,
+    height: 450,
+  },
+  outdoor: {
+    src: "/images/outdoor-signs/entrance/entrance-01.png",
+    alt: "Exterior entrance signage on a building facade",
+    width: 600,
+    height: 450,
+  },
+  traffic: {
+    src: "/images/traffic-signs/traffic-sign-01.png",
+    alt: "Traffic and regulatory signage installation",
+    width: 600,
+    height: 450,
+  },
+  wayfinding: {
+    src: "/images/indoor-signs/wayfinding/wayfinding-01.png",
+    alt: "Indoor wayfinding directional signage",
+    width: 600,
+    height: 450,
+  },
+  window: {
+    src: "/images/window-graphics/window-graphics-01.png",
+    alt: "Window graphics on a storefront",
+    width: 600,
+    height: 450,
+  },
+};
+
 // About page hero band background — Downtown Dubai aerial at dusk, free
 // Unsplash-licensed photo (see stock-photo-candidates/SOURCES.md, kept
 // locally, not in the repo, for the source link and other options).

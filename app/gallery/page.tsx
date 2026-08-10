@@ -25,7 +25,7 @@ export default function GalleryPage() {
       />
       <SiteHeader />
       <main>
-        <div className="section-x container-wide max-w-[820px] pb-0 pt-[clamp(40px,6vw,72px)]">
+        <div className="section-x max-w-[820px] pb-0 pt-[clamp(40px,6vw,72px)]">
           <div className="mb-4 font-serif text-[12.5px] font-semibold uppercase tracking-[0.1em] text-[oklch(55%_0.08_250)]">
             Gallery
           </div>

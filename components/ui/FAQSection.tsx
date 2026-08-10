@@ -36,7 +36,7 @@ export function FAQSection() {
                   </span>
                   <ChevronDown
                     size={18}
-                    className={`flex-shrink-0 transition-all duration-400 ${isOpen ? "text-blue" : "text-ink/50"}`}
+                    className={`flex-shrink-0 transition-all duration-[400ms] ${isOpen ? "text-blue" : "text-ink/50"}`}
                     style={{
                       transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
                       transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)",
@@ -44,7 +44,7 @@ export function FAQSection() {
                   />
                 </button>
                 <div
-                  className="grid transition-[grid-template-rows] duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                  className="grid transition-[grid-template-rows] duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
                   style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
                 >
                   <div className="overflow-hidden">

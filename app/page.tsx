@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
@@ -10,9 +9,12 @@ import { CTABand } from "@/components/ui/CTABand";
 import { ClientHonorRoll } from "@/components/ui/ClientHonorRoll";
 import { NumberedCard } from "@/components/ui/NumberedCard";
 import { FAQSection } from "@/components/ui/FAQSection";
+import { ScrollColorText } from "@/components/ui/ScrollColorText";
 import { ClientLogoCarousel } from "@/components/home/ClientLogoCarousel";
-import { services, site, whyChooseUsShort } from "@/lib/site-config";
-import { heroImage, featuredProjects } from "@/lib/site-images";
+import { HeroSlider } from "@/components/home/HeroSlider";
+import { EngineeredSection } from "@/components/home/EngineeredSection";
+import { services, site } from "@/lib/site-config";
+import { heroSlides, engineeredImages, featuredProjects } from "@/lib/site-images";
 import { faqJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -31,11 +33,11 @@ export default function HomePage() {
       />
       <SiteHeader />
       <main>
-        {/* Hero — staggered load-in, not just a static block */}
+        {/* Hero — staggered load-in text, auto-rotating photo slider */}
         <div className="grid min-h-[560px] grid-cols-1 lg:grid-cols-[1.1fr_1fr]">
           <div className="section-x flex flex-col justify-center gap-6 py-[clamp(32px,6vw,80px)]">
             <Reveal y={14}>
-              <div className="font-serif text-[12.5px] font-semibold uppercase tracking-[0.1em] text-[oklch(55%_0.08_250)]">
+              <div className="font-display text-[12.5px] font-semibold uppercase tracking-[0.1em] text-[oklch(55%_0.08_250)]">
                 Est. {site.founded} · ICAD 3, Mussafah, Abu Dhabi
               </div>
             </Reveal>
@@ -82,17 +84,7 @@ export default function HomePage() {
               </div>
             </Reveal>
           </div>
-          <div className="relative min-h-[340px] overflow-hidden">
-            <Image
-              src={heroImage.src}
-              alt={heroImage.alt}
-              fill
-              priority
-              sizes="(min-width: 1024px) 45vw, 100vw"
-              className="object-cover scale-[1.08] [animation:hero-image-in_1.4s_cubic-bezier(0.16,1,0.3,1)_forwards]"
-            />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
-          </div>
+          <HeroSlider slides={heroSlides} />
         </div>
 
         <ClientLogoCarousel />
@@ -119,7 +111,7 @@ export default function HomePage() {
           </div>
         </Reveal>
 
-        {/* What We Manufacture */}
+        {/* What We Manufacture — hover-highlight selector grid */}
         <Reveal>
           <div className="section-x section-y">
             <div className="mb-7 flex flex-wrap items-baseline justify-between gap-3">
@@ -130,36 +122,29 @@ export default function HomePage() {
             </div>
             <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-px bg-border">
               {services.map((s) => (
-                <NumberedCard key={s.key} num={s.num} title={s.title} compact />
+                <NumberedCard key={s.key} num={s.num} title={s.title} highlight />
               ))}
             </div>
           </div>
         </Reveal>
 
-        {/* Why Clients Choose */}
+        <EngineeredSection images={engineeredImages} />
+
+        {/* Why Clients Choose — scroll-linked progressive color text */}
         <Reveal>
-          <div className="section-x section-y grid grid-cols-1 gap-12 bg-mist lg:grid-cols-[1fr_1.2fr]">
-            <div>
-              <h2 className="mb-4 text-[28px] font-bold text-ink">Why Clients Choose Dubai Sign</h2>
-              <p className="mb-5 text-[15px] leading-relaxed text-ink/70">
-                Eighteen years of specification-led manufacturing for the UAE&rsquo;s most demanding clients.
-              </p>
-              <Link href="/about" className="text-sm font-semibold text-blue hover:underline">
-                Learn more about us →
-              </Link>
-            </div>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6">
-              {whyChooseUsShort.map((w) => (
-                <div key={w.title}>
-                  <div className="mb-1.5 text-[15px] font-semibold text-ink">{w.title}</div>
-                  <div className="text-sm leading-relaxed text-ink/75">{w.desc}</div>
-                </div>
-              ))}
-            </div>
+          <div className="section-x section-y bg-mist">
+            <h2 className="mb-4 text-[28px] font-bold text-ink">Why Clients Choose Dubai Sign</h2>
+            <ScrollColorText
+              text="Eighteen years of specification-led manufacturing for the UAE's most demanding clients, delivered by one accountable team from first drawing to ongoing maintenance."
+              className="max-w-[640px] text-[19px] font-medium leading-relaxed"
+            />
+            <Link href="/about" className="mt-5 inline-block text-sm font-semibold text-blue hover:underline">
+              Learn more about us →
+            </Link>
           </div>
         </Reveal>
 
-        {/* Featured Projects */}
+        {/* Featured Projects — rounded cards */}
         <Reveal>
           <div className="section-x section-y">
             <div className="mb-7 flex flex-wrap items-baseline justify-between gap-3">
@@ -173,7 +158,7 @@ export default function HomePage() {
                 <Link
                   key={p.title + p.location}
                   href="/projects"
-                  className="group block text-inherit no-underline transition-transform duration-250 hover:-translate-y-1"
+                  className="group block overflow-hidden rounded-xl border border-border-soft bg-white text-inherit no-underline transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)]"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-mist">
                     <Image
@@ -184,11 +169,13 @@ export default function HomePage() {
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                     />
                   </div>
-                  <div className="mt-3.5 font-serif text-[11px] font-semibold uppercase tracking-[0.06em] text-[oklch(55%_0.08_250)]">
-                    {p.tag}
+                  <div className="p-5">
+                    <div className="font-serif text-[11px] font-semibold uppercase tracking-[0.06em] text-[oklch(55%_0.08_250)]">
+                      {p.tag}
+                    </div>
+                    <div className="mt-1.5 text-base font-semibold text-ink">{p.title}</div>
+                    <div className="mt-1 text-[13px] text-ink/60">{p.location}</div>
                   </div>
-                  <div className="mt-1.5 text-base font-semibold text-ink">{p.title}</div>
-                  <div className="mt-1 text-[13px] text-ink/60">{p.location}</div>
                 </Link>
               ))}
             </div>
