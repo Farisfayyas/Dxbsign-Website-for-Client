@@ -46,3 +46,5 @@ next-env.d.ts
 /images/
 # Claude design handoff bundle (mockups + screenshots already built into the site)
 /design-handoff/
+# unused stock-photo options kept for possible future use — see SOURCES.md
+/stock-photo-candidates/

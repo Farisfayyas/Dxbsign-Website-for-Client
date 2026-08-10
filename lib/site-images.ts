@@ -19,12 +19,14 @@ export const heroImage: SiteImage = {
   height: 1067,
 };
 
-// About page hero band background — real Dubai night skyline.
+// About page hero band background — Downtown Dubai aerial at dusk, free
+// Unsplash-licensed photo (see stock-photo-candidates/SOURCES.md, kept
+// locally, not in the repo, for the source link and other options).
 export const skylineImage: SiteImage = {
-  src: "/images/hero/hero-page-header-bg-dubai-skyline.png",
-  alt: "Dubai skyline at night",
-  width: 1900,
-  height: 260,
+  src: "/images/stock/dubai-downtown-dusk-skyline.jpg",
+  alt: "Aerial view of Downtown Dubai at dusk with illuminated highways",
+  width: 2400,
+  height: 1602,
 };
 
 export type ProjectCategory =
