@@ -28,7 +28,7 @@ export function WaveDivider({ fill = "var(--color-paper)" }: { fill?: string }) 
       viewBox="0 0 1440 90"
       preserveAspectRatio="none"
       aria-hidden="true"
-      className="absolute inset-x-0 bottom-0 h-[48px] w-full sm:h-[72px]"
+      className="absolute inset-x-0 bottom-0 h-[68px] w-full sm:h-[104px]"
     >
       <path d={D1} fill={fill}>
         {animate && (

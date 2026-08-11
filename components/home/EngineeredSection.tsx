@@ -26,7 +26,7 @@ const specs = [
 export function EngineeredSection({ images }: { images: [SiteImage, SiteImage] }) {
   return (
     <div className="section-x section-y bg-mist2">
-      <div className="mx-auto flex max-w-[1180px] flex-col items-center gap-14 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
+      <div className="mx-auto flex max-w-[1220px] flex-col items-center gap-14 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
         <StaggerReveal className="flex flex-col gap-5 lg:max-w-[440px]" stagger={0.15}>
           <div className="font-serif text-xs font-semibold uppercase tracking-[0.1em] text-[oklch(55%_0.08_250)]">
             Built For This Climate
@@ -55,12 +55,12 @@ export function EngineeredSection({ images }: { images: [SiteImage, SiteImage] }
           ))}
         </StaggerReveal>
 
-        <div className="relative mx-auto h-[380px] w-full max-w-[440px] flex-shrink-0 sm:h-[440px]">
+        <div className="relative mx-auto h-[420px] w-full max-w-[485px] flex-shrink-0 sm:h-[485px]">
           <div className="absolute left-0 top-0 h-[70%] w-[72%] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)]">
-            <Image src={images[0].src} alt={images[0].alt} fill sizes="320px" className="object-cover" />
+            <Image src={images[0].src} alt={images[0].alt} fill sizes="360px" className="object-cover" />
           </div>
-          <div className="absolute bottom-0 right-0 h-[58%] w-[58%] overflow-hidden border-4 border-paper shadow-[0_20px_50px_rgba(0,0,0,0.2)]">
-            <Image src={images[1].src} alt={images[1].alt} fill sizes="260px" className="object-cover" />
+          <div className="absolute bottom-0 right-0 h-[58%] w-[58%] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.2)]">
+            <Image src={images[1].src} alt={images[1].alt} fill sizes="290px" className="object-cover" />
           </div>
         </div>
       </div>
