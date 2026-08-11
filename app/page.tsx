@@ -13,7 +13,7 @@ import { ScrollColorText } from "@/components/ui/ScrollColorText";
 import { ClientLogoCarousel } from "@/components/home/ClientLogoCarousel";
 import { HeroSlider } from "@/components/home/HeroSlider";
 import { EngineeredSection } from "@/components/home/EngineeredSection";
-import { services, site } from "@/lib/site-config";
+import { services, site, whyChooseUsShort } from "@/lib/site-config";
 import { heroSlides, engineeredImages, featuredProjects } from "@/lib/site-images";
 import { faqJsonLd } from "@/lib/seo";
 
@@ -68,18 +68,14 @@ export default function HomePage() {
               </div>
             </Reveal>
             <Reveal y={12} delay={0.32}>
-              <div className="mt-4 flex flex-wrap gap-8 border-t border-border-soft pt-5">
+              <div className="mt-4 flex flex-wrap gap-14 border-t border-border-soft pt-6">
                 <div>
-                  <div className="text-[26px] font-bold text-ink">{site.yearsInBusiness}</div>
-                  <div className="text-xs text-ink/60">Years in Business</div>
+                  <div className="text-[34px] font-bold text-ink">{site.yearsInBusiness}</div>
+                  <div className="text-sm text-ink/60">Years in Business</div>
                 </div>
                 <div>
-                  <div className="text-[26px] font-bold text-ink">ISO 9001</div>
-                  <div className="text-xs text-ink/60">Certified</div>
-                </div>
-                <div>
-                  <div className="text-[26px] font-bold text-ink">1,200+</div>
-                  <div className="text-xs text-ink/60">Projects Delivered</div>
+                  <div className="text-[34px] font-bold text-ink">ISO 9001</div>
+                  <div className="text-sm text-ink/60">Certified</div>
                 </div>
               </div>
             </Reveal>
@@ -130,19 +126,34 @@ export default function HomePage() {
 
         <EngineeredSection images={engineeredImages} />
 
-        {/* Why Clients Choose — scroll-linked progressive color text,
-            heading and paragraph revealing together as one continuous effect */}
+        {/* Why Clients Choose — scroll-linked progressive color text on the
+            left; the credentials column on the right is from the original
+            approved design (whyChooseUsShort was already written in
+            site-config.ts but never wired up to a page -- restored here,
+            not new content). */}
         <Reveal>
           <div className="section-x section-y bg-mist">
-            <ScrollColorText
-              heading="Why Clients Choose Dubai Sign"
-              headingClassName="mb-4 text-[28px] font-bold"
-              paragraph="Eighteen years of specification-led manufacturing for the UAE's most demanding clients, delivered by one accountable team from first drawing to ongoing maintenance."
-              paragraphClassName="max-w-[640px] text-[22px] font-medium leading-relaxed"
-            />
-            <Link href="/about" className="mt-5 inline-block text-sm font-semibold text-blue hover:underline">
-              Learn more about us →
-            </Link>
+            <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_1.1fr]">
+              <div>
+                <ScrollColorText
+                  heading="Why Clients Choose Dubai Sign"
+                  headingClassName="mb-4 text-[28px] font-bold"
+                  paragraph="Eighteen years of specification-led manufacturing for the UAE's most demanding clients, delivered by one accountable team from first drawing to ongoing maintenance."
+                  paragraphClassName="max-w-[560px] text-[22px] font-medium leading-relaxed"
+                />
+                <Link href="/about" className="mt-5 inline-block text-sm font-semibold text-blue hover:underline">
+                  Learn more about us →
+                </Link>
+              </div>
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-8">
+                {whyChooseUsShort.map((w) => (
+                  <div key={w.title}>
+                    <div className="mb-1.5 text-[15px] font-semibold text-ink">{w.title}</div>
+                    <div className="text-sm leading-relaxed text-ink/65">{w.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </Reveal>
 
