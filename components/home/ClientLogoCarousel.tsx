@@ -12,7 +12,7 @@ export function ClientLogoCarousel() {
 
   return (
     <div className="border-y border-border-soft bg-white py-12">
-      <div className="section-x mb-7 text-center font-serif text-[11px] font-semibold uppercase tracking-[0.12em] text-ink/60">
+      <div className="section-x mb-7 text-center font-serif text-[13px] font-semibold uppercase tracking-[0.12em] text-ink/60">
         Our Clients
       </div>
       <div

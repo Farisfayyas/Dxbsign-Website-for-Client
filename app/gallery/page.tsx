@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
-import { MobileActionBar } from "@/components/layout/MobileActionBar";
+import { MobileFloatingActions } from "@/components/layout/MobileFloatingActions";
 import { CTABand } from "@/components/ui/CTABand";
 import { GalleryGrid } from "@/components/gallery/GalleryGrid";
 import { breadcrumbJsonLd } from "@/lib/seo";
@@ -44,7 +44,7 @@ export default function GalleryPage() {
       </main>
       <SiteFooter />
       <WhatsAppFloat />
-      <MobileActionBar />
+      <MobileFloatingActions />
     </>
   );
 }

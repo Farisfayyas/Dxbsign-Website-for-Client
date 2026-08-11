@@ -3,7 +3,7 @@ import Image from "next/image";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
-import { MobileActionBar } from "@/components/layout/MobileActionBar";
+import { MobileFloatingActions } from "@/components/layout/MobileFloatingActions";
 import { Reveal } from "@/components/ui/Reveal";
 import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import { CTABand } from "@/components/ui/CTABand";
@@ -108,7 +108,7 @@ export default function AboutPage() {
       </main>
       <SiteFooter />
       <WhatsAppFloat />
-      <MobileActionBar />
+      <MobileFloatingActions />
     </>
   );
 }

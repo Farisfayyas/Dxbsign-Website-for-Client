@@ -9,7 +9,6 @@
 import { Ruler, Layers, Wind, ShieldCheck, Clock, Palette } from "lucide-react";
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
-import { MagneticButton } from "@/components/ui/MagneticButton";
 import { whatsapp } from "@/lib/site-config";
 
 const specs = [
@@ -59,16 +58,14 @@ export function FlagpoleSpecs() {
         </div>
 
         <div className="mt-10 flex flex-wrap items-center gap-5">
-          <MagneticButton>
-            <a
-              href={whatsapp.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-whatsapp px-7 py-[15px] text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110"
-            >
-              Configure Your Flagpole
-            </a>
-          </MagneticButton>
+          <a
+            href={whatsapp.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-whatsapp px-7 py-[15px] text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110"
+          >
+            Configure Your Flagpole
+          </a>
           <span className="text-sm text-[oklch(70%_0.01_250)]">
             Send your height, quantity, and site details - we&rsquo;ll confirm a specification and quote.
           </span>

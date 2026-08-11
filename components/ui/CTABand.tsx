@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Reveal } from "./Reveal";
-import { MagneticButton } from "./MagneticButton";
 import { site } from "@/lib/site-config";
 
 type Variant = "dark" | "light" | "plain";
@@ -46,14 +45,12 @@ export function CTABand({
             </a>
           </div>
         </div>
-        <MagneticButton>
-          <Link
-            href="/contact"
-            className={`whitespace-nowrap px-8 py-4 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 ${s.btn}`}
-          >
-            Request a Quote
-          </Link>
-        </MagneticButton>
+        <Link
+          href="/contact"
+          className={`whitespace-nowrap px-8 py-4 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 ${s.btn}`}
+        >
+          Request a Quote
+        </Link>
       </div>
     </Reveal>
   );

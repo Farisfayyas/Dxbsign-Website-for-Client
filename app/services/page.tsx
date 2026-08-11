@@ -4,7 +4,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
-import { MobileActionBar } from "@/components/layout/MobileActionBar";
+import { MobileFloatingActions } from "@/components/layout/MobileFloatingActions";
 import { Reveal } from "@/components/ui/Reveal";
 import { CTABand } from "@/components/ui/CTABand";
 import { ProcessBand } from "@/components/ui/ProcessBand";
@@ -93,7 +93,7 @@ export default function ServicesPage() {
       </main>
       <SiteFooter />
       <WhatsAppFloat />
-      <MobileActionBar />
+      <MobileFloatingActions />
     </>
   );
 }
