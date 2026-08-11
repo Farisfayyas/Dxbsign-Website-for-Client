@@ -15,7 +15,11 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 
-const MUTED = "#b7bbc4";
+// MUTED must stay readable at rest, not just contrast with FULL at the end
+// of the scroll -- #b7bbc4 (previous value) was ~1.7:1 against bg-mist,
+// which read as "blank" rather than "muted." #4b5563 (Tailwind gray-600)
+// clears WCAG AA's 4.5:1 normal-text threshold with real margin (~6.7:1).
+const MUTED = "#4b5563";
 const FULL = "#1c2333";
 
 function Word({ text, progress, range }: { text: string; progress: MotionValue<number>; range: [number, number] }) {

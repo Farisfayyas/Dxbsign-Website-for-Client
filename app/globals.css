@@ -28,7 +28,10 @@
   --color-whatsapp: oklch(64% 0.15 152);
   --color-paper: oklch(98% 0.003 250);
   --color-mist: oklch(96% 0.004 250);
-  --color-mist2: oklch(96% 0.014 80);
+  /* Cool, brand-blue-matched secondary tone (hue ~250, matching --color-blue)
+     -- was oklch(96% 0.014 80), a warm cream that read off-brand for an
+     industrial/government-client manufacturer. */
+  --color-mist2: oklch(96% 0.012 250);
   --color-border: oklch(90% 0.005 250);
   --color-border-soft: oklch(92% 0.005 250);
 
@@ -117,14 +120,21 @@
   }
 }
 
-/* Respect reduced-motion: kill scroll-reveal transforms and Lenis inertia. */
+/* Respect reduced-motion, but don't go so far that state changes look like
+   nothing happened. 150ms is short enough that it reads as "instant" next
+   to the site's normal 300-700ms transitions, but it's not zero -- an
+   accordion opening or text fading in still visibly does something.
+   Genuinely ambient/continuous motion (the logo marquee, the About video,
+   the wave divider) isn't controlled by this rule at all -- each is
+   independently, deliberately gated off for reduced-motion via its own
+   JS/class check, and stays off regardless of this duration value. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 150ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 150ms !important;
     scroll-behavior: auto !important;
   }
 }

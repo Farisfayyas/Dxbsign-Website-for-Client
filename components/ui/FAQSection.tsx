@@ -27,16 +27,14 @@ export function FAQSection() {
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : i)}
                   aria-expanded={isOpen}
-                  className={`flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors duration-300 ${
-                    isOpen ? "bg-blue/[0.04]" : "hover:bg-mist/60"
-                  }`}
+                  className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors duration-300 hover:bg-mist/60"
                 >
-                  <span className={`text-[15px] font-semibold transition-colors duration-300 ${isOpen ? "text-blue" : "text-ink"}`}>
+                  <span className="text-[15px] font-semibold text-ink">
                     {f.q}
                   </span>
                   <ChevronDown
                     size={18}
-                    className={`flex-shrink-0 transition-all duration-[400ms] ${isOpen ? "text-blue" : "text-ink/50"}`}
+                    className="flex-shrink-0 text-ink/50 transition-transform duration-[400ms]"
                     style={{
                       transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
                       transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)",
