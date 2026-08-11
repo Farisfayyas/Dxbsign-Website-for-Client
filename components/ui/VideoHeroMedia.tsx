@@ -17,8 +17,9 @@
 // once a visitor has already qualified for video (desktop, motion ok).
 //
 // Video: "Time-lapse Dubai 1" by Abid Ali, free Pexels License.
-// public/videos/about-hero-dubai-timelapse.mp4 (1920x1080, ~18MB) — only
-// requested on viewports 768px and up.
+// public/videos/about-hero-dubai-timelapse.mp4 (recompressed to 1280x720,
+// ~2MB, down from an original 1080p/~18.6MB export -- see
+// scripts/compress-video.mjs) — only requested on viewports 768px and up.
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
