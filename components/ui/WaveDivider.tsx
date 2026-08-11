@@ -10,18 +10,24 @@
 // SMIL animations don't respect prefers-reduced-motion automatically, so
 // this checks it explicitly and omits the <animate> tag entirely for
 // those users (falls back to the first, static path shape).
+//
+// `animated` lets a page opt out of motion entirely regardless of the
+// visitor's settings (About wants a static wave now that Contact has
+// the moving one, to keep the moving wave feeling like a Contact-page
+// signature rather than repeated everywhere).
 
 import { useEffect, useState } from "react";
 
 const D1 = "M0,45 C 240,90 480,0 720,35 C 960,70 1200,10 1440,48 L1440,90 L0,90 Z";
 const D2 = "M0,45 C 240,0 480,90 720,45 C 960,0 1200,90 1440,45 L1440,90 L0,90 Z";
 
-export function WaveDivider({ fill = "var(--color-paper)" }: { fill?: string }) {
+export function WaveDivider({ fill = "var(--color-paper)", animated = true }: { fill?: string; animated?: boolean }) {
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
+    if (!animated) return;
     setAnimate(!window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  }, []);
+  }, [animated]);
 
   return (
     <svg

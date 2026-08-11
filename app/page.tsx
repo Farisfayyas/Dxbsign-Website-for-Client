@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Award, ShieldCheck, Workflow } from "lucide-react";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
@@ -13,9 +14,32 @@ import { ScrollColorText } from "@/components/ui/ScrollColorText";
 import { ClientLogoCarousel } from "@/components/home/ClientLogoCarousel";
 import { HeroSlider } from "@/components/home/HeroSlider";
 import { EngineeredSection } from "@/components/home/EngineeredSection";
-import { services, site, whyChooseUsShort } from "@/lib/site-config";
+import { services, site } from "@/lib/site-config";
 import { heroSlides, engineeredImages, featuredProjects } from "@/lib/site-images";
 import { faqJsonLd } from "@/lib/seo";
+
+// Credentials beside "Why Clients Choose Dubai Sign" -- same three facts
+// as whyChooseUsShort (site-config.ts), but with the fuller descriptions
+// already written for whyChooseUsFull (About page), and paired with an
+// icon since a bare title+one-liner read as too sparse next to the
+// taller ScrollColorText column beside it.
+const whyClientsChooseCredentials = [
+  {
+    icon: Award,
+    title: "18 Years of Experience",
+    desc: "Serving Abu Dhabi and the UAE since 2008 across government, hospitality, and industrial sectors.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "ISO 9001 Certified",
+    desc: "Quality managed manufacturing processes audited to international standard.",
+  },
+  {
+    icon: Workflow,
+    title: "End-to-End Service",
+    desc: "Design, manufacture, installation, and maintenance handled by a single accountable team.",
+  },
+];
 
 export const metadata: Metadata = {
   title: "Flagpole & Signage Manufacturer, Abu Dhabi",
@@ -145,11 +169,16 @@ export default function HomePage() {
                   Learn more about us →
                 </Link>
               </div>
-              <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-8">
-                {whyChooseUsShort.map((w) => (
-                  <div key={w.title}>
-                    <div className="mb-1.5 text-[15px] font-semibold text-ink">{w.title}</div>
-                    <div className="text-sm leading-relaxed text-ink/65">{w.desc}</div>
+              <div className="flex flex-col divide-y divide-border">
+                {whyClientsChooseCredentials.map((w) => (
+                  <div key={w.title} className="flex items-start gap-4 py-5 first:pt-0 last:pb-0">
+                    <span className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-blue/[0.08] text-blue">
+                      <w.icon size={20} strokeWidth={1.75} />
+                    </span>
+                    <div>
+                      <div className="mb-1 text-[15px] font-semibold text-ink">{w.title}</div>
+                      <div className="text-sm leading-relaxed text-ink/65">{w.desc}</div>
+                    </div>
                   </div>
                 ))}
               </div>

@@ -174,12 +174,6 @@ export const processSteps = [
   { num: "04", title: "Maintain", desc: "Ongoing maintenance and support contracts." },
 ] as const;
 
-export const whyChooseUsShort = [
-  { title: "18 Years of Experience", desc: "Serving Abu Dhabi and the UAE since 2008." },
-  { title: "ISO 9001 Certified", desc: "Quality managed manufacturing audited to international standard." },
-  { title: "End-to-End Service", desc: "Design, manufacture, installation, and maintenance in-house." },
-] as const;
-
 export const whyChooseUsFull = [
   { num: "01", title: "18 Years of Experience", desc: "Serving Abu Dhabi and the UAE since 2008 across government, hospitality, and industrial sectors." },
   { num: "02", title: "ISO 9001 Certified", desc: "Quality managed manufacturing processes audited to international standard." },
