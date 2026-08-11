@@ -106,30 +106,30 @@ export const serviceImages: Record<string, SiteImage> = {
   },
 };
 
-// About page hero band background — the original wide panoramic Dubai
-// night skyline from the client's own site scrape (Burj Khalifa visible
-// at right). Used here originally, swapped out for a Downtown-dusk
-// Unsplash photo mid-engagement, then restored per Faris's request --
-// he remembered this one and asked for it back. Recovered from git
-// history (still fully intact there) rather than re-sourced.
+// About page hero band background — Downtown Dubai aerial at dusk
+// (orange/pink sky, Burj Khalifa, illuminated highways). This was the
+// photo on About for most of the engagement; got swapped out briefly
+// when "the old skyline picture" was first requested (that turned out
+// to mean the wide panoramic hero-page-header photo, now on Contact
+// instead), then swapped back once Faris confirmed by description
+// ("orange skyline with burj khalifa") which one he actually meant.
 export const skylineImage: SiteImage = {
-  src: "/images/hero/hero-page-header-bg-dubai-skyline.png",
-  alt: "Wide panoramic view of the Dubai skyline at night with the Burj Khalifa illuminated",
-  width: 1600,
-  height: 280,
-};
-
-// Contact page hero band background — poster/fallback for the video
-// that now lives there (mobile and reduced-motion visitors get this
-// static frame instead of the autoplay loop). The Unsplash Downtown-dusk
-// photo that used to be skylineImage before the restoration above --
-// still fully licensed and on disk, just deliberately a different photo
-// than About's so the two hero bands don't show the same image.
-export const contactHeroPoster: SiteImage = {
   src: "/images/stock/dubai-downtown-dusk-skyline.jpg",
   alt: "Aerial view of Downtown Dubai at dusk with illuminated highways",
   width: 2400,
   height: 1602,
+};
+
+// Contact page hero band background — poster/fallback for the video
+// that lives there (mobile and reduced-motion visitors get this static
+// frame instead of the autoplay loop). The wide panoramic client-site
+// photo that used to be About's skylineImage -- kept as a distinct
+// photo from About's so the two hero bands don't show the same image.
+export const contactHeroPoster: SiteImage = {
+  src: "/images/hero/hero-page-header-bg-dubai-skyline.png",
+  alt: "Wide panoramic view of the Dubai skyline at night with the Burj Khalifa illuminated",
+  width: 1600,
+  height: 280,
 };
 
 // Real client logos, scraped from the original site's homepage strip.
