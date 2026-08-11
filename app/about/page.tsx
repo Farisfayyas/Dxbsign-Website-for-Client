@@ -9,7 +9,6 @@ import { CTABand } from "@/components/ui/CTABand";
 import { ProcessBand } from "@/components/ui/ProcessBand";
 import { ClientHonorRoll } from "@/components/ui/ClientHonorRoll";
 import { NumberedCard } from "@/components/ui/NumberedCard";
-import { WaveDivider } from "@/components/ui/WaveDivider";
 import { CompanyTimeline } from "@/components/about/CompanyTimeline";
 import { whyChooseUsFull } from "@/lib/site-config";
 import { skylineImage } from "@/lib/site-images";
@@ -39,7 +38,7 @@ export default function AboutPage() {
         <div className="relative overflow-hidden">
           <Image src={skylineImage.src} alt={skylineImage.alt} fill priority sizes="100vw" className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/48 to-ink/78" />
-          <div className="section-x relative py-[clamp(56px,9vw,108px)] pb-[calc(clamp(56px,9vw,108px)+48px)] sm:pb-[calc(clamp(56px,9vw,108px)+72px)]">
+          <div className="section-x relative py-[clamp(56px,9vw,108px)]">
             <StaggerReveal className="flex flex-col gap-4" stagger={0.18} y={22}>
               <div className="font-serif text-[12.5px] font-semibold uppercase tracking-[0.1em] text-[oklch(78%_0.1_250)]">
                 About Us
@@ -52,7 +51,6 @@ export default function AboutPage() {
               </p>
             </StaggerReveal>
           </div>
-          <WaveDivider />
         </div>
 
         {/* Company timeline */}
