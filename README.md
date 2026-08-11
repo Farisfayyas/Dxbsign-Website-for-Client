@@ -51,6 +51,13 @@ launch:
   should be replaced with the real project details where known.
 - **"Why Choose Us" / "How We Work" copy** — drafted, not client-supplied;
   read fine as generic B2B copy but worth a client read-through.
+- **Flagpole spec numbers** (`components/services/FlagpoleSpecs.tsx`,
+  reused in `components/home/EngineeredSection.tsx`) — height options,
+  wind rating, warranty term, and install time are industry-typical
+  estimates for tapered aluminum/GRP flagpoles in a Gulf climate, not
+  Dubai Sign's actual confirmed specs. Highest-priority item on this list
+  to fix before launch — a wrong wind rating or warranty term is a real
+  claim a customer could rely on, not just cosmetic copy.
 
 ## Structure
 
