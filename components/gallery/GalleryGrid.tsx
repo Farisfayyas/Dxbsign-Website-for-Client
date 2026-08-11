@@ -11,12 +11,15 @@ import { galleryItems, type GalleryCategory } from "@/lib/site-images";
 const tabs: { key: GalleryCategory | "all"; label: string }[] = [
   { key: "all", label: "All" },
   { key: "flagpole", label: "Flagpoles" },
+  { key: "indoor", label: "Indoor Signs" },
+  { key: "outdoor", label: "Outdoor Signs" },
+  { key: "traffic", label: "Traffic Signs" },
+  { key: "safety", label: "Safety Signs" },
   { key: "signboard", label: "Signboards" },
-  { key: "indoor", label: "Indoor" },
-  { key: "outdoor", label: "Outdoor" },
-  { key: "traffic", label: "Traffic & Safety" },
-  { key: "wayfinding", label: "Wayfinding" },
+  { key: "vehicle", label: "Vehicle Graphics" },
+  { key: "canopy", label: "Canopies" },
   { key: "window", label: "Window Graphics" },
+  { key: "aluminium", label: "Aluminium & Glass" },
   { key: "rollup", label: "Displays" },
 ];
 

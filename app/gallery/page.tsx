@@ -9,7 +9,7 @@ import { breadcrumbJsonLd } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Gallery",
   description:
-    "Browse flagpole, signboard, and safety signage product photography from Dubai Sign LLC.",
+    "Browse flagpole, signboard, indoor, outdoor, traffic, safety, vehicle graphics, and display product photography from Dubai Sign LLC.",
   alternates: { canonical: "/gallery" },
 };
 
@@ -33,7 +33,7 @@ export default function GalleryPage() {
             Product photography, by category.
           </h1>
           <p className="text-[17px] leading-relaxed text-ink/80">
-            Flagpoles remain our primary focus, reflected below. Select an image to view it larger.
+            Browse our work across every product line. Select an image to view it larger.
           </p>
         </div>
 
