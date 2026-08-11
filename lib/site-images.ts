@@ -35,10 +35,10 @@ const flagpole02Image: SiteImage = {
 export const heroSlides: SiteImage[] = [
   heroImage,
   {
-    src: "/images/flagpoles/flagpole-04.png",
-    alt: "Three flagpoles flying UAE and corporate flags outside a modern glass-fronted building",
-    width: 1600,
-    height: 1067,
+    src: "/images/flagpoles/flagpole-01.png",
+    alt: "UAE and another national flag on poles overlooking a city street in Abu Dhabi",
+    width: 600,
+    height: 400,
   },
   flagpole02Image,
 ];
@@ -47,10 +47,10 @@ export const heroSlides: SiteImage[] = [
 export const engineeredImages: [SiteImage, SiteImage] = [
   flagpole02Image,
   {
-    src: "/images/flagpoles/flagpole-08.png",
-    alt: "Flagpole installation, Abu Dhabi",
-    width: 900,
-    height: 900,
+    src: "/images/flagpoles/flagpole-09.png",
+    alt: "Row of UAE flagpoles outside a building with a Union heritage mural, Abu Dhabi",
+    width: 600,
+    height: 400,
   },
 ];
 
