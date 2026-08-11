@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Phone, ArrowRight } from "lucide-react";
 import { navItems, navLabelsAr, site } from "@/lib/site-config";
 import { useDirection } from "@/lib/direction-context";
+import { MagneticButton } from "@/components/ui/MagneticButton";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -76,13 +77,15 @@ export function SiteHeader() {
               <Phone size={17} strokeWidth={2} className="text-blue" aria-hidden />
               {site.phone.mobile}
             </a>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 rounded-sm bg-blue px-6 py-3.5 text-[14.5px] font-semibold text-white shadow-[0_2px_6px_rgba(12,77,162,0.22)] transition-all duration-200 hover:bg-blue-deep hover:shadow-[0_6px_16px_rgba(12,77,162,0.3)] hover:-translate-y-px"
-            >
-              {isAr ? "اطلب عرض سعر" : "Request a Quote"}
-              <ArrowRight size={14} strokeWidth={2.4} aria-hidden />
-            </Link>
+            <MagneticButton>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 rounded-sm bg-blue px-6 py-3.5 text-[14.5px] font-semibold text-white shadow-[0_2px_6px_rgba(12,77,162,0.22)] transition-all duration-200 hover:bg-blue-deep hover:shadow-[0_6px_16px_rgba(12,77,162,0.3)] hover:-translate-y-px"
+              >
+                {isAr ? "اطلب عرض سعر" : "Request a Quote"}
+                <ArrowRight size={14} strokeWidth={2.4} aria-hidden />
+              </Link>
+            </MagneticButton>
           </div>
         )}
 

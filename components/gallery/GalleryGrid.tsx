@@ -7,6 +7,7 @@ import { FilterTabs } from "@/components/ui/FilterTabs";
 import { PhotoLightbox } from "@/components/ui/PhotoLightbox";
 import { useFilteredGrid } from "@/lib/use-filtered-grid";
 import { galleryItems, type GalleryCategory } from "@/lib/site-images";
+import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
 
 const tabs: { key: GalleryCategory | "all"; label: string }[] = [
   { key: "all", label: "All" },
@@ -52,6 +53,8 @@ export function GalleryGrid() {
                   alt={g.image.alt}
                   fill
                   sizes="(min-width: 1024px) 20vw, 45vw"
+                  placeholder="blur"
+                  blurDataURL={BLUR_PLACEHOLDER}
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/0 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />

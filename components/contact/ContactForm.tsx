@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { contactSchema, projectTypeOptions, type ContactFormValues } from "@/lib/contact-schema";
 import { buildQuoteWhatsAppLink, site } from "@/lib/site-config";
+import { MagneticButton } from "@/components/ui/MagneticButton";
 
 const inputClass =
   "border border-border-soft px-[14px] py-3 text-sm transition-colors duration-200 focus:border-blue focus:outline-none";
@@ -108,13 +109,15 @@ export function ContactForm() {
       )}
 
       <div className="flex flex-wrap items-center gap-4">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-fit bg-ink px-7 py-[15px] text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-ink-soft disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {isSubmitting ? "Sending…" : "Submit Request"}
-        </button>
+        <MagneticButton>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-fit bg-ink px-7 py-[15px] text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-ink-soft disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isSubmitting ? "Sending…" : "Submit Request"}
+          </button>
+        </MagneticButton>
         <button
           type="button"
           onClick={() => {
@@ -129,7 +132,7 @@ export function ContactForm() {
         </button>
       </div>
       <p className="text-xs text-ink/50">
-        WhatsApp opens with these details pre-filled — you still tap send yourself.
+        WhatsApp opens with these details pre-filled - you still tap send yourself.
       </p>
     </form>
   );

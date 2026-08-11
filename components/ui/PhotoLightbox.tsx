@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { SiteImage } from "@/lib/site-images";
+import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
 
 export type LightboxSlide = {
   image: SiteImage;
@@ -70,7 +71,15 @@ export function PhotoLightbox({
           <X size={16} />
         </button>
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-mist">
-          <Image src={item.image.src} alt={item.image.alt} fill sizes="600px" className="object-cover" />
+          <Image
+            src={item.image.src}
+            alt={item.image.alt}
+            fill
+            sizes="600px"
+            placeholder="blur"
+            blurDataURL={BLUR_PLACEHOLDER}
+            className="object-cover"
+          />
         </div>
         <div className="flex items-center justify-between gap-4 px-6 py-5">
           <div>

@@ -22,6 +22,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
 
 const VIDEO_SRC = "/videos/about-hero-dubai-timelapse.mp4";
 
@@ -39,7 +40,16 @@ export function VideoHeroMedia({ posterSrc, posterAlt }: { posterSrc: string; po
     <>
       {/* Always present as the base layer: mobile, reduced-motion, and
           what shows while/if the video hasn't taken over yet. */}
-      <Image src={posterSrc} alt={posterAlt} fill priority sizes="100vw" className="object-cover" />
+      <Image
+        src={posterSrc}
+        alt={posterAlt}
+        fill
+        priority
+        sizes="100vw"
+        placeholder="blur"
+        blurDataURL={BLUR_PLACEHOLDER}
+        className="object-cover"
+      />
       {showVideo && (
         <video
           autoPlay

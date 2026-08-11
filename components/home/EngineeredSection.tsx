@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Wind, Layers, Palette, ShieldCheck } from "lucide-react";
 import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import type { SiteImage } from "@/lib/site-images";
+import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
 
 // arabesco's "text reveal + two offset photo cards" pattern (docx
 // "second pic"): copy on one side, a stacked/offset image pair on the
@@ -57,10 +58,26 @@ export function EngineeredSection({ images }: { images: [SiteImage, SiteImage] }
 
         <div className="relative mx-auto h-[420px] w-full max-w-[485px] flex-shrink-0 sm:h-[485px]">
           <div className="absolute left-0 top-0 h-[70%] w-[72%] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)]">
-            <Image src={images[0].src} alt={images[0].alt} fill sizes="360px" className="object-cover" />
+            <Image
+              src={images[0].src}
+              alt={images[0].alt}
+              fill
+              sizes="360px"
+              placeholder="blur"
+              blurDataURL={BLUR_PLACEHOLDER}
+              className="object-cover"
+            />
           </div>
           <div className="absolute bottom-0 right-0 h-[58%] w-[58%] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.2)]">
-            <Image src={images[1].src} alt={images[1].alt} fill sizes="290px" className="object-cover" />
+            <Image
+              src={images[1].src}
+              alt={images[1].alt}
+              fill
+              sizes="290px"
+              placeholder="blur"
+              blurDataURL={BLUR_PLACEHOLDER}
+              className="object-cover"
+            />
           </div>
         </div>
       </div>

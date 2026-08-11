@@ -3,6 +3,7 @@ import { Phone, Mail } from "lucide-react";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
+import { MobileActionBar } from "@/components/layout/MobileActionBar";
 import { Reveal } from "@/components/ui/Reveal";
 import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import { WaveDivider } from "@/components/ui/WaveDivider";
@@ -125,6 +126,7 @@ export default function ContactPage() {
       </main>
       <SiteFooter />
       <WhatsAppFloat />
+      <MobileActionBar />
     </>
   );
 }

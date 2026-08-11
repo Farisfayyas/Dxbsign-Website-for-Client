@@ -3,6 +3,7 @@ import Image from "next/image";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
+import { MobileActionBar } from "@/components/layout/MobileActionBar";
 import { Reveal } from "@/components/ui/Reveal";
 import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import { CTABand } from "@/components/ui/CTABand";
@@ -13,6 +14,7 @@ import { WaveDivider } from "@/components/ui/WaveDivider";
 import { CompanyTimeline } from "@/components/about/CompanyTimeline";
 import { whyChooseUsFull } from "@/lib/site-config";
 import { skylineImage } from "@/lib/site-images";
+import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
 import { breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -37,7 +39,16 @@ export default function AboutPage() {
         {/* Hero — real Dubai night skyline (the panoramic photo restored by
             request; the looping video moved to Contact's hero instead). */}
         <div className="relative overflow-hidden">
-          <Image src={skylineImage.src} alt={skylineImage.alt} fill priority sizes="100vw" className="object-cover" />
+          <Image
+            src={skylineImage.src}
+            alt={skylineImage.alt}
+            fill
+            priority
+            sizes="100vw"
+            placeholder="blur"
+            blurDataURL={BLUR_PLACEHOLDER}
+            className="object-cover"
+          />
           <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/48 to-ink/78" />
           <div className="section-x relative py-[clamp(56px,9vw,108px)] pb-[calc(clamp(56px,9vw,108px)+48px)] sm:pb-[calc(clamp(56px,9vw,108px)+72px)]">
             <StaggerReveal className="flex flex-col gap-4" stagger={0.18} y={22}>
@@ -97,6 +108,7 @@ export default function AboutPage() {
       </main>
       <SiteFooter />
       <WhatsAppFloat />
+      <MobileActionBar />
     </>
   );
 }

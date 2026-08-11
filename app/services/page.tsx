@@ -4,12 +4,14 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
+import { MobileActionBar } from "@/components/layout/MobileActionBar";
 import { Reveal } from "@/components/ui/Reveal";
 import { CTABand } from "@/components/ui/CTABand";
 import { ProcessBand } from "@/components/ui/ProcessBand";
 import { FlagpoleSpecs } from "@/components/services/FlagpoleSpecs";
 import { services } from "@/lib/site-config";
 import { serviceImages } from "@/lib/site-images";
+import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
 import { breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -60,6 +62,8 @@ export default function ServicesPage() {
                           alt={img.alt}
                           fill
                           sizes="(min-width: 1024px) 33vw, 100vw"
+                          placeholder="blur"
+                          blurDataURL={BLUR_PLACEHOLDER}
                           className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
                         />
                       )}
@@ -89,6 +93,7 @@ export default function ServicesPage() {
       </main>
       <SiteFooter />
       <WhatsAppFloat />
+      <MobileActionBar />
     </>
   );
 }

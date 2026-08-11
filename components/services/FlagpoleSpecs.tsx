@@ -9,6 +9,7 @@
 import { Ruler, Layers, Wind, ShieldCheck, Clock, Palette } from "lucide-react";
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
+import { MagneticButton } from "@/components/ui/MagneticButton";
 import { whatsapp } from "@/lib/site-config";
 
 const specs = [
@@ -30,7 +31,7 @@ export function FlagpoleSpecs() {
           </div>
           <h2 className="mb-4 text-[28px] font-bold text-white">Flagpole Specifications</h2>
           <p className="text-[15px] leading-relaxed text-[oklch(75%_0.01_250)]">
-            Flagpoles are engineered, manufactured, and installed in-house to the specification below as standard — every pole is built to order against a client&rsquo;s exact height, wind-load, and finish requirement.
+            Flagpoles are engineered, manufactured, and installed in-house to the specification below as standard - every pole is built to order against a client&rsquo;s exact height, wind-load, and finish requirement.
           </p>
         </div>
 
@@ -58,16 +59,18 @@ export function FlagpoleSpecs() {
         </div>
 
         <div className="mt-10 flex flex-wrap items-center gap-5">
-          <a
-            href={whatsapp.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-whatsapp px-7 py-[15px] text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110"
-          >
-            Configure Your Flagpole
-          </a>
+          <MagneticButton>
+            <a
+              href={whatsapp.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-whatsapp px-7 py-[15px] text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110"
+            >
+              Configure Your Flagpole
+            </a>
+          </MagneticButton>
           <span className="text-sm text-[oklch(70%_0.01_250)]">
-            Send your height, quantity, and site details — we&rsquo;ll confirm a specification and quote.
+            Send your height, quantity, and site details - we&rsquo;ll confirm a specification and quote.
           </span>
         </div>
       </div>

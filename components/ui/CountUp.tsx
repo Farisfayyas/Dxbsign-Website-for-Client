@@ -14,7 +14,7 @@ function easeOutCubic(t: number) {
 
 export function CountUp({
   text,
-  duration = 1.4,
+  duration = 2,
   className,
 }: {
   text: string;

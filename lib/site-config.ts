@@ -183,6 +183,29 @@ export const whyChooseUsFull = [
   { num: "06", title: "Specification-Led Pricing", desc: "International-standard materials and workmanship at costs benchmarked to the regional market." },
 ] as const;
 
+// Real customer testimonials, migrated from the client's own live site
+// (dxbsign.com's "Our Testimonials" section) rather than written fresh --
+// same pattern as this project's photography/credentials/FAQ content.
+// No company/title/photo accompanies any of them on the source site, so
+// none is invented here either.
+export const testimonials = [
+  {
+    name: "Muhammed Shakir",
+    quote:
+      "Wall graphics and floor graphics Dubai sign perform very well. The quality of work is outstanding. Product delivery is very fast. Dubai Sign is one of the best creative companies in Dubai.",
+  },
+  {
+    name: "Imran Khan",
+    quote:
+      "Dubai Sign has been a great business partner for the past 6 months. They not only care about our success, but actively play a part in it by thoughtfully designing boards that coincide perfectly with our sales and promotional events.",
+  },
+  {
+    name: "Niazmin Zada",
+    quote:
+      "Dubai Sign team is very professional and easy to communicate with and they make the ever changing task of marketing our business much easier. Our advertising portfolio wouldn't be complete without Dubai Sign.",
+  },
+] as const;
+
 export const faqs = [
   {
     q: "What does Dubai Sign LLC manufacture?",

@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 import type { SiteImage } from "@/lib/site-images";
+import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
 
 const INTERVAL_MS = 5500;
 const DRAG_OFFSET_THRESHOLD = 80;
@@ -77,6 +78,8 @@ export function HeroSlider({ slides }: { slides: SiteImage[] }) {
             fill
             priority={index === 0}
             sizes="(min-width: 1024px) 45vw, 100vw"
+            placeholder="blur"
+            blurDataURL={BLUR_PLACEHOLDER}
             className="pointer-events-none object-cover"
           />
         </motion.div>

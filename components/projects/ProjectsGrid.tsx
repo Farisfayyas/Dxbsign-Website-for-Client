@@ -7,6 +7,7 @@ import { FilterTabs } from "@/components/ui/FilterTabs";
 import { PhotoLightbox } from "@/components/ui/PhotoLightbox";
 import { useFilteredGrid } from "@/lib/use-filtered-grid";
 import { projects, type ProjectCategory } from "@/lib/site-images";
+import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
 
 const tabs: { key: ProjectCategory | "all"; label: string }[] = [
   { key: "all", label: "All" },
@@ -50,6 +51,8 @@ export function ProjectsGrid() {
                       alt={p.image.alt}
                       fill
                       sizes="(min-width: 1024px) 33vw, 100vw"
+                      placeholder="blur"
+                      blurDataURL={BLUR_PLACEHOLDER}
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />

@@ -4,18 +4,22 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
+import { MobileActionBar } from "@/components/layout/MobileActionBar";
 import { Reveal } from "@/components/ui/Reveal";
 import { CTABand } from "@/components/ui/CTABand";
 import { ClientHonorRoll } from "@/components/ui/ClientHonorRoll";
 import { NumberedCard } from "@/components/ui/NumberedCard";
 import { FAQSection } from "@/components/ui/FAQSection";
 import { CountUp } from "@/components/ui/CountUp";
+import { MagneticButton } from "@/components/ui/MagneticButton";
 import { ClientLogoCarousel } from "@/components/home/ClientLogoCarousel";
 import { HeroSlider } from "@/components/home/HeroSlider";
 import { EngineeredSection } from "@/components/home/EngineeredSection";
 import { WhyClientsChoose } from "@/components/home/WhyClientsChoose";
+import { Testimonials } from "@/components/home/Testimonials";
 import { services, site } from "@/lib/site-config";
 import { heroSlides, engineeredImages, featuredProjects } from "@/lib/site-images";
+import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
 import { faqJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -54,12 +58,14 @@ export default function HomePage() {
             </Reveal>
             <Reveal y={14} delay={0.24}>
               <div className="mt-1.5 flex flex-wrap gap-3.5">
-                <Link
-                  href="/contact"
-                  className="bg-ink px-7 py-[15px] text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-ink-soft"
-                >
-                  Request a Quote
-                </Link>
+                <MagneticButton>
+                  <Link
+                    href="/contact"
+                    className="bg-ink px-7 py-[15px] text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-ink-soft"
+                  >
+                    Request a Quote
+                  </Link>
+                </MagneticButton>
                 <Link
                   href="/projects"
                   className="border border-ink/30 px-7 py-[15px] text-sm font-semibold text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-ink/60"
@@ -159,6 +165,8 @@ export default function HomePage() {
                       alt={p.image.alt}
                       fill
                       sizes="(min-width: 1024px) 33vw, 100vw"
+                      placeholder="blur"
+                      blurDataURL={BLUR_PLACEHOLDER}
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                     />
                   </div>
@@ -175,12 +183,15 @@ export default function HomePage() {
           </div>
         </Reveal>
 
+        <Testimonials />
+
         <FAQSection />
 
         <CTABand heading="Need signage or flagpoles to specification?" variant="dark" />
       </main>
       <SiteFooter />
       <WhatsAppFloat />
+      <MobileActionBar />
     </>
   );
 }
