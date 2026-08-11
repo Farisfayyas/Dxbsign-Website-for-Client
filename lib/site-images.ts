@@ -106,14 +106,17 @@ export const serviceImages: Record<string, SiteImage> = {
   },
 };
 
-// About page hero band background — Downtown Dubai aerial at dusk, free
-// Unsplash-licensed photo (see stock-photo-candidates/SOURCES.md, kept
-// locally, not in the repo, for the source link and other options).
+// About page hero band background — the original wide panoramic Dubai
+// night skyline from the client's own site scrape (Burj Khalifa visible
+// at right). Used here originally, swapped out for a Downtown-dusk
+// Unsplash photo mid-engagement, then restored per Faris's request --
+// he remembered this one and asked for it back. Recovered from git
+// history (still fully intact there) rather than re-sourced.
 export const skylineImage: SiteImage = {
-  src: "/images/stock/dubai-downtown-dusk-skyline.jpg",
-  alt: "Aerial view of Downtown Dubai at dusk with illuminated highways",
-  width: 2400,
-  height: 1602,
+  src: "/images/hero/hero-page-header-bg-dubai-skyline.png",
+  alt: "Wide panoramic view of the Dubai skyline at night with the Burj Khalifa illuminated",
+  width: 1600,
+  height: 280,
 };
 
 // Real client logos, scraped from the original site's homepage strip.
