@@ -19,7 +19,19 @@ export const heroImage: SiteImage = {
   height: 1067,
 };
 
-// Home hero slider — 3 real flagpole photos, auto-rotating.
+// Reused in both the hero slider and the Engineered section below --
+// one source of truth instead of two copies of the same file's metadata
+// (the width/height here is the real on-disk size, 600x400; both
+// consuming components use `fill` so it's descriptive, not load-bearing).
+const flagpole02Image: SiteImage = {
+  src: "/images/flagpoles/flagpole-02.png",
+  alt: "Corporate flagpole set outside a headquarters building",
+  width: 600,
+  height: 400,
+};
+
+// Home hero slider — 3 real flagpole photos, auto-rotating. Faris's own
+// pick: Dubai Sign's own work only, no stock photography.
 export const heroSlides: SiteImage[] = [
   heroImage,
   {
@@ -28,22 +40,12 @@ export const heroSlides: SiteImage[] = [
     width: 1600,
     height: 1067,
   },
-  {
-    src: "/images/flagpoles/flagpole-01.png",
-    alt: "UAE and corporate flagpoles mounted outside a commercial building, lined with palm trees",
-    width: 1600,
-    height: 1067,
-  },
+  flagpole02Image,
 ];
 
 // "Engineered for the UAE's Climate" section — two offset photos.
 export const engineeredImages: [SiteImage, SiteImage] = [
-  {
-    src: "/images/flagpoles/flagpole-02.png",
-    alt: "Corporate flagpole set outside a headquarters building",
-    width: 900,
-    height: 1100,
-  },
+  flagpole02Image,
   {
     src: "/images/flagpoles/flagpole-08.png",
     alt: "Flagpole installation, Abu Dhabi",
