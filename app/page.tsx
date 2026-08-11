@@ -130,13 +130,15 @@ export default function HomePage() {
 
         <EngineeredSection images={engineeredImages} />
 
-        {/* Why Clients Choose — scroll-linked progressive color text */}
+        {/* Why Clients Choose — scroll-linked progressive color text,
+            heading and paragraph revealing together as one continuous effect */}
         <Reveal>
           <div className="section-x section-y bg-mist">
-            <h2 className="mb-4 text-[28px] font-bold text-ink">Why Clients Choose Dubai Sign</h2>
             <ScrollColorText
-              text="Eighteen years of specification-led manufacturing for the UAE's most demanding clients, delivered by one accountable team from first drawing to ongoing maintenance."
-              className="max-w-[640px] text-[19px] font-medium leading-relaxed"
+              heading="Why Clients Choose Dubai Sign"
+              headingClassName="mb-4 text-[28px] font-bold"
+              paragraph="Eighteen years of specification-led manufacturing for the UAE's most demanding clients, delivered by one accountable team from first drawing to ongoing maintenance."
+              paragraphClassName="max-w-[640px] text-[22px] font-medium leading-relaxed"
             />
             <Link href="/about" className="mt-5 inline-block text-sm font-semibold text-blue hover:underline">
               Learn more about us →

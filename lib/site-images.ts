@@ -119,6 +119,19 @@ export const skylineImage: SiteImage = {
   height: 280,
 };
 
+// Contact page hero band background — poster/fallback for the video
+// that now lives there (mobile and reduced-motion visitors get this
+// static frame instead of the autoplay loop). The Unsplash Downtown-dusk
+// photo that used to be skylineImage before the restoration above --
+// still fully licensed and on disk, just deliberately a different photo
+// than About's so the two hero bands don't show the same image.
+export const contactHeroPoster: SiteImage = {
+  src: "/images/stock/dubai-downtown-dusk-skyline.jpg",
+  alt: "Aerial view of Downtown Dubai at dusk with illuminated highways",
+  width: 2400,
+  height: 1602,
+};
+
 // Real client logos, scraped from the original site's homepage strip.
 // Overlaps partly with the confirmed named-client list (Etisalat, Crowne
 // Plaza) plus additional real past clients not previously surfaced.

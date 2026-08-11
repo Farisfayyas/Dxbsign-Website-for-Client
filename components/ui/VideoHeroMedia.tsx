@@ -1,11 +1,12 @@
 "use client";
 
-// About hero background: muted looping video (Hajster's pattern, see
-// build-spec.md), falling back to the real skyline photo on mobile/slow
+// Muted looping video hero background (Hajster's pattern, see
+// build-spec.md), falling back to a static photo on mobile/slow
 // connections (per build-spec.md's own mobile-adaptation note: "don't
 // serve the same full-size loop blindly on mobile data") and always as
 // the base layer for reduced-motion users and the brief moment before
-// the video is ready.
+// the video is ready. Originally About-page-specific; now shared with
+// Contact's hero too, so it lives here rather than under components/about.
 //
 // Video: "Time-lapse Dubai 1" by Abid Ali, free Pexels License.
 // public/videos/about-hero-dubai-timelapse.mp4 (1920x1080, ~18MB) — only
@@ -16,7 +17,7 @@ import Image from "next/image";
 
 const VIDEO_SRC = "/videos/about-hero-dubai-timelapse.mp4";
 
-export function AboutHeroMedia({ posterSrc, posterAlt }: { posterSrc: string; posterAlt: string }) {
+export function VideoHeroMedia({ posterSrc, posterAlt }: { posterSrc: string; posterAlt: string }) {
   const [showVideo, setShowVideo] = useState(false);
 
   useEffect(() => {

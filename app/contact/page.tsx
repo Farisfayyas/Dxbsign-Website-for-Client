@@ -4,8 +4,12 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
 import { Reveal } from "@/components/ui/Reveal";
+import { StaggerReveal } from "@/components/ui/StaggerReveal";
+import { WaveDivider } from "@/components/ui/WaveDivider";
+import { VideoHeroMedia } from "@/components/ui/VideoHeroMedia";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { site, whatsapp } from "@/lib/site-config";
+import { contactHeroPoster } from "@/lib/site-images";
 import { breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -29,16 +33,25 @@ export default function ContactPage() {
       />
       <SiteHeader />
       <main>
-        <div className="section-x max-w-[820px] pb-0 pt-[clamp(40px,6vw,72px)]">
-          <div className="mb-4 font-serif text-[12.5px] font-semibold uppercase tracking-[0.1em] text-[oklch(55%_0.08_250)]">
-            Contact
+        {/* Hero — the looping timelapse video moved here from About, with
+            a distinct poster photo as its mobile/reduced-motion fallback. */}
+        <div className="relative overflow-hidden">
+          <VideoHeroMedia posterSrc={contactHeroPoster.src} posterAlt={contactHeroPoster.alt} />
+          <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/48 to-ink/78" />
+          <div className="section-x relative py-[clamp(56px,9vw,108px)] pb-[calc(clamp(56px,9vw,108px)+48px)] sm:pb-[calc(clamp(56px,9vw,108px)+72px)]">
+            <StaggerReveal className="flex flex-col gap-4" stagger={0.18} y={22}>
+              <div className="font-serif text-[12.5px] font-semibold uppercase tracking-[0.1em] text-[oklch(78%_0.1_250)]">
+                Contact
+              </div>
+              <h1 className="max-w-[720px] text-[clamp(32px,4vw,46px)] font-bold leading-[1.1] text-white [text-shadow:0_2px_16px_rgba(0,0,0,0.35)]">
+                Request a quote.
+              </h1>
+              <p className="max-w-[720px] text-[17px] leading-relaxed text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.35)]">
+                Tell us about your flagpole or signage requirement and our team will respond with a specification and quotation. Prefer to talk directly? Call or message us below.
+              </p>
+            </StaggerReveal>
           </div>
-          <h1 className="mb-5 text-[clamp(32px,4vw,46px)] font-bold leading-[1.1] text-ink">
-            Request a quote.
-          </h1>
-          <p className="text-[17px] leading-relaxed text-ink/80">
-            Tell us about your flagpole or signage requirement and our team will respond with a specification and quotation. Prefer to talk directly? Call or message us below.
-          </p>
+          <WaveDivider />
         </div>
 
         <Reveal>

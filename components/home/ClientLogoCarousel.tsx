@@ -22,7 +22,7 @@ export function ClientLogoCarousel() {
           WebkitMaskImage: "linear-gradient(90deg, transparent, black 8%, black 92%, transparent)",
         }}
       >
-        <div className="group flex w-max items-center gap-20 [animation:logo-scroll_34s_linear_infinite] hover:[animation-play-state:paused] motion-reduce:animate-none">
+        <div className="flex w-max items-center gap-20 [animation:logo-scroll_34s_linear_infinite] motion-reduce:animate-none">
           {track.map((logo, i) => (
             <div key={logo.src + i} className="flex h-[72px] w-[160px] flex-shrink-0 items-center justify-center">
               <Image

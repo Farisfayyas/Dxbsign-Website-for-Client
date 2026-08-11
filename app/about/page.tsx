@@ -11,7 +11,6 @@ import { ClientHonorRoll } from "@/components/ui/ClientHonorRoll";
 import { NumberedCard } from "@/components/ui/NumberedCard";
 import { WaveDivider } from "@/components/ui/WaveDivider";
 import { CompanyTimeline } from "@/components/about/CompanyTimeline";
-import { AboutHeroMedia } from "@/components/about/AboutHeroMedia";
 import { whyChooseUsFull } from "@/lib/site-config";
 import { skylineImage } from "@/lib/site-images";
 import { breadcrumbJsonLd } from "@/lib/seo";
@@ -35,9 +34,10 @@ export default function AboutPage() {
       />
       <SiteHeader />
       <main>
-        {/* Hero — real Abu Dhabi/Dubai night skyline, muted looping video where available */}
+        {/* Hero — real Dubai night skyline (the panoramic photo restored by
+            request; the looping video moved to Contact's hero instead). */}
         <div className="relative overflow-hidden">
-          <AboutHeroMedia posterSrc={skylineImage.src} posterAlt={skylineImage.alt} />
+          <Image src={skylineImage.src} alt={skylineImage.alt} fill priority sizes="100vw" className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/48 to-ink/78" />
           <div className="section-x relative py-[clamp(56px,9vw,108px)] pb-[calc(clamp(56px,9vw,108px)+48px)] sm:pb-[calc(clamp(56px,9vw,108px)+72px)]">
             <StaggerReveal className="flex flex-col gap-4" stagger={0.18} y={22}>
@@ -61,7 +61,7 @@ export default function AboutPage() {
             <div className="mb-2 font-serif text-xs font-semibold uppercase tracking-[0.1em] text-[oklch(55%_0.08_250)]">
               Our History
             </div>
-            <h2 className="mb-12 text-[26px] font-bold text-ink">Eighteen Years, Three Milestones</h2>
+            <h2 className="mb-12 text-[26px] font-bold text-ink">Our Timeline</h2>
             <CompanyTimeline />
           </div>
         </Reveal>
