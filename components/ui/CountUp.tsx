@@ -1,7 +1,7 @@
 "use client";
 
 // Counts a leading integer up from 0 to its target on mount (e.g.
-// site.yearsInBusiness = "18+" animates the "18" over ~3s, then appends
+// site.yearsInBusiness = "18+" animates the "18" over ~2.6s, then appends
 // "+" unanimated). Driven off the actual site-config value rather than a
 // hardcoded number, so it can't drift if that fact ever changes.
 // Respects prefers-reduced-motion, same pattern as VideoHeroMedia.
@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 
 export function CountUp({
   text,
-  duration = 3,
+  duration = 2.6,
   className,
 }: {
   text: string;
