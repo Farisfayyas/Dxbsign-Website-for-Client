@@ -35,8 +35,9 @@
 //   node scripts/process-flagpole-frames.mjs --test   (5 sample frames,
 //     written to a throwaway folder for a visual check before committing
 //     to the full run)
-//   node scripts/process-flagpole-frames.mjs           (full 240 desktop
-//     + 60 mobile frames, into the real public/images/ paths)
+//   node scripts/process-flagpole-frames.mjs           (full 120 desktop
+//     + 30 mobile frames -- strided down from the 240 source frames, see
+//     the Round 3 note below -- into the real public/images/ paths)
 //
 // Expects SOURCE_DIR below to contain the raw ezgif-frame-NNN.png files
 // extracted from the sender's zip.
@@ -57,6 +58,30 @@
 //      upscaling naturally introduces.
 // (FlagpoleFrameSequence.tsx also got a matching canvas-side fix:
 // imageSmoothingQuality explicitly set to "high".)
+//
+// Round 3: Round 2 still weren't enough on a real HiDPI screen -- this
+// dev environment's browser reports devicePixelRatio 1, which is exactly
+// why Round 2 tested clean here but not for the actual user. On a real
+// 2x display the canvas backing buffer at a typical pinned-viewport
+// height can reach ~1800-2000 physical px; a 1.5x buildtime upscale
+// (1014px tall) still leaves the browser stretching close to 2x further
+// at runtime, past what WebP quality or canvas smoothing can address --
+// neither touches an actual resolution gap. Fix, matching the resolution
+// for framerate trade the user asked for directly:
+//   - DESKTOP_STRIDE processes every 2nd source frame instead of all 240
+//     (120 output frames, renumbered sequentially like mobile already
+//     was), freeing real budget to raise DESKTOP_UPSCALE 1.5 -> 2.5.
+//   - MOBILE_STRIDE doubled (4 -> 8, 60 -> 30 frames) for the same
+//     reason, and mobile switched from a plain half-crop downscale to a
+//     mild upscale of its own (MOBILE_UPSCALE) -- mobile had the
+//     identical runtime-stretch problem, just unnoticed until measured.
+//   - CROP.top moved up (40 -> 5) and CROP.height grown to match (676 ->
+//     711, same bottom edge at source y=716) -- adds real background
+//     headroom above the topmost scanned content (the finial), which
+//     FlagpoleFrameSequence.tsx's CONTENT_SCALE/VERTICAL_ANCHOR needs to
+//     have real room to work with, confirmed live: without it the
+//     subject was filling ~94% of the canvas height on a typical wide
+//     desktop viewport regardless of anchor fraction.
 
 import sharp from "sharp";
 import { readdirSync, mkdirSync, rmSync, existsSync } from "fs";
@@ -66,18 +91,29 @@ const SOURCE_DIR =
   "C:/Users/Faris/AppData/Local/Temp/claude/C--Users-Faris-Downloads-uni-data-structures/5f8ec50f-1fff-4358-9650-55c06f57379a/scratchpad/source-frames";
 
 const TEST_MODE = process.argv.includes("--test");
-const FRAME_COUNT = 240;
-const MOBILE_STRIDE = 4; // every 4th frame -> 60 frames on mobile
+const FRAME_COUNT = 240; // total source frames available, not the output count for either tier
+const DESKTOP_STRIDE = 2; // every 2nd source frame -> 120 frames on desktop
+const MOBILE_STRIDE = 8; // every 8th frame -> 30 frames on mobile
 const TEST_FRAMES = [1, 60, 120, 180, 240];
 
 const DESKTOP_OUT = TEST_MODE ? "_test-frame-output/desktop" : "public/images/flagpole-frames";
 const MOBILE_OUT = TEST_MODE ? "_test-frame-output/mobile" : "public/images/flagpole-frames/mobile";
 
-// Crop box: scanned safe bounds [200,942] x [61,713], +/-20px margin,
-// clamped to the source's 1280x720.
-const CROP = { left: 180, top: 40, width: 962 - 180, height: 716 - 40 };
+// Crop box: scanned safe bounds [200,942] x [61,713]. Top extended well
+// past the +/-20px margin used originally (5 instead of 40) to give real
+// background headroom above the topmost content (the finial) for
+// FlagpoleFrameSequence.tsx's vertical anchor to work with -- height
+// grown to match so the bottom edge (source y=716) is unchanged and no
+// existing bottom content is lost. Clamped to the source's 1280x720.
+const CROP = { left: 180, top: 5, width: 962 - 180, height: 716 - 5 };
 
-const DESKTOP_UPSCALE = 1.5; // lanczos3, not left entirely to the browser's own runtime stretch
+// Both lanczos3, not left entirely to the browser's own runtime stretch.
+// Desktop's target is sized for a real HiDPI pinned-viewport buffer
+// (~1800-2000px tall); mobile's is sized for a real HiDPI phone buffer
+// (~800-900px wide) -- both derived and verified live, see the Round 3
+// note above, not just picked to look reasonable.
+const DESKTOP_UPSCALE = 2.5;
+const MOBILE_UPSCALE = 1.1;
 const SHARPEN = { sigma: 0.8, m1: 0.5, m2: 0.3 }; // mild -- counteracts upscale softening, checked for edge haloing before shipping
 const WEBP_QUALITY = 95;
 
@@ -125,33 +161,49 @@ async function processFrame(srcPath) {
 const frameNumbers = TEST_MODE ? TEST_FRAMES : Array.from({ length: FRAME_COUNT }, (_, i) => i + 1);
 let desktopWritten = 0;
 let mobileWritten = 0;
+let sourceFramesProcessed = 0;
 
 for (const i of frameNumbers) {
+  const needsDesktop = TEST_MODE || (i - 1) % DESKTOP_STRIDE === 0;
+  const needsMobile = TEST_MODE || (i - 1) % MOBILE_STRIDE === 0;
+  // Every mobile-stride frame is also a desktop-stride frame (both
+  // strides start at frame 1 and desktop's is a divisor of mobile's), so
+  // this never skips a frame either tier actually needs -- it just
+  // avoids the crop+chroma-key cost for the ~half of source frames
+  // neither output uses anymore now that desktop itself is strided.
+  if (!needsDesktop && !needsMobile) continue;
+
   const srcPath = path.join(SOURCE_DIR, `ezgif-frame-${String(i).padStart(3, "0")}.png`);
   const img = await processFrame(srcPath);
+  sourceFramesProcessed++;
 
-  const desktopPath = path.join(DESKTOP_OUT, `frame-${String(i).padStart(3, "0")}.webp`);
-  await img
-    .clone()
-    .resize({ width: Math.round(CROP.width * DESKTOP_UPSCALE), kernel: "lanczos3" })
-    .sharpen(SHARPEN)
-    .webp({ quality: WEBP_QUALITY })
-    .toFile(desktopPath);
-  desktopWritten++;
+  if (needsDesktop) {
+    const desktopIndex = TEST_MODE ? i : Math.floor((i - 1) / DESKTOP_STRIDE) + 1;
+    const desktopPath = path.join(DESKTOP_OUT, `frame-${String(desktopIndex).padStart(3, "0")}.webp`);
+    await img
+      .clone()
+      .resize({ width: Math.round(CROP.width * DESKTOP_UPSCALE), kernel: "lanczos3" })
+      .sharpen(SHARPEN)
+      .webp({ quality: WEBP_QUALITY })
+      .toFile(desktopPath);
+    desktopWritten++;
+  }
 
-  if ((i - 1) % MOBILE_STRIDE === 0 || TEST_MODE) {
+  if (needsMobile) {
     const mobileIndex = TEST_MODE ? i : Math.floor((i - 1) / MOBILE_STRIDE) + 1;
     const mobilePath = path.join(MOBILE_OUT, `frame-${String(mobileIndex).padStart(3, "0")}.webp`);
     await img
       .clone()
-      .resize({ width: Math.round(CROP.width / 2), kernel: "lanczos3" })
+      .resize({ width: Math.round(CROP.width * MOBILE_UPSCALE), kernel: "lanczos3" })
       .sharpen(SHARPEN)
       .webp({ quality: WEBP_QUALITY })
       .toFile(mobilePath);
     mobileWritten++;
   }
 
-  if (!TEST_MODE && i % 20 === 0) console.log(`processed ${i}/${FRAME_COUNT}`);
+  if (!TEST_MODE && sourceFramesProcessed % 20 === 0) {
+    console.log(`processed source frame ${i}/${FRAME_COUNT} (desktop: ${desktopWritten}, mobile: ${mobileWritten})`);
+  }
 }
 
 console.log(`Done -- desktop: ${desktopWritten} frames, mobile: ${mobileWritten} frames`);

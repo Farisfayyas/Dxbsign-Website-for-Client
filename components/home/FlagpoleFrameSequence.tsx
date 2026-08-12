@@ -30,21 +30,39 @@
 // frame (the entire flag) is always visible regardless of viewport
 // aspect ratio, directly fixing the cropping bug this replaces.
 // Letterboxing is intentional: it matches how the sticky viewport's own
-// background (bg-mist2) already shows around the subject today. Vertical
-// anchor is biased toward the top (18% of the letterbox space above,
-// not a centered 50%) rather than dead-centered -- per direct feedback,
-// the composition reads better sitting in the upper part of the
-// viewport, with the finial getting a bit of clear space above it
-// instead of the whole assembly floating in the exact middle.
+// background (bg-mist2) already shows around the subject today.
+//
+// CONTENT_SCALE (~0.85) deliberately keeps the drawn image short of
+// fully filling whichever axis contain constrains, and VERTICAL_ANCHOR
+// biases the resulting letterbox space toward the top (8% of it above,
+// not a centered 50%). An earlier version anchored at 18% with no
+// CONTENT_SCALE at all -- looked right in principle but did nothing
+// measurable in practice: the crop's aspect ratio (~1.16:1) is much
+// taller-relative-to-width than a typical wide desktop viewport, so
+// contain ends up height-constrained there, and confirmed live via
+// direct canvas pixel inspection, the image was filling ~94% of the
+// canvas height edge to edge -- only ~50px of spare vertical space
+// existed for that anchor to redistribute, regardless of which fraction
+// was chosen. CONTENT_SCALE creates real letterbox room on every
+// viewport shape instead of only when the crop happens to be narrower
+// than the screen, which is what actually makes the anchor effective.
 //
 // imageSmoothingQuality is set explicitly to "high" -- canvas image
 // scaling otherwise defaults to whatever interpolation mode the browser
-// picks (often the cheapest one), which was a real, fixable contributor
-// to a visibly pixelated result on top of the source-asset-quality fixes
-// in scripts/process-flagpole-frames.mjs (WebP quality was under-tuned,
-// plus a proper lanczos3 upscale + light sharpen now happens once at
-// processing time instead of leaving the entire scale-to-viewport job to
-// this runtime stretch).
+// picks (often the cheapest one). That plus the source-asset-quality
+// fixes in scripts/process-flagpole-frames.mjs (WebP quality, a lanczos3
+// upscale + sharpen done once at processing time) addressed compression
+// artifacts and interpolation cheapness, but not a resolution gap that
+// only shows up on real HiDPI screens: this dev environment's browser
+// reports devicePixelRatio 1, but on an actual 2x display (dpr capped
+// at 2 below) the canvas backing buffer at a typical pinned-viewport
+// height can reach ~1800-2000 physical px -- well past what a 1.5x
+// buildtime upscale covers, forcing a further runtime stretch neither
+// WebP quality nor imageSmoothingQuality touches. Fixed by raising the
+// buildtime upscale itself (see DESKTOP_UPSCALE in the processing
+// script) rather than anything in this file -- paid for by roughly
+// halving frame count below, per direct feedback that a lower framerate
+// is an acceptable trade for real sharpness.
 //
 // Device tier: resolved synchronously on mount via matchMedia, same
 // min-width:768px breakpoint VideoHeroMedia.tsx already uses for its own
@@ -76,8 +94,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useMotionValueEvent, type MotionValue } from "framer-motion";
 
-const DESKTOP_FRAME_COUNT = 240;
-const MOBILE_FRAME_COUNT = 60;
+const DESKTOP_FRAME_COUNT = 120;
+const MOBILE_FRAME_COUNT = 30;
 
 function framePath(n: number, isDesktop: boolean) {
   const prefix = isDesktop ? "" : "mobile/";
@@ -117,10 +135,21 @@ export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<nu
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, cssW, cssH);
 
-    const scale = Math.min(cssW / img.naturalWidth, cssH / img.naturalHeight);
+    // CONTENT_SCALE deliberately stops the image short of fully filling
+    // whichever axis object-fit:contain constrains -- the crop's aspect
+    // ratio (~1.16:1) is much taller-relative-to-width than a typical wide
+    // desktop viewport, so contain is height-constrained there, and without
+    // this the image fills ~94% of the canvas height edge to edge, leaving
+    // almost no letterbox room for VERTICAL_ANCHOR to redistribute (measured
+    // live: only ~50px of spare vertical space total on a 900px-tall
+    // canvas). This trades a little size for guaranteed real breathing room
+    // above the finial on every viewport shape, not just ones where the
+    // crop happens to be narrower than the screen.
+    const CONTENT_SCALE = 0.85;
+    const scale = Math.min(cssW / img.naturalWidth, cssH / img.naturalHeight) * CONTENT_SCALE;
     const drawW = img.naturalWidth * scale;
     const drawH = img.naturalHeight * scale;
-    const VERTICAL_ANCHOR = 0.18; // fraction of the letterbox space above the image; 0.5 would be dead-centered
+    const VERTICAL_ANCHOR = 0.08; // fraction of the letterbox space above the image; 0.5 would be dead-centered
     ctx.drawImage(img, (cssW - drawW) / 2, (cssH - drawH) * VERTICAL_ANCHOR, drawW, drawH);
   }, []);
 
