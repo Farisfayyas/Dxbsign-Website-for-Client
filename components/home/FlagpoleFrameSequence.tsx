@@ -1,6 +1,6 @@
 "use client";
 
-// Canvas-based frame-sequence scrubber -- draws one of 90 pre-rendered
+// Canvas-based frame-sequence scrubber -- draws one of N pre-rendered
 // WebP frames (public/images/flagpole-frames/) per scroll tick, replacing
 // the earlier real-time three.js scene entirely.
 //
@@ -20,8 +20,11 @@
 // correct but visually flat/plastic result even after fixing lighting
 // and shading bugs; the video-generation route reads as more genuinely
 // photoreal for this. Nothing here cares how the frames were made,
-// though -- this component just draws whatever 90 sequentially-numbered
-// images exist at the path below.
+// though -- this component just draws whatever sequentially-numbered
+// images exist at the resolved path below (see
+// scripts/process-flagpole-frames.mjs for how they're produced: cropped
+// to a data-scanned safe bounding box, background chroma-keyed to
+// transparent).
 //
 // object-fit: contain math, not cover -- guarantees the whole rendered
 // frame (the entire flag) is always visible regardless of viewport
@@ -29,30 +32,50 @@
 // Letterboxing is intentional: it matches how the sticky viewport's own
 // background (bg-mist2) already shows around the subject today.
 //
-// Preloading: all frames start loading the moment this component mounts
-// (which itself only happens once the section is in-view and reduced-
-// motion is off -- see FlagpoleShowcase.tsx). draw() picks the frame
-// nearest the current target that has actually finished loading
-// (img.complete is a native, synchronously-readable property, so no
-// separate loading-state bookkeeping is needed), walking backward if the
-// exact target isn't ready yet -- avoids a blank canvas during the brief
-// window before every frame has arrived.
+// Device tier: resolved synchronously on mount via matchMedia, same
+// min-width:768px breakpoint VideoHeroMedia.tsx already uses for its own
+// heavy-asset-on-desktop-only split. No deferred "safe default, resolve
+// later" render pass is needed here the way FlagpoleShowcase.tsx needs
+// one for its reduced-motion check -- this component only ever mounts
+// client-side at all (gated behind that parent's reduced-motion + in-
+// view checks), so there's no SSR/hydration mismatch to guard against,
+// just a synchronous read of the real viewport before deciding which
+// frame set to fetch. Mobile gets a lighter set (see the processing
+// script -- fewer frames, smaller resolution) rather than no interactive
+// experience at all, unlike a "hide entirely under 768px" approach.
+//
+// Preloading: all frames for the resolved tier start loading the moment
+// this component mounts. draw() picks the frame nearest the current
+// target that has actually finished loading (img.complete is a native,
+// synchronously-readable property, so no separate loading-state
+// bookkeeping is needed for the draw path itself), walking backward if
+// the exact target isn't ready yet. A small loading label covers the
+// brief window before the very first frame has arrived; it clears on the
+// first successful load, not after every frame -- the canvas already
+// reads correctly with a partially-loaded set via that same walk-back.
 //
 // rotationY keeps the exact same MotionValue<number> (0-360 degrees)
 // interface the old real-time scene used, so FlagpoleShowcase.tsx's
 // scroll/pin math needed zero changes -- only which component gets
 // dynamically imported changed.
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useMotionValueEvent, type MotionValue } from "framer-motion";
 
-const FRAME_COUNT = 90;
-const framePath = (n: number) => `/images/flagpole-frames/frame-${String(n).padStart(3, "0")}.webp`;
+const DESKTOP_FRAME_COUNT = 240;
+const MOBILE_FRAME_COUNT = 60;
+
+function framePath(n: number, isDesktop: boolean) {
+  const prefix = isDesktop ? "" : "mobile/";
+  return `/images/flagpole-frames/${prefix}frame-${String(n).padStart(3, "0")}.webp`;
+}
 
 export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<number> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
+  const frameCountRef = useRef(DESKTOP_FRAME_COUNT);
   const lastDrawnFrame = useRef(0);
+  const [loaded, setLoaded] = useState(false);
 
   const draw = useCallback((frameIndex: number) => {
     const canvas = canvasRef.current;
@@ -85,11 +108,22 @@ export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<nu
   }, []);
 
   useEffect(() => {
+    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+    const frameCount = isDesktop ? DESKTOP_FRAME_COUNT : MOBILE_FRAME_COUNT;
+    frameCountRef.current = frameCount;
+
+    let firstLoadFired = false;
     const images: HTMLImageElement[] = [];
-    for (let i = 1; i <= FRAME_COUNT; i++) {
+    for (let i = 1; i <= frameCount; i++) {
       const img = new Image();
-      img.onload = () => draw(lastDrawnFrame.current);
-      img.src = framePath(i);
+      img.onload = () => {
+        if (!firstLoadFired) {
+          firstLoadFired = true;
+          setLoaded(true);
+        }
+        draw(lastDrawnFrame.current);
+      };
+      img.src = framePath(i, isDesktop);
       images.push(img);
     }
     imagesRef.current = images;
@@ -109,11 +143,21 @@ export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<nu
   }, [draw]);
 
   useMotionValueEvent(rotationY, "change", (latest) => {
-    const frameIndex = Math.min(FRAME_COUNT - 1, Math.max(0, Math.round((latest / 360) * (FRAME_COUNT - 1))));
+    const frameCount = frameCountRef.current;
+    const frameIndex = Math.min(frameCount - 1, Math.max(0, Math.round((latest / 360) * (frameCount - 1))));
     if (frameIndex === lastDrawnFrame.current) return;
     lastDrawnFrame.current = frameIndex;
     draw(frameIndex);
   });
 
-  return <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />;
+  return (
+    <>
+      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+      {!loaded && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <span className="font-serif text-xs font-semibold uppercase tracking-[0.14em] text-ink/35">Loading</span>
+        </div>
+      )}
+    </>
+  );
 }
