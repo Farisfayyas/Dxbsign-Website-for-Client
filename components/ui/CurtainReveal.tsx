@@ -13,6 +13,13 @@
 // a real heading tag for SEO) as well as the default <p>. Duration/
 // stagger are 30% slower than the first version -- too subtle to notice
 // per direct feedback.
+//
+// Each word's mask carries a bit of extra paddingBottom (cancelled by a
+// matching negative marginBottom, so it doesn't add visible line-gap)
+// -- without it, descenders (g/y/p/q) get clipped by the mask's
+// overflow: hidden, since the box is sized tightly to the line's normal
+// metrics with no room reserved below the baseline. Very visible at the
+// H1's large size -- confirmed from a screenshot.
 
 import type { ElementType, Ref } from "react";
 import { useInView } from "@/lib/use-in-view";
@@ -39,7 +46,16 @@ export function CurtainReveal<T extends ElementType = "p">({
   return (
     <Tag ref={ref as Ref<HTMLElement>} className={className}>
       {words.map((w, i) => (
-        <span key={i} style={{ display: "inline-block", overflow: "hidden", verticalAlign: "top" }}>
+        <span
+          key={i}
+          style={{
+            display: "inline-block",
+            overflow: "hidden",
+            verticalAlign: "top",
+            paddingBottom: "0.2em",
+            marginBottom: "-0.2em",
+          }}
+        >
           <span
             style={{
               display: "inline-block",

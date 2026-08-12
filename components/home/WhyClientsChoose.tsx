@@ -16,8 +16,17 @@
 // hit-test on scroll -- Lenis (lib/smooth-scroll.tsx) runs in its
 // default mode with no virtual scroll container, so a plain window
 // scroll listener sees it.
+//
+// Cursor tracking is a window-level listener, not a container-scoped
+// onMouseMove -- on a fresh page load, if the very first mouse movement
+// happens to land outside this section (anywhere else on the page),
+// a container-scoped handler would never fire, leaving lastY null and
+// the scroll listener above permanently skipped until the cursor
+// eventually crosses into the section. hitTest already only matches
+// inside the three row rects, so listening globally is safe -- cursor
+// movement elsewhere on the page just won't match any row.
 
-import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Award, ShieldCheck, Workflow } from "lucide-react";
 import { ScrollColorText } from "@/components/ui/ScrollColorText";
@@ -57,11 +66,15 @@ export function WhyClientsChoose() {
     });
   }
 
-  function handleMouseMove(e: MouseEvent<HTMLDivElement>) {
-    lastY.current = e.clientY;
-    const hit = hitTest(e.clientY);
-    setActiveIndex(hit === -1 ? null : hit);
-  }
+  useEffect(() => {
+    function onMouseMove(e: globalThis.MouseEvent) {
+      lastY.current = e.clientY;
+      const hit = hitTest(e.clientY);
+      setActiveIndex(hit === -1 ? null : hit);
+    }
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMouseMove);
+  }, []);
 
   useEffect(() => {
     function onScroll() {
@@ -74,11 +87,7 @@ export function WhyClientsChoose() {
   }, []);
 
   return (
-    <div
-      className="section-x section-y bg-mist"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={() => setActiveIndex(null)}
-    >
+    <div className="section-x section-y bg-mist" onMouseLeave={() => setActiveIndex(null)}>
       <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_1.1fr]">
         <div>
           <ScrollColorText
