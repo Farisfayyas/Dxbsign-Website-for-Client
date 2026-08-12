@@ -39,8 +39,8 @@ export function FlagpoleShowcaseStatic() {
                   <c.icon size={20} strokeWidth={1.75} />
                 </span>
                 <div>
-                  <div className="mb-1 text-[15px] font-semibold text-ink">{c.label}</div>
-                  <div className="text-sm leading-relaxed text-ink/65">{c.value}</div>
+                  <div className="mb-1 text-[15px] font-semibold text-ink">{c.stat}</div>
+                  <div className="text-sm leading-relaxed text-ink/65">{c.description}</div>
                 </div>
               </div>
             ))}

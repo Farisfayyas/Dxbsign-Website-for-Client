@@ -1,34 +1,48 @@
 "use client";
 
-// One floating spec card for the flagpole showcase. Plain absolutely-
+// Floating spec callout for the flagpole showcase -- purely typographic,
+// no card/border/shadow/icon-in-circle. Direct feedback on the first
+// version was that a bordered card with an icon badge didn't read as
+// premium; this instead follows the Apple product-page convention of a
+// small eyebrow label, one bold "headline" stat, and a supporting
+// description line floating directly over the scene. Plain absolutely-
 // positioned HTML, a sibling of the <Canvas>, not drei's <Html> anchored
-// to a 3D point -- <Html> recomputes a screen-space projection of a 3D
-// point every frame (a real per-frame cost), only worth paying if a label
-// needs to visually track a specific point on the mesh. These are generic
-// spec facts, not pointing at a particular feature, and Apple's own
-// AirPods callouts anchor to fixed screen quadrants the same way, not to
-// tracked 3D points.
+// to a 3D point -- these are generic facts, not pointing at a specific
+// mesh feature, and Apple's own callouts anchor to fixed screen quadrants
+// the same way, not to tracked 3D points (see FlagpoleShowcase.tsx).
 //
-// Each callout gets a 4-stop window on the shared scroll progress,
-// centered on its rotationDeg (as a fraction of the full 0-360 sweep):
-// fade in, hold visible, hold visible, fade out. Reversal on scroll-up
-// needs no special handling -- opacity/y are pure functions of the same
-// bidirectional progress value already driving the rotation itself.
+// Entrance/exit is a materialize-then-dissolve: blur-to-focus, a slight
+// upward drift, and a small scale-up combined, rather than a plain fade.
+// The thin accent rule above the eyebrow draws in on ITS OWN, slightly
+// earlier window (lineRange starts before range) -- reads as a small cue
+// arriving a beat before the copy, instead of everything landing in one
+// flat step. All of this is driven by the one shared scroll progress
+// value already powering the rotation -- reversal on scroll-up needs no
+// special handling, every motion value here is a pure function of it.
+//
+// Content lives entirely in lib/flagpole-showcase-content.ts -- nothing
+// here needs to change when the real client-confirmed figures replace
+// today's placeholder values.
 
 import { motion, useTransform, type MotionValue } from "framer-motion";
 import type { FlagpoleCallout as FlagpoleCalloutData } from "@/lib/flagpole-showcase-content";
 
-const WINDOW = 0.07;
+const WINDOW = 0.085;
 
 const SIDE_CLASS: Record<FlagpoleCalloutData["side"], string> = {
-  left: "left-5 sm:left-8 md:left-14",
-  right: "right-5 sm:right-8 md:right-14",
+  left: "left-6 sm:left-10 md:left-16 items-start text-left",
+  right: "right-6 sm:right-10 md:right-16 items-end text-right",
+};
+
+const LINE_ORIGIN: Record<FlagpoleCalloutData["side"], string> = {
+  left: "origin-left",
+  right: "origin-right ml-auto",
 };
 
 const V_ALIGN_CLASS: Record<FlagpoleCalloutData["vAlign"], string> = {
-  top: "top-[20%]",
+  top: "top-[18%]",
   middle: "top-1/2 -translate-y-1/2",
-  bottom: "bottom-[20%]",
+  bottom: "bottom-[18%]",
 };
 
 export function FlagpoleCallout({
@@ -45,23 +59,33 @@ export function FlagpoleCallout({
     center + WINDOW * 0.5,
     Math.min(1, center + WINDOW * 1.5),
   ];
-  const opacity = useTransform(progress, range, [0, 1, 1, 0]);
-  const y = useTransform(progress, range, [16, 0, 0, -16]);
+  const lineRange: [number, number, number, number] = [
+    Math.max(0, center - WINDOW * 1.65),
+    center - WINDOW * 0.85,
+    center + WINDOW * 0.5,
+    Math.min(1, center + WINDOW * 1.5),
+  ];
 
-  const Icon = callout.icon;
+  const opacity = useTransform(progress, range, [0, 1, 1, 0]);
+  const y = useTransform(progress, range, [24, 0, 0, -14]);
+  const scale = useTransform(progress, range, [0.96, 1, 1, 0.985]);
+  const blurAmount = useTransform(progress, range, [9, 0, 0, 5]);
+  const filter = useTransform(blurAmount, (b) => `blur(${b}px)`);
+  const lineScale = useTransform(progress, lineRange, [0, 1, 1, 0]);
 
   return (
     <motion.div
-      style={{ opacity, y }}
-      className={`pointer-events-none absolute z-10 w-[220px] max-w-[46vw] rounded-xl border border-black/[0.06] bg-white/90 p-4 shadow-[0_12px_32px_rgba(20,25,40,0.12)] backdrop-blur-sm sm:w-[240px] ${SIDE_CLASS[callout.side]} ${V_ALIGN_CLASS[callout.vAlign]}`}
+      style={{ opacity, y, scale, filter }}
+      className={`pointer-events-none absolute z-10 flex w-[240px] max-w-[44vw] flex-col sm:w-[300px] sm:max-w-[52vw] ${SIDE_CLASS[callout.side]} ${V_ALIGN_CLASS[callout.vAlign]}`}
     >
-      <span className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-blue/[0.08] text-blue">
-        <Icon size={18} strokeWidth={1.75} />
-      </span>
-      <div className="font-serif text-[10.5px] font-semibold uppercase tracking-[0.06em] text-ink/50">
-        {callout.label}
+      <motion.div style={{ scaleX: lineScale }} className={`mb-3 h-px w-10 bg-blue ${LINE_ORIGIN[callout.side]}`} />
+      <div className="font-serif text-[11px] font-semibold uppercase tracking-[0.14em] text-ink/45">
+        {callout.eyebrow}
       </div>
-      <div className="mt-0.5 text-[14px] font-medium leading-snug text-ink">{callout.value}</div>
+      <div className="mt-2 text-[clamp(24px,3.1vw,40px)] font-bold leading-[1.05] tracking-tight text-ink">
+        {callout.stat}
+      </div>
+      <div className="mt-2.5 text-[14.5px] leading-relaxed text-ink/60">{callout.description}</div>
     </motion.div>
   );
 }

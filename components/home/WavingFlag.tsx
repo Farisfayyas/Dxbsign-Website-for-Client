@@ -6,6 +6,11 @@
 // geometry, and this needs to be the UAE flag specifically, which is
 // easiest to guarantee exactly right by drawing it programmatically.
 //
+// Sized to be the dominant visual element in frame, not a small detail
+// on top of the pole -- the pole itself is only ever seen as its top
+// portion (see FlagpoleModel.tsx / FlagpoleShowcaseScene.tsx), the flag
+// is the actual subject of the shot.
+//
 // Texture: drawn onto a <canvas> at mount and used as a CanvasTexture,
 // not an image asset -- crisp at any size, zero extra network request,
 // and the proportions/colors are exact rather than left to chance. Real
@@ -13,23 +18,26 @@
 // 1/4 of the flag's length, with the remaining 3/4 split into three equal
 // horizontal bands -- green (top), white (middle), black (bottom).
 //
-// Ripple: two overlapping sine waves displacing each vertex along z (one
-// wave alone reads as mechanical, not cloth-like), amplitude tapered from
+// Ripple: three overlapping sine waves displacing each vertex along z
+// (one or even two waves alone still reads as too regular/mechanical;
+// three at different frequencies, speeds, and phases is what actually
+// breaks the repetition and reads as real cloth), amplitude tapered from
 // zero at the hoist edge -- pinned, like a real flag attached to a pole
-// -- up to full amplitude at the free trailing edge. Geometry is a
-// subdivided plane, a few hundred vertices, cheap at 60fps. Normals are
-// recomputed every frame so the ripples actually catch the scene's
-// lighting instead of looking flat-shaded.
+// -- up to full amplitude at the free trailing edge, with a gentle
+// downward sag added on top (real flags don't ripple around a perfectly
+// flat plane, they hang slightly). Normals are recomputed every frame so
+// the ripples actually catch the scene's lighting instead of looking
+// flat-shaded.
 
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-const WIDTH = 1.0;
-const HEIGHT = 0.6;
-const SEGMENTS_X = 24;
-const SEGMENTS_Y = 16;
-const RIPPLE_AMPLITUDE = 0.055;
+const WIDTH = 2.0;
+const HEIGHT = 1.2;
+const SEGMENTS_X = 32;
+const SEGMENTS_Y = 20;
+const RIPPLE_AMPLITUDE = 0.1;
 
 function createUaeFlagTexture(): THREE.CanvasTexture | null {
   const canvas = document.createElement("canvas");
@@ -64,7 +72,7 @@ function createUaeFlagTexture(): THREE.CanvasTexture | null {
 }
 
 export function WavingFlag({
-  position = [0.09, 3.55, 0] as [number, number, number],
+  position = [0.09, 0.05, 0] as [number, number, number],
 }: {
   position?: [number, number, number];
 }) {
@@ -97,9 +105,11 @@ export function WavingFlag({
       const x = pos.getX(i);
       const y = pos.getY(i);
       const taper = x / WIDTH;
-      const wave1 = Math.sin(x * 6 - t * 3 + y * 1.5);
-      const wave2 = Math.sin(x * 9 - t * 4.5 + y * 0.7) * 0.5;
-      pos.setZ(i, (wave1 + wave2) * RIPPLE_AMPLITUDE * taper);
+      const wave1 = Math.sin(x * 5.5 - t * 2.6 + y * 1.4);
+      const wave2 = Math.sin(x * 8.5 - t * 4.1 + y * 0.6) * 0.5;
+      const wave3 = Math.sin(x * 3.2 - t * 1.7 + y * 2.4) * 0.35;
+      const sag = -0.05 * taper * taper;
+      pos.setZ(i, (wave1 + wave2 + wave3) * RIPPLE_AMPLITUDE * taper + sag);
     }
     pos.needsUpdate = true;
     geometry.computeVertexNormals();
