@@ -27,6 +27,15 @@
 // the original illegible version, so the effect was easy to miss. Widened
 // the window and added a paired opacity ramp; verified live it now shows
 // a real multi-word gradient across a natural scroll distance.
+//
+// Round 2: still too subtle per direct feedback. MUTED is a transitional,
+// continuously-animating state -- it is never resting content, so the
+// WCAG static-contrast requirement that drove the previous fix doesn't
+// apply to it the same way (the animation always resolves to FULL,
+// which does need to and does pass contrast). Lightened MUTED back down
+// and added a blur-to-focus pass on top of the color/opacity ramp;
+// chosen live against an interactive side-by-side preview, same
+// verification approach as the previous round's fix.
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
@@ -35,15 +44,18 @@ import { motion, useScroll, useTransform, type MotionValue } from "framer-motion
 // of the scroll -- #b7bbc4 (original value) was ~1.7:1 against bg-mist,
 // which read as "blank" rather than "muted." #4b5563 (Tailwind gray-600)
 // clears WCAG AA's 4.5:1 normal-text threshold with real margin (~6.7:1).
-const MUTED = "#4b5563";
+const MUTED = "#c6c9d1";
 const FULL = "#1c2333";
-const MUTED_OPACITY = 0.72;
+const MUTED_OPACITY = 0.5;
+const MUTED_BLUR = 5;
 
 function Word({ text, progress, range }: { text: string; progress: MotionValue<number>; range: [number, number] }) {
   const color = useTransform(progress, range, [MUTED, FULL]);
   const opacity = useTransform(progress, range, [MUTED_OPACITY, 1]);
+  const blur = useTransform(progress, range, [MUTED_BLUR, 0]);
+  const filter = useTransform(blur, (b) => `blur(${b}px)`);
   return (
-    <motion.span style={{ color, opacity }} className="inline-block">
+    <motion.span style={{ color, opacity, filter }} className="inline-block">
       {text}&nbsp;
     </motion.span>
   );

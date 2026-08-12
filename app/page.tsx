@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
 import { MobileFloatingActions } from "@/components/layout/MobileFloatingActions";
 import { Reveal } from "@/components/ui/Reveal";
+import { CurtainReveal } from "@/components/ui/CurtainReveal";
 import { CTABand } from "@/components/ui/CTABand";
 import { ClientHonorRoll } from "@/components/ui/ClientHonorRoll";
 import { NumberedCard } from "@/components/ui/NumberedCard";
@@ -50,11 +51,11 @@ export default function HomePage() {
                 {site.tagline}
               </h1>
             </Reveal>
-            <Reveal y={16} delay={0.16}>
-              <p className="max-w-[480px] text-[17px] leading-relaxed text-ink/80">
-                Eighteen years supplying flagpoles, signboards, and safety signage to government, hospitality, and industrial clients across Abu Dhabi and the UAE. Design, manufacture, and installation under one roof.
-              </p>
-            </Reveal>
+            <CurtainReveal
+              className="max-w-[480px] text-[17px] leading-relaxed text-ink/80"
+              text="Eighteen years supplying flagpoles, signboards, and safety signage to government, hospitality, and industrial clients across Abu Dhabi and the UAE. Design, manufacture, and installation under one roof."
+              delay={0.16}
+            />
             <Reveal y={14} delay={0.24}>
               <div className="mt-1.5 flex flex-wrap gap-3.5">
                 <Link

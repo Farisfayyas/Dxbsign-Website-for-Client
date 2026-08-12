@@ -15,13 +15,17 @@ export function StaggerReveal({
   stagger = 0.12,
   y = 26,
   className,
+  threshold = 0.15,
+  rootMargin,
 }: {
   children: ReactNode;
   stagger?: number;
   y?: number;
   className?: string;
+  threshold?: number;
+  rootMargin?: string;
 }) {
-  const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.15 });
+  const { ref, inView } = useInView<HTMLDivElement>({ threshold, rootMargin });
   const items = Children.toArray(children);
 
   return (
