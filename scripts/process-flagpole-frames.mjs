@@ -40,6 +40,23 @@
 //
 // Expects SOURCE_DIR below to contain the raw ezgif-frame-NNN.png files
 // extracted from the sender's zip.
+//
+// Round 2 quality fix: the live result read as visibly pixelated even
+// though the raw source PNGs looked clean -- pointing at this pipeline,
+// not an inherent source-resolution ceiling. Three independent levers,
+// all real:
+//   1. WebP quality was under-tuned (82/78) purely out of unnecessary
+//      file-size caution -- actual output landed near 10KB/frame, nowhere
+//      close to a real constraint. Compression artifacts show up as
+//      blockiness exactly in flat-color hard-edged regions, which is
+//      what the flag's stripes are. Bumped to 95 for both sets.
+//   2. Added a real pre-upscale (sharp's lanczos3 kernel, ~1.5x on the
+//      desktop set) instead of leaving 100% of the scale-to-viewport work
+//      to the browser's own canvas stretch at render time.
+//   3. A light unsharp-mask pass afterward counteracts the softening
+//      upscaling naturally introduces.
+// (FlagpoleFrameSequence.tsx also got a matching canvas-side fix:
+// imageSmoothingQuality explicitly set to "high".)
 
 import sharp from "sharp";
 import { readdirSync, mkdirSync, rmSync, existsSync } from "fs";
@@ -59,6 +76,10 @@ const MOBILE_OUT = TEST_MODE ? "_test-frame-output/mobile" : "public/images/flag
 // Crop box: scanned safe bounds [200,942] x [61,713], +/-20px margin,
 // clamped to the source's 1280x720.
 const CROP = { left: 180, top: 40, width: 962 - 180, height: 716 - 40 };
+
+const DESKTOP_UPSCALE = 1.5; // lanczos3, not left entirely to the browser's own runtime stretch
+const SHARPEN = { sigma: 0.8, m1: 0.5, m2: 0.3 }; // mild -- counteracts upscale softening, checked for edge haloing before shipping
+const WEBP_QUALITY = 95;
 
 const KEY_LOW = 5; // (b - max(r,g)) at or below this: fully opaque (definitely subject)
 const KEY_HIGH = 25; // (b - max(r,g)) at or above this: fully transparent (definitely background)
@@ -110,7 +131,12 @@ for (const i of frameNumbers) {
   const img = await processFrame(srcPath);
 
   const desktopPath = path.join(DESKTOP_OUT, `frame-${String(i).padStart(3, "0")}.webp`);
-  await img.clone().webp({ quality: 82 }).toFile(desktopPath);
+  await img
+    .clone()
+    .resize({ width: Math.round(CROP.width * DESKTOP_UPSCALE), kernel: "lanczos3" })
+    .sharpen(SHARPEN)
+    .webp({ quality: WEBP_QUALITY })
+    .toFile(desktopPath);
   desktopWritten++;
 
   if ((i - 1) % MOBILE_STRIDE === 0 || TEST_MODE) {
@@ -118,8 +144,9 @@ for (const i of frameNumbers) {
     const mobilePath = path.join(MOBILE_OUT, `frame-${String(mobileIndex).padStart(3, "0")}.webp`);
     await img
       .clone()
-      .resize({ width: Math.round(CROP.width / 2) })
-      .webp({ quality: 78 })
+      .resize({ width: Math.round(CROP.width / 2), kernel: "lanczos3" })
+      .sharpen(SHARPEN)
+      .webp({ quality: WEBP_QUALITY })
       .toFile(mobilePath);
     mobileWritten++;
   }

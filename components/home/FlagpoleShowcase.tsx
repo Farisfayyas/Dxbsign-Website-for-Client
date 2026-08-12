@@ -39,7 +39,6 @@ import { useScroll, useTransform } from "framer-motion";
 import { useInView } from "@/lib/use-in-view";
 import { flagpoleCallouts } from "@/lib/flagpole-showcase-content";
 import { FlagpoleCallout } from "./FlagpoleCallout";
-import { FlagpoleProgressDots } from "./FlagpoleProgressDots";
 import { FlagpoleShowcaseStatic } from "./FlagpoleShowcaseStatic";
 
 const FlagpoleFrameSequence = dynamic(
@@ -77,7 +76,6 @@ export function FlagpoleShowcase() {
         {flagpoleCallouts.map((c) => (
           <FlagpoleCallout key={c.id} callout={c} progress={scrollYProgress} />
         ))}
-        <FlagpoleProgressDots progress={scrollYProgress} />
       </div>
     </section>
   );

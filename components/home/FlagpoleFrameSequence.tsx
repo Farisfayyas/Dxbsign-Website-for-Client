@@ -30,7 +30,21 @@
 // frame (the entire flag) is always visible regardless of viewport
 // aspect ratio, directly fixing the cropping bug this replaces.
 // Letterboxing is intentional: it matches how the sticky viewport's own
-// background (bg-mist2) already shows around the subject today.
+// background (bg-mist2) already shows around the subject today. Vertical
+// anchor is biased toward the top (18% of the letterbox space above,
+// not a centered 50%) rather than dead-centered -- per direct feedback,
+// the composition reads better sitting in the upper part of the
+// viewport, with the finial getting a bit of clear space above it
+// instead of the whole assembly floating in the exact middle.
+//
+// imageSmoothingQuality is set explicitly to "high" -- canvas image
+// scaling otherwise defaults to whatever interpolation mode the browser
+// picks (often the cheapest one), which was a real, fixable contributor
+// to a visibly pixelated result on top of the source-asset-quality fixes
+// in scripts/process-flagpole-frames.mjs (WebP quality was under-tuned,
+// plus a proper lanczos3 upscale + light sharpen now happens once at
+// processing time instead of leaving the entire scale-to-viewport job to
+// this runtime stretch).
 //
 // Device tier: resolved synchronously on mount via matchMedia, same
 // min-width:768px breakpoint VideoHeroMedia.tsx already uses for its own
@@ -83,6 +97,8 @@ export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<nu
     if (!canvas || images.length === 0) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
 
     let idx = frameIndex;
     while (idx > 0 && !(images[idx]?.complete && images[idx].naturalWidth > 0)) idx--;
@@ -104,7 +120,8 @@ export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<nu
     const scale = Math.min(cssW / img.naturalWidth, cssH / img.naturalHeight);
     const drawW = img.naturalWidth * scale;
     const drawH = img.naturalHeight * scale;
-    ctx.drawImage(img, (cssW - drawW) / 2, (cssH - drawH) / 2, drawW, drawH);
+    const VERTICAL_ANCHOR = 0.18; // fraction of the letterbox space above the image; 0.5 would be dead-centered
+    ctx.drawImage(img, (cssW - drawW) / 2, (cssH - drawH) * VERTICAL_ANCHOR, drawW, drawH);
   }, []);
 
   useEffect(() => {
