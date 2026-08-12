@@ -15,6 +15,7 @@ import { CountUp } from "@/components/ui/CountUp";
 import { ClientLogoCarousel } from "@/components/home/ClientLogoCarousel";
 import { HeroSlider } from "@/components/home/HeroSlider";
 import { EngineeredSection } from "@/components/home/EngineeredSection";
+import { FlagpoleShowcase } from "@/components/home/FlagpoleShowcase";
 import { WhyClientsChoose } from "@/components/home/WhyClientsChoose";
 import { Testimonials } from "@/components/home/Testimonials";
 import { services, site } from "@/lib/site-config";
@@ -133,6 +134,14 @@ export default function HomePage() {
         </Reveal>
 
         <EngineeredSection images={engineeredImages} />
+
+        {/* Scroll-driven 3D flagpole showcase — Apple AirPods-style: the
+            pole rotates 360° across a pinned scroll section and four spec
+            callouts (the same facts as EngineeredSection above, reworded)
+            fade in at specific points in the turn. Runs on a procedural
+            placeholder pole until a real glTF/GLB asset is sourced — see
+            FlagpoleModel.tsx's swap seam. */}
+        <FlagpoleShowcase />
 
         {/* Why Clients Choose — scroll-linked progressive color text on the
             left; the credentials column on the right highlights per-row

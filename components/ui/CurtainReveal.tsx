@@ -21,7 +21,7 @@
 // metrics with no room reserved below the baseline. Very visible at the
 // H1's large size -- confirmed from a screenshot.
 
-import type { ElementType, Ref } from "react";
+import type { ElementType } from "react";
 import { useInView } from "@/lib/use-in-view";
 
 export function CurtainReveal<T extends ElementType = "p">({
@@ -39,12 +39,18 @@ export function CurtainReveal<T extends ElementType = "p">({
   duration?: number;
   as?: T;
 }) {
-  const Tag = (as ?? "p") as ElementType;
+  // Cast to `any` rather than ElementType here: TS infers a bare
+  // ElementType-typed JSX tag's children/ref as `never` (it has to
+  // intersect across every possible call/construct signature in the
+  // union), a longstanding quirk of this exact polymorphic-`as`-prop
+  // pattern -- surfaced by a transitive @types/react patch bump from
+  // adding @react-three/fiber, not a real type-safety issue here.
+  const Tag = (as ?? "p") as any;
   const { ref, inView } = useInView<HTMLElement>();
   const words = text.split(" ");
 
   return (
-    <Tag ref={ref as Ref<HTMLElement>} className={className}>
+    <Tag ref={ref} className={className}>
       {words.map((w, i) => (
         <span
           key={i}
