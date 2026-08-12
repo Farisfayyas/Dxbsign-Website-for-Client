@@ -76,22 +76,28 @@
 // script -- fewer frames, smaller resolution) rather than no interactive
 // experience at all, unlike a "hide entirely under 768px" approach.
 //
-// Preloading: every frame for the resolved tier is queued the moment
-// this component mounts, but only LOAD_CONCURRENCY of them are actually
-// in flight at once (see the mount effect) -- firing all ~120 large
-// (post Round-3-upscale) Image loads simultaneously overwhelmed decode,
-// not fetch, confirmed live: every frame finished downloading, but the
-// display still permanently froze partway through the sequence because
-// draw()'s walk-back has no way to notice a target that's stuck decoding
-// forever, and nothing re-triggers a redraw once scrolling stops. draw()
-// picks the frame nearest the current target that has actually finished
-// loading (img.complete is a native, synchronously-readable property, so
-// no separate loading-state bookkeeping is needed for the draw path
-// itself), walking backward if the exact target isn't ready yet. A small
-// loading label covers the brief window before the very first frame has
-// arrived; it clears on the first successful load, not after every frame
-// -- the canvas already reads correctly with a partially-loaded set via
-// that same walk-back.
+// Loading: NOT "fetch every frame for the tier up front and hold onto
+// all of it" -- that was tried, along with two narrower fixes (tighter
+// concurrency gating, then windowing which frames are held at all), and
+// each one only pushed a permanent mid-sequence freeze later, never
+// removed it. See the mount effect for the full diagnosis; the short
+// version is that plain Image()/decode() gives no way to force the
+// browser to actually release a large decoded frame's resources on a
+// schedule you control, so frames use ImageBitmap instead --
+// createImageBitmap() decodes once into a bitmap ready to drawImage()
+// immediately (no .complete polling needed), and .close() releases it
+// deterministically the moment it's evicted, not whenever GC gets to
+// it. Combined with windowing (only LOAD_RADIUS frames around the
+// current scroll target are ever requested; anything past EVICT_RADIUS
+// gets closed, not just dereferenced -- see requestWindow() in the
+// mount effect), this bounds both how much is decoded at once and how
+// long anything stays decoded after it's no longer needed. draw() picks
+// the nearest loaded frame to the current target, walking backward if
+// the exact target isn't in the window yet -- normal during fast
+// scrubbing, self-corrects within a frame or two once the window
+// catches up. A small loading label covers the brief window before the
+// very first frame has arrived; it clears on the first successful load,
+// not after every frame.
 //
 // rotationY keeps the exact same MotionValue<number> (0-360 degrees)
 // interface the old real-time scene used, so FlagpoleShowcase.tsx's
@@ -101,7 +107,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useMotionValueEvent, type MotionValue } from "framer-motion";
 
-const DESKTOP_FRAME_COUNT = 120;
+const DESKTOP_FRAME_COUNT = 80; // stride 3 in the processing script -- see the Round 5 note there
 const MOBILE_FRAME_COUNT = 30;
 
 function framePath(n: number, isDesktop: boolean) {
@@ -111,9 +117,11 @@ function framePath(n: number, isDesktop: boolean) {
 
 export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<number> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const imagesRef = useRef<HTMLImageElement[]>([]);
+  // ImageBitmap, not HTMLImageElement -- see the mount effect for why.
+  const imagesRef = useRef<(ImageBitmap | undefined)[]>([]);
   const frameCountRef = useRef(DESKTOP_FRAME_COUNT);
   const lastDrawnFrame = useRef(0);
+  const requestWindowRef = useRef<(centerIdx: number) => void>(() => {});
   const [loaded, setLoaded] = useState(false);
 
   const draw = useCallback((frameIndex: number) => {
@@ -125,10 +133,13 @@ export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<nu
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
+    // An ImageBitmap present in the array is, by construction, already
+    // fully decoded and paint-ready -- no .complete/.naturalWidth check
+    // needed the way a plain Image element would need (see mount effect).
     let idx = frameIndex;
-    while (idx > 0 && !(images[idx]?.complete && images[idx].naturalWidth > 0)) idx--;
+    while (idx > 0 && !images[idx]) idx--;
     const img = images[idx];
-    if (!img || !img.complete || img.naturalWidth === 0) return;
+    if (!img) return;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const cssW = canvas.clientWidth;
@@ -153,9 +164,9 @@ export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<nu
     // above the finial on every viewport shape, not just ones where the
     // crop happens to be narrower than the screen.
     const CONTENT_SCALE = 0.85;
-    const scale = Math.min(cssW / img.naturalWidth, cssH / img.naturalHeight) * CONTENT_SCALE;
-    const drawW = img.naturalWidth * scale;
-    const drawH = img.naturalHeight * scale;
+    const scale = Math.min(cssW / img.width, cssH / img.height) * CONTENT_SCALE;
+    const drawW = img.width * scale;
+    const drawH = img.height * scale;
     const VERTICAL_ANCHOR = 0.08; // fraction of the letterbox space above the image; 0.5 would be dead-centered
     ctx.drawImage(img, (cssW - drawW) / 2, (cssH - drawH) * VERTICAL_ANCHOR, drawW, drawH);
   }, []);
@@ -165,55 +176,102 @@ export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<nu
     const frameCount = isDesktop ? DESKTOP_FRAME_COUNT : MOBILE_FRAME_COUNT;
     frameCountRef.current = frameCount;
 
-    // Loaded through a concurrency-capped queue, not all fired at once --
-    // confirmed live via performance.getEntriesByType('resource') that the
-    // NETWORK side was never the problem (all frames finished fetching
-    // within a ~200ms window, including the last one), but the display
-    // still froze past roughly frame 90 no matter how long you waited
-    // afterward, and scrolling back to earlier frames kept working fine.
-    // That's a decode bottleneck, not a fetch one: constructing and
-    // starting all ~120 large (post Round-3-upscale) Image objects
-    // synchronously in one loop the instant this mounts throws far more
-    // concurrent full-frame decode work at the browser than it can
-    // actually keep up with, and draw()'s walk-back has no way to notice
-    // a target frame that never finishes decoding at all -- it just
-    // silently keeps showing the last one that did, forever, since
-    // nothing re-fires draw() once scrolling stops. Capping how many
-    // loads are in flight at once bounds that decode pressure to
-    // something the browser reliably keeps up with, without changing
-    // what eventually loads -- every frame still gets requested, just not
-    // all in the same instant.
+    // Windowed AND ImageBitmap-based -- three prior attempts at just the
+    // loading STRATEGY (a concurrency-capped queue gated first on onload,
+    // then on the more correct img.decode(), then a windowed version of
+    // that same decode()-gated queue bounding simultaneous loads to
+    // ~2*LOAD_RADIUS+1 frames) all still eventually froze permanently
+    // partway through a real scroll-through, just progressively later
+    // each time. The tell: jumping fresh straight to a late frame worked
+    // fine every time -- only a small neighborhood needs to be decoded
+    // for that. A single realistic monotonic scroll-through (not jumping
+    // around like a diagnostic would) got measurably further with each
+    // fix, but still eventually froze near the tail, around the point
+    // where cumulative distinct-frame decodes crossed roughly 100. That
+    // rules out a *simultaneous* memory ceiling (already bounded by the
+    // window) and points at decoded resources not actually being
+    // reclaimed promptly enough between one evicted frame and the next
+    // one needing to decode -- plain `images[i] = undefined` only drops
+    // the JS reference and hopes GC (and whatever browser-internal
+    // decode/GPU-texture cache backs an HTMLImageElement) catches up in
+    // time, with no guarantee it does before the next large decode needs
+    // room. ImageBitmap exists specifically for this: createImageBitmap()
+    // decodes once, up front, into a bitmap you can drawImage() directly
+    // with none of the ambiguity plain Image()/.complete has about
+    // whether decode has actually finished, and critically its .close()
+    // method releases the underlying decoded/GPU resources immediately
+    // and synchronously rather than waiting on garbage collection.
+    // Combined with the same windowing as before (only LOAD_RADIUS
+    // frames around the current target are ever requested, anything
+    // past EVICT_RADIUS gets closed()d, not just dereferenced), this
+    // bounds both how much is held *and* how promptly it's actually let
+    // go.
     let cancelled = false;
     let firstLoadFired = false;
-    const images: HTMLImageElement[] = new Array(frameCount);
+    const images: (ImageBitmap | undefined)[] = new Array(frameCount);
     imagesRef.current = images;
 
-    const LOAD_CONCURRENCY = 8;
-    let nextToStart = 0;
-    let inFlight = 0;
+    const LOAD_RADIUS = 15;
+    const EVICT_RADIUS = 25;
+    const LOAD_CONCURRENCY = 6;
+    const loading = new Set<number>();
+    const pending: number[] = [];
 
-    function startNext() {
+    async function loadFrame(idx: number): Promise<ImageBitmap> {
+      const res = await fetch(framePath(idx + 1, isDesktop));
+      const blob = await res.blob();
+      return createImageBitmap(blob);
+    }
+
+    function pump() {
       if (cancelled) return;
-      while (inFlight < LOAD_CONCURRENCY && nextToStart < frameCount) {
-        const idx = nextToStart++;
-        const img = new Image();
-        images[idx] = img;
-        inFlight++;
-        const onSettle = () => {
-          inFlight--;
-          if (!firstLoadFired && img.complete && img.naturalWidth > 0) {
-            firstLoadFired = true;
-            setLoaded(true);
+      while (loading.size < LOAD_CONCURRENCY && pending.length > 0) {
+        const idx = pending.shift()!;
+        if (images[idx] || loading.has(idx)) continue;
+        loading.add(idx);
+        loadFrame(idx).then(
+          (bitmap) => {
+            loading.delete(idx);
+            if (cancelled) {
+              bitmap.close();
+              return;
+            }
+            images[idx] = bitmap;
+            if (!firstLoadFired) {
+              firstLoadFired = true;
+              setLoaded(true);
+            }
+            draw(lastDrawnFrame.current);
+            pump();
+          },
+          () => {
+            // a bad/undecodable frame settles like any other, doesn't stall the queue
+            loading.delete(idx);
+            pump();
           }
-          draw(lastDrawnFrame.current);
-          startNext();
-        };
-        img.onload = onSettle;
-        img.onerror = onSettle; // don't let one bad frame stall the whole queue
-        img.src = framePath(idx + 1, isDesktop);
+        );
       }
     }
-    startNext();
+
+    function requestWindow(centerIdx: number) {
+      if (cancelled) return;
+      const loLoad = Math.max(0, centerIdx - LOAD_RADIUS);
+      const hiLoad = Math.min(frameCount - 1, centerIdx + LOAD_RADIUS);
+      for (let i = loLoad; i <= hiLoad; i++) {
+        if (!images[i] && !loading.has(i) && !pending.includes(i)) pending.push(i);
+      }
+      pending.sort((a, b) => Math.abs(a - centerIdx) - Math.abs(b - centerIdx));
+
+      for (let i = 0; i < frameCount; i++) {
+        if (images[i] && !loading.has(i) && (i < centerIdx - EVICT_RADIUS || i > centerIdx + EVICT_RADIUS)) {
+          images[i]!.close();
+          images[i] = undefined;
+        }
+      }
+      pump();
+    }
+    requestWindowRef.current = requestWindow;
+    requestWindow(0);
 
     function onResize() {
       draw(lastDrawnFrame.current);
@@ -223,12 +281,12 @@ export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<nu
 
     return () => {
       cancelled = true;
+      requestWindowRef.current = () => {};
       window.removeEventListener("resize", onResize);
-      images.forEach((img) => {
-        if (!img) return;
-        img.onload = null;
-        img.onerror = null;
-      });
+      // Bitmaps still in flight at unmount close() themselves via the
+      // `cancelled` check in pump()'s resolve handler above; anything
+      // already loaded and sitting in `images` needs closing here too.
+      images.forEach((bitmap) => bitmap?.close());
     };
   }, [draw]);
 
@@ -237,6 +295,7 @@ export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<nu
     const frameIndex = Math.min(frameCount - 1, Math.max(0, Math.round((latest / 360) * (frameCount - 1))));
     if (frameIndex === lastDrawnFrame.current) return;
     lastDrawnFrame.current = frameIndex;
+    requestWindowRef.current(frameIndex); // keeps the loaded window centered on wherever scroll currently is
     draw(frameIndex);
   });
 

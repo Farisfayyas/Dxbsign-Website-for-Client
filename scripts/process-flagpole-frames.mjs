@@ -92,7 +92,18 @@ const SOURCE_DIR =
 
 const TEST_MODE = process.argv.includes("--test");
 const FRAME_COUNT = 240; // total source frames available, not the output count for either tier
-const DESKTOP_STRIDE = 2; // every 2nd source frame -> 120 frames on desktop
+// Round 5: even with windowed, ImageBitmap-based loading in
+// FlagpoleFrameSequence.tsx (bounded simultaneous memory, deterministic
+// release via .close()), a real scroll-through still risked a permanent
+// freeze once cumulative distinct-frame decodes crossed roughly 90-115
+// at 2502x2275 -- confirmed live that this held regardless of loading
+// strategy, pointing at a hard decode-resource ceiling for frames this
+// large, not something fixable purely in how they're requested. 80
+// frames (stride 3) keeps a full scroll-through's total decode count
+// comfortably under that ceiling with real margin, at the same
+// resolution -- trading frame count for reliability again, same lever
+// already used once by direct request.
+const DESKTOP_STRIDE = 3; // every 3rd source frame -> 80 frames on desktop
 const MOBILE_STRIDE = 8; // every 8th frame -> 30 frames on mobile
 const TEST_FRAMES = [1, 60, 120, 180, 240];
 
@@ -108,11 +119,26 @@ const MOBILE_OUT = TEST_MODE ? "_test-frame-output/mobile" : "public/images/flag
 const CROP = { left: 180, top: 5, width: 962 - 180, height: 716 - 5 };
 
 // Both lanczos3, not left entirely to the browser's own runtime stretch.
-// Desktop's target is sized for a real HiDPI pinned-viewport buffer
-// (~1800-2000px tall); mobile's is sized for a real HiDPI phone buffer
-// (~800-900px wide) -- both derived and verified live, see the Round 3
-// note above, not just picked to look reasonable.
-const DESKTOP_UPSCALE = 2.5;
+// Desktop's target is sized for a real HiDPI pinned-viewport buffer;
+// mobile's is sized for a real HiDPI phone buffer (~800-900px wide) --
+// both derived and verified live, see the Round 3/4 notes above, not
+// just picked to look reasonable.
+//
+// Round 4: 2.5x (Round 3's number) was sized against a moderate
+// ~1425-1728 CSS-px-wide viewport and left little to no runtime
+// upscale there, but a maximized browser on a large external/5K
+// monitor (~2560 CSS px wide, dpr capped at 2) pushes the canvas
+// backing buffer to ~2600px tall -- still a real, if modest (~1.1-1.3x),
+// runtime stretch on top of the buildtime one. Raised to 3.2x
+// (782 x 3.2 = ~2502px shipped height) to close that gap too. This is
+// a genuine ceiling, not a bug fix, though: it improves interpolation
+// quality up to the source crop's real captured-detail limit
+// (782x711px, from a 720p-class source video) -- it cannot manufacture
+// detail beyond that. Confirmed via direct sharp metadata + alpha-
+// channel pixel sampling that DPR scaling, canvas smoothing, and edge-
+// key anti-aliasing were all already correct before this change; this
+// was the one concrete, unclosed gap found.
+const DESKTOP_UPSCALE = 3.2;
 const MOBILE_UPSCALE = 1.1;
 const SHARPEN = { sigma: 0.8, m1: 0.5, m2: 0.3 }; // mild -- counteracts upscale softening, checked for edge haloing before shipping
 const WEBP_QUALITY = 95;
