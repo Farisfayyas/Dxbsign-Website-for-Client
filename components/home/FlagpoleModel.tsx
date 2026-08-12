@@ -1,24 +1,32 @@
 "use client";
 
 // The swap seam for the flagpole showcase's 3D asset (FlagpoleShowcase.tsx
-// / FlagpoleShowcaseScene.tsx). Until a real scan/render is sourced (see
-// Meshy AI / Tripo AI -- image-to-3D, or a CAD conversion if Dubai Sign
-// has manufacturing drawings), FLAGPOLE_MODEL_PATH stays null and a
-// procedural placeholder pole renders instead, so the scroll mechanics,
-// callout choreography, and performance can all be built and tuned now.
+// / FlagpoleShowcaseScene.tsx). FLAGPOLE_MODEL_PATH now points at the
+// real asset (public/models/flagpole.glb, generated via
+// scripts/generate-placeholder-flagpole.py and run in Blender -- a plain
+// tapered-cylinder-and-sphere shaft, no flag baked in). Setting it back
+// to null falls through to the procedural PlaceholderPole below, which
+// stays in the codebase as the no-asset-yet fallback.
 //
-// Swapping in the real asset later is exactly two steps: drop the file at
-// public/models/flagpole.glb, then change FLAGPOLE_MODEL_PATH below to
-// that path. Nothing in FlagpoleShowcase.tsx (scroll math),
-// FlagpoleShowcaseScene.tsx (camera/lights), or FlagpoleCallout.tsx
-// (choreography) needs to change -- the seam is fully contained here.
-// The real-asset branch is wrapped in drei's <Center> as a sensible
-// default since we don't know its pivot yet -- once it's in, re-check the
-// framing against the same "flag fills the frame, pole crops below" goal
-// the placeholder is tuned for below, and adjust if the real model's
-// proportions call for it (also worth asking whoever sources the model
-// to build/render only the pole's top portion in the first place, not the
-// full length down to the ground -- see the Luma/Meshy prompt notes).
+// TOP_Y and FLAG_POSITION are shared between both branches -- "roughly
+// the finial/flag area sits at local (0, 0, 0)" is the framing contract
+// FlagpoleShowcaseScene.tsx's camera is built around (aimed at world
+// origin, close and narrow so the flag fills the frame and the shaft
+// crops out of view below), so both the real asset and the placeholder
+// need to honor the same convention for the framing to look identical
+// either way.
+//
+// The real asset's offset (TOP_Y - 6) is exact, not a guess: this GLB's
+// own dimensions are known precisely because the generator script that
+// made it is right here in the repo -- POLE_HEIGHT = 6.0, base at world
+// Y 0, top at world Y 6.0, verified directly against the exported file's
+// accessor min/max values. Shifting by (TOP_Y - 6) puts that same top
+// edge at local Y = TOP_Y, exactly matching the placeholder's own
+// TOP_Y-referenced range. If a future asset comes from somewhere else
+// (AI-generated, a different CAD export) with unknown dimensions, this
+// offset -- and possibly FLAG_POSITION's x value, which assumes a top
+// radius close to the placeholder's -- will need re-tuning by eye; that
+// was already flagged as expected when this seam was designed.
 //
 // rotationY is read inside useFrame via a direct ref mutation rather than
 // React state -- avoids a re-render (and an extra motion-value
@@ -27,14 +35,15 @@
 
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Center, useGLTF } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import type { MotionValue } from "framer-motion";
 import type { Group } from "three";
 import { WavingFlag } from "./WavingFlag";
 
-// TODO(asset): set to "/models/flagpole.glb" once the real glTF/GLB is
-// sourced and dropped into public/models/.
-export const FLAGPOLE_MODEL_PATH: string | null = null;
+export const FLAGPOLE_MODEL_PATH: string | null = "/models/flagpole.glb";
+
+const TOP_Y = 0.42;
+const FLAG_POSITION: [number, number, number] = [0.045, TOP_Y - 0.37, 0];
 
 export function FlagpoleModel({
   rotationY,
@@ -54,9 +63,12 @@ export function FlagpoleModel({
   return (
     <group ref={groupRef}>
       {modelPath ? (
-        <Center>
-          <GltfPole path={modelPath} />
-        </Center>
+        <>
+          <group position={[0, TOP_Y - 6, 0]}>
+            <GltfPole path={modelPath} />
+          </group>
+          <WavingFlag position={FLAG_POSITION} />
+        </>
       ) : (
         <PlaceholderPole />
       )}
@@ -69,16 +81,11 @@ function GltfPole({ path }: { path: string }) {
   return <primitive object={scene} />;
 }
 
-// Deliberately top-heavy framing: the flag is the subject, not the pole's
-// full length -- FlagpoleShowcaseScene.tsx's camera is aimed at world
-// origin, so TOP_Y (roughly the finial/flag area) is placed right at
-// local (0, 0, 0) on purpose, with the shaft extending straight down into
-// negative y, out of frame, rather than the whole assembly being visually
-// centered top-to-bottom. NOT wrapped in <Center> (unlike the real-asset
-// branch above) -- Center would recompute a bounding-box center dominated
-// by the long, mostly off-screen shaft and undo this framing entirely.
-const TOP_Y = 0.42;
-
+// Procedural fallback -- renders whenever FLAGPOLE_MODEL_PATH is null
+// (e.g. testing without the asset present). Kept in the same top-heavy
+// framing convention as the real asset above: TOP_Y sits at local
+// (0, 0, 0) on purpose, with the shaft extending down into negative y,
+// out of frame.
 function PlaceholderPole() {
   return (
     <group>
@@ -90,7 +97,7 @@ function PlaceholderPole() {
         <sphereGeometry args={[0.055, 20, 20]} />
         <meshStandardMaterial color="#d4af37" metalness={0.8} roughness={0.2} />
       </mesh>
-      <WavingFlag position={[0.045, TOP_Y - 0.37, 0]} />
+      <WavingFlag position={FLAG_POSITION} />
     </group>
   );
 }
