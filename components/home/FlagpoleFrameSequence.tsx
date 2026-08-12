@@ -76,15 +76,22 @@
 // script -- fewer frames, smaller resolution) rather than no interactive
 // experience at all, unlike a "hide entirely under 768px" approach.
 //
-// Preloading: all frames for the resolved tier start loading the moment
-// this component mounts. draw() picks the frame nearest the current
-// target that has actually finished loading (img.complete is a native,
-// synchronously-readable property, so no separate loading-state
-// bookkeeping is needed for the draw path itself), walking backward if
-// the exact target isn't ready yet. A small loading label covers the
-// brief window before the very first frame has arrived; it clears on the
-// first successful load, not after every frame -- the canvas already
-// reads correctly with a partially-loaded set via that same walk-back.
+// Preloading: every frame for the resolved tier is queued the moment
+// this component mounts, but only LOAD_CONCURRENCY of them are actually
+// in flight at once (see the mount effect) -- firing all ~120 large
+// (post Round-3-upscale) Image loads simultaneously overwhelmed decode,
+// not fetch, confirmed live: every frame finished downloading, but the
+// display still permanently froze partway through the sequence because
+// draw()'s walk-back has no way to notice a target that's stuck decoding
+// forever, and nothing re-triggers a redraw once scrolling stops. draw()
+// picks the frame nearest the current target that has actually finished
+// loading (img.complete is a native, synchronously-readable property, so
+// no separate loading-state bookkeeping is needed for the draw path
+// itself), walking backward if the exact target isn't ready yet. A small
+// loading label covers the brief window before the very first frame has
+// arrived; it clears on the first successful load, not after every frame
+// -- the canvas already reads correctly with a partially-loaded set via
+// that same walk-back.
 //
 // rotationY keeps the exact same MotionValue<number> (0-360 degrees)
 // interface the old real-time scene used, so FlagpoleShowcase.tsx's
@@ -158,21 +165,55 @@ export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<nu
     const frameCount = isDesktop ? DESKTOP_FRAME_COUNT : MOBILE_FRAME_COUNT;
     frameCountRef.current = frameCount;
 
+    // Loaded through a concurrency-capped queue, not all fired at once --
+    // confirmed live via performance.getEntriesByType('resource') that the
+    // NETWORK side was never the problem (all frames finished fetching
+    // within a ~200ms window, including the last one), but the display
+    // still froze past roughly frame 90 no matter how long you waited
+    // afterward, and scrolling back to earlier frames kept working fine.
+    // That's a decode bottleneck, not a fetch one: constructing and
+    // starting all ~120 large (post Round-3-upscale) Image objects
+    // synchronously in one loop the instant this mounts throws far more
+    // concurrent full-frame decode work at the browser than it can
+    // actually keep up with, and draw()'s walk-back has no way to notice
+    // a target frame that never finishes decoding at all -- it just
+    // silently keeps showing the last one that did, forever, since
+    // nothing re-fires draw() once scrolling stops. Capping how many
+    // loads are in flight at once bounds that decode pressure to
+    // something the browser reliably keeps up with, without changing
+    // what eventually loads -- every frame still gets requested, just not
+    // all in the same instant.
+    let cancelled = false;
     let firstLoadFired = false;
-    const images: HTMLImageElement[] = [];
-    for (let i = 1; i <= frameCount; i++) {
-      const img = new Image();
-      img.onload = () => {
-        if (!firstLoadFired) {
-          firstLoadFired = true;
-          setLoaded(true);
-        }
-        draw(lastDrawnFrame.current);
-      };
-      img.src = framePath(i, isDesktop);
-      images.push(img);
-    }
+    const images: HTMLImageElement[] = new Array(frameCount);
     imagesRef.current = images;
+
+    const LOAD_CONCURRENCY = 8;
+    let nextToStart = 0;
+    let inFlight = 0;
+
+    function startNext() {
+      if (cancelled) return;
+      while (inFlight < LOAD_CONCURRENCY && nextToStart < frameCount) {
+        const idx = nextToStart++;
+        const img = new Image();
+        images[idx] = img;
+        inFlight++;
+        const onSettle = () => {
+          inFlight--;
+          if (!firstLoadFired && img.complete && img.naturalWidth > 0) {
+            firstLoadFired = true;
+            setLoaded(true);
+          }
+          draw(lastDrawnFrame.current);
+          startNext();
+        };
+        img.onload = onSettle;
+        img.onerror = onSettle; // don't let one bad frame stall the whole queue
+        img.src = framePath(idx + 1, isDesktop);
+      }
+    }
+    startNext();
 
     function onResize() {
       draw(lastDrawnFrame.current);
@@ -181,9 +222,12 @@ export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<nu
     draw(0);
 
     return () => {
+      cancelled = true;
       window.removeEventListener("resize", onResize);
       images.forEach((img) => {
+        if (!img) return;
         img.onload = null;
+        img.onerror = null;
       });
     };
   }, [draw]);
