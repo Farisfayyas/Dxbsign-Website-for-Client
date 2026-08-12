@@ -41,6 +41,14 @@
 # change OUTPUT_FORMAT to 'PNG' below and send the PNGs instead -- I can
 # batch-convert to WebP on this end with the sharp-based pipeline this
 # project already uses (scripts/compress-images.mjs).
+#
+# Updated after seeing the first 20 rendered frames: fixed a washed-out
+# pink flag (Blender's default AgX view transform was desaturating the
+# red) and a blocky/faceted look on the flag surface (it was never told
+# to smooth-shade). Safe to just hit Run Script again in the same
+# session you already have open -- it cleans up anything it created on
+# the previous run before rebuilding, so there's no need to re-import
+# the GLB or start fresh.
 
 import bpy
 import math
@@ -61,6 +69,16 @@ blend_dir = os.path.dirname(bpy.data.filepath) or os.path.dirname(os.path.abspat
 OUTPUT_DIR = os.path.join(blend_dir, "flagpole_frames")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+# Safe to re-run in the same Blender session (e.g. after tweaking a
+# setting above and running again) -- clears out anything this script
+# itself created on a previous run first, so re-running never leaves
+# duplicate flags/lights/cameras stacked on top of each other. Doesn't
+# touch "Flagpole" or anything from generate-placeholder-flagpole.py.
+for name in ("Flag", "KeyLight", "FillLight", "RimLight", "TurntableCam"):
+    obj = bpy.data.objects.get(name)
+    if obj:
+        bpy.data.objects.remove(obj, do_unlink=True)
+
 # --- Render settings ---
 scene = bpy.context.scene
 scene.render.engine = "CYCLES"
@@ -73,6 +91,15 @@ scene.render.image_settings.file_format = OUTPUT_FORMAT
 if OUTPUT_FORMAT == "WEBP":
     scene.render.image_settings.quality = 88
     scene.render.image_settings.color_mode = "RGBA"
+
+# Blender 4.x's default view transform (AgX) is a filmic/cinematic tone
+# curve -- great for realistic lighting, but it desaturates and lightens
+# saturated colors on the way to the render, which is exactly why the
+# flag's red rendered as a washed-out pink/salmon instead of the actual
+# color set below. "Standard" renders colors close to their literal
+# values instead, which is what a flat-color branded object like a flag
+# actually needs -- color accuracy over cinematic mood.
+scene.view_settings.view_transform = "Standard"
 
 # --- UAE flag mesh ---
 # Same proportions as WavingFlag.tsx: width 2.0, height 1.2, hoist
@@ -110,6 +137,16 @@ for j in range(SEG_Y):
 
 flag_mesh.from_pydata(verts, [], faces)
 flag_mesh.update()
+
+# Blender defaults new meshes to flat shading -- each of the 32x20 grid
+# faces above would render as its own uniform-lit facet, with a visible
+# hard edge between every one of them. Since the ripple animation tilts
+# each face at a slightly different angle every frame, that reads as
+# exactly the blocky, low-poly "every pixel visible" look reported live
+# -- not a resolution problem, a shading-mode one. Smooth shading blends
+# lighting across shared vertices instead, the standard fix.
+for poly in flag_mesh.polygons:
+    poly.use_smooth = True
 
 uv_layer = flag_mesh.uv_layers.new(name="UVMap")
 for poly in flag_mesh.polygons:
