@@ -62,7 +62,21 @@ RESOLUTION = (1200, 1500)  # portrait -- matches the pole+flag composition bette
 SAMPLES = 128  # Cycles sample count -- decent quality without an extreme render time; raise if you have time to spare and want less noise
 POLE_TOP_Z = 6.0  # must match scripts/generate-placeholder-flagpole.py's POLE_HEIGHT
 FLAG_CENTER_Z = POLE_TOP_Z - 0.37  # same relative offset the real-time version used
-CAMERA_DISTANCE = 2.9
+# 7.3, not the original 2.9 -- solved so the flag hits exactly 50% of the
+# frame's width (25%-75%, centered) at its most face-on moment in the
+# turntable. The flag (2.0 wide x 1.2 tall, wider than tall) doesn't
+# match this portrait 1200x1500 frame's own proportions, so hitting an
+# exact width target means pulling the camera back at the same lens
+# angle rather than zooming in -- zooming in enough to do it at the old
+# distance would need a ~85 degree fisheye-wide FOV, which would visibly
+# distort the pole's straight edges. One real consequence worth knowing:
+# because the flag is proportionally wider than the frame is, filling
+# exactly half the WIDTH means it only fills about a quarter of the
+# HEIGHT -- there'll be visibly more open space above/below the flag
+# than before. If that reads as too much empty space once rendered, the
+# fix is RESOLUTION below (a less tall/more square frame), not this
+# distance -- say so and it's a quick change.
+CAMERA_DISTANCE = 7.3
 CAMERA_HEIGHT = FLAG_CENTER_Z  # level with the flag's vertical center, same framing logic as before
 
 blend_dir = os.path.dirname(bpy.data.filepath) or os.path.dirname(os.path.abspath(__file__))
@@ -237,7 +251,17 @@ def point_at(obj, target):
     obj.rotation_euler = direction.to_track_quat("-Z", "Y").to_euler()
 
 
-target_point = (0, 0, FLAG_CENTER_Z)
+# The camera aims at the flag's own horizontal center, not the pole's
+# axis (x=0) -- aiming at the pole is exactly why the flag rendered off
+# to one side instead of centered: the flag extends outward from the
+# pole, it isn't centered on it. This target stays fixed in world space
+# for the whole orbit below (the pole+flag never move; only the camera
+# circles around the pole's own axis, which is the physically correct
+# way for a flagpole to "rotate in place") -- pointing at this fixed
+# point every frame is what keeps the flag centered in every single
+# frame, not just some of them.
+FLAG_CENTER_X = 0.045 + FLAG_WIDTH / 2
+target_point = (FLAG_CENTER_X, 0, FLAG_CENTER_Z)
 key = add_area_light("KeyLight", (2.6, -2.6, FLAG_CENTER_Z + 2.0), 900, 2.0)
 fill = add_area_light("FillLight", (-3.0, -1.0, FLAG_CENTER_Z + 0.5), 300, 3.0)
 rim = add_area_light("RimLight", (0, 2.8, FLAG_CENTER_Z + 1.5), 500, 1.5)
