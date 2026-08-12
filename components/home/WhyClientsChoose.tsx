@@ -8,8 +8,16 @@
 // has no max-width, see globals.css), so hovering anywhere at a given
 // row's vertical band -- including over the ScrollColorText prose on the
 // left -- highlights that row's icon on the right.
+//
+// Also recomputes on scroll, not just on mousemove: if the cursor sits
+// still while the page scrolls under it (wheel/trackpad with no mouse
+// movement), a different row ends up under the cursor and the highlight
+// needs to follow. Caches the last known cursor Y and re-runs the same
+// hit-test on scroll -- Lenis (lib/smooth-scroll.tsx) runs in its
+// default mode with no virtual scroll container, so a plain window
+// scroll listener sees it.
 
-import { useRef, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import Link from "next/link";
 import { Award, ShieldCheck, Workflow } from "lucide-react";
 import { ScrollColorText } from "@/components/ui/ScrollColorText";
@@ -39,16 +47,31 @@ const credentials = [
 export function WhyClientsChoose() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const lastY = useRef<number | null>(null);
 
-  function handleMouseMove(e: MouseEvent<HTMLDivElement>) {
-    const y = e.clientY;
-    const hit = rowRefs.current.findIndex((row) => {
+  function hitTest(y: number) {
+    return rowRefs.current.findIndex((row) => {
       if (!row) return false;
       const rect = row.getBoundingClientRect();
       return y >= rect.top && y <= rect.bottom;
     });
+  }
+
+  function handleMouseMove(e: MouseEvent<HTMLDivElement>) {
+    lastY.current = e.clientY;
+    const hit = hitTest(e.clientY);
     setActiveIndex(hit === -1 ? null : hit);
   }
+
+  useEffect(() => {
+    function onScroll() {
+      if (lastY.current == null) return;
+      const hit = hitTest(lastY.current);
+      setActiveIndex(hit === -1 ? null : hit);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <div

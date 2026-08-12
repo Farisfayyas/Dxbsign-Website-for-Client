@@ -32,7 +32,7 @@ export function EngineeredSection({ images }: { images: [SiteImage, SiteImage] }
           className="flex flex-col gap-5 lg:max-w-[440px]"
           stagger={0.15}
           threshold={0}
-          rootMargin="0px 0px -45% 0px"
+          rootMargin="0px 0px -40% 0px"
         >
           <div className="font-serif text-xs font-semibold uppercase tracking-[0.1em] text-[oklch(55%_0.08_250)]">
             Built For This Climate
@@ -49,7 +49,7 @@ export function EngineeredSection({ images }: { images: [SiteImage, SiteImage] }
           className="flex w-full flex-col gap-5 sm:w-auto lg:w-[190px] lg:flex-shrink-0"
           stagger={0.1}
           threshold={0}
-          rootMargin="0px 0px -45% 0px"
+          rootMargin="0px 0px -40% 0px"
         >
           {specs.map((s) => (
             <div key={s.label} className="flex items-start gap-3">

@@ -46,11 +46,12 @@ export default function HomePage() {
                 Est. {site.founded} · ICAD 3, Mussafah, Abu Dhabi
               </div>
             </Reveal>
-            <Reveal y={18} delay={0.08}>
-              <h1 className="text-[clamp(34px,4.2vw,54px)] font-bold leading-[1.05] text-ink font-display">
-                {site.tagline}
-              </h1>
-            </Reveal>
+            <CurtainReveal
+              as="h1"
+              className="text-[clamp(34px,4.2vw,54px)] font-bold leading-[1.05] text-ink font-display"
+              text={site.tagline}
+              delay={0.08}
+            />
             <CurtainReveal
               className="max-w-[480px] text-[17px] leading-relaxed text-ink/80"
               text="Eighteen years supplying flagpoles, signboards, and safety signage to government, hospitality, and industrial clients across Abu Dhabi and the UAE. Design, manufacture, and installation under one roof."
