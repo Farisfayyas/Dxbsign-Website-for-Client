@@ -1,19 +1,27 @@
 "use client";
 
 // Canvas-based frame-sequence scrubber -- draws one of 90 pre-rendered
-// WebP frames (public/images/flagpole-frames/, generated in Blender via
-// scripts/render-flagpole-frames.py) per scroll tick, replacing the
-// earlier real-time three.js scene entirely.
+// WebP frames (public/images/flagpole-frames/) per scroll tick, replacing
+// the earlier real-time three.js scene entirely.
 //
 // Switched from real-time WebGL to baked frames after direct feedback:
-// the live version couldn't match Blender's rendered quality (no
+// the live version couldn't match a proper offline render's quality (no
 // environment reflections, flat/plastic look under just two directional
-// lights) without real engineering investment, and it still wouldn't
-// have matched a proper offline render even after that. Framing was also
-// a live FOV/aspect-ratio calculation that broke on some screens (the
-// flag getting cropped) -- a baked sequence sidesteps that structurally:
-// whatever the camera frames in Blender is exactly, permanently what
+// lights) without real engineering investment. Framing was also a live
+// FOV/aspect-ratio calculation that broke on some screens (the flag
+// getting cropped) -- a baked sequence sidesteps that structurally:
+// whatever's framed in each source frame is exactly, permanently what
 // ships, no live math to get wrong per viewport.
+//
+// The frames themselves are AI-generated (a single reference still fed
+// to a video model with a full-360-degree-turntable prompt, frames
+// extracted from the resulting clip) rather than 3D-rendered -- a
+// Blender render pipeline was tried first and produced a technically
+// correct but visually flat/plastic result even after fixing lighting
+// and shading bugs; the video-generation route reads as more genuinely
+// photoreal for this. Nothing here cares how the frames were made,
+// though -- this component just draws whatever 90 sequentially-numbered
+// images exist at the path below.
 //
 // object-fit: contain math, not cover -- guarantees the whole rendered
 // frame (the entire flag) is always visible regardless of viewport

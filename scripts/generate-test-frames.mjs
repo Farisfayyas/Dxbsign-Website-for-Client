@@ -1,12 +1,13 @@
 // Placeholder-frame generator for public/images/flagpole-frames/ --
-// numbered, colored circles standing in for the real Blender turntable
-// render (scripts/render-flagpole-frames.py) until those 90 WebP frames
-// exist. Lets FlagpoleFrameSequence.tsx's scrubber mechanism (preloading,
-// frame selection, contain-fit drawing) be built and verified without
-// waiting on the real render, same "build against a placeholder" pattern
-// used for the pole model itself. Re-run any time (e.g. after changing
-// FRAME_COUNT) to regenerate; overwritten wholesale once the real frames
-// are dropped in.
+// numbered, colored circles standing in for the real AI-generated
+// turntable frames (a single reference image animated into a 360-degree
+// rotation video, frames extracted from the clip) until those 90 WebP
+// frames exist. Lets FlagpoleFrameSequence.tsx's scrubber mechanism
+// (preloading, frame selection, contain-fit drawing) be built and
+// verified without waiting on the real asset, same "build against a
+// placeholder" pattern used throughout this feature. Re-run any time
+// (e.g. after changing FRAME_COUNT) to regenerate; overwritten wholesale
+// once the real frames are dropped in.
 import sharp from "sharp";
 import { mkdirSync } from "fs";
 
