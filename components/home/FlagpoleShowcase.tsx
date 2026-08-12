@@ -14,12 +14,14 @@
 // Reversal on scroll-up needs no special handling: rotationY is a pure
 // function of the live bidirectional scrollYProgress value.
 //
-// The three.js/@react-three bundle is dynamically imported with
-// ssr:false and only ever rendered once !prefersReducedMotion AND the
-// section is near the viewport (lib/use-in-view.ts, large rootMargin so
-// the chunk has time to load before it's actually reached) -- reduced-
-// motion visitors and any SSR/crawl pass never fetch that chunk, since
-// the import() is never reached, not just visually hidden.
+// FlagpoleFrameSequence (the baked-WebP canvas scrubber, see that file
+// for why it replaced an earlier real-time three.js scene) is still
+// dynamically imported with ssr:false and only ever rendered once
+// !prefersReducedMotion AND the section is near the viewport
+// (lib/use-in-view.ts, large rootMargin so the 90 frames have time to
+// start loading before the section is actually reached) -- reduced-
+// motion visitors and any SSR/crawl pass never fetch a single frame,
+// since the import() is never reached, not just visually hidden.
 //
 // Reduced-motion default starts true (the safe/static branch) and only
 // flips after a mount effect confirms the real media query -- same
@@ -40,8 +42,8 @@ import { FlagpoleCallout } from "./FlagpoleCallout";
 import { FlagpoleProgressDots } from "./FlagpoleProgressDots";
 import { FlagpoleShowcaseStatic } from "./FlagpoleShowcaseStatic";
 
-const FlagpoleShowcaseScene = dynamic(
-  () => import("./FlagpoleShowcaseScene").then((m) => m.FlagpoleShowcaseScene),
+const FlagpoleFrameSequence = dynamic(
+  () => import("./FlagpoleFrameSequence").then((m) => m.FlagpoleFrameSequence),
   { ssr: false }
 );
 
@@ -71,7 +73,7 @@ export function FlagpoleShowcase() {
   return (
     <section ref={wrapperRef} className="relative h-[400vh]">
       <div ref={mountRef} className="sticky top-0 h-dvh overflow-hidden bg-mist2">
-        {inView && <FlagpoleShowcaseScene rotationY={rotationY} />}
+        {inView && <FlagpoleFrameSequence rotationY={rotationY} />}
         {flagpoleCallouts.map((c) => (
           <FlagpoleCallout key={c.id} callout={c} progress={scrollYProgress} />
         ))}
