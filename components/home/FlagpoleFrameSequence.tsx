@@ -103,9 +103,25 @@
 // interface the old real-time scene used, so FlagpoleShowcase.tsx's
 // scroll/pin math needed zero changes -- only which component gets
 // dynamically imported changed.
-
+//
+// smoothRotationY: rotationY itself is a raw, direct function of
+// scrollYProgress -- it moves in exactly the same discrete jumps native
+// "scroll" events arrive in (wheel ticks, trackpad packets), which is
+// fine for a continuous CSS transform but reads as a slight "step" here
+// specifically because it's being quantized into one of only
+// DESKTOP_FRAME_COUNT/MOBILE_FRAME_COUNT discrete frames -- a raw scroll
+// jump can land past a frame boundary all at once instead of sweeping
+// through it. useSpring here re-derives a physics-smoothed follower of
+// rotationY local to this component (NOT touching FlagpoleShowcase.tsx's
+// rotationY or the raw scrollYProgress the floating callouts key off of
+// -- their reveal timing stays tied to the real, unsmoothed scroll
+// position on purpose) and drives frame selection off that instead. High
+// damping relative to stiffness deliberately avoids any spring overshoot/
+// oscillation -- a bouncy spring feeding a frame-index quantizer would
+// read as the pole rocking back and forth, worse than the raw stepping
+// it's meant to fix.
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useMotionValueEvent, type MotionValue } from "framer-motion";
+import { useMotionValueEvent, useSpring, type MotionValue } from "framer-motion";
 
 const DESKTOP_FRAME_COUNT = 64; // stride 3 of 192 source frames -- see process-flagpole-frames.mjs's Round 6 note
 const MOBILE_FRAME_COUNT = 32; // stride 6 of 192 source frames
@@ -123,6 +139,11 @@ export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<nu
   const lastDrawnFrame = useRef(0);
   const requestWindowRef = useRef<(centerIdx: number) => void>(() => {});
   const [loaded, setLoaded] = useState(false);
+  // Overdamped on purpose (damping far past critical for this stiffness/
+  // mass) -- smooths raw scroll-tick stepping into a continuous sweep
+  // without ever overshooting past where the real scroll position is,
+  // which would show up as the frame index bouncing backward.
+  const smoothRotationY = useSpring(rotationY, { stiffness: 220, damping: 40, mass: 0.5, restDelta: 0.5 });
 
   const draw = useCallback((frameIndex: number) => {
     const canvas = canvasRef.current;
@@ -297,7 +318,7 @@ export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<nu
     };
   }, [draw]);
 
-  useMotionValueEvent(rotationY, "change", (latest) => {
+  useMotionValueEvent(smoothRotationY, "change", (latest) => {
     const frameCount = frameCountRef.current;
     const frameIndex = Math.min(frameCount - 1, Math.max(0, Math.round((latest / 360) * (frameCount - 1))));
     if (frameIndex === lastDrawnFrame.current) return;
