@@ -17,11 +17,28 @@
 // FlagpoleFrameSequence (the baked-WebP canvas scrubber, see that file
 // for why it replaced an earlier real-time three.js scene) is still
 // dynamically imported with ssr:false and only ever rendered once
-// !prefersReducedMotion AND the section is near the viewport
-// (lib/use-in-view.ts, large rootMargin so the 90 frames have time to
-// start loading before the section is actually reached) -- reduced-
+// !prefersReducedMotion AND the section is near the viewport -- reduced-
 // motion visitors and any SSR/crawl pass never fetch a single frame,
 // since the import() is never reached, not just visually hidden.
+//
+// The in-view gate is a LOCAL, continuously-toggling IntersectionObserver
+// here, not lib/use-in-view.ts's shared hook -- that hook was used
+// originally, but it's deliberately one-shot (fires once, disconnects,
+// never reports false again), which meant FlagpoleFrameSequence -- and
+// everything it holds (up to ~31 resident decoded WebP ImageBitmaps at
+// desktop resolution, plus its own canvas backing buffer) -- stayed
+// mounted for the rest of the page's life the first time it was ever
+// triggered, even scrolled to the complete opposite end of the site.
+// Confirmed live: after scrolling through this section once and then all
+// the way to the footer, the <canvas> was still in the DOM. Redraws were
+// already correctly guarded to zero while off-screen (see
+// FlagpoleFrameSequence.tsx's frame-index-change check), so this wasn't
+// costing CPU in a loop, but it was permanently pinning that memory for
+// no reason. A real toggling observer actually unmounts the component
+// (running its existing, already-correct cleanup that .close()s every
+// held bitmap) once scrolled meaningfully past it, and remounts if
+// scrolled back -- same pattern as HeroSlider.tsx's visibility gate, for
+// the same reason lib/use-in-view.ts wasn't reused there either.
 //
 // Reduced-motion default starts true (the safe/static branch) and only
 // flips after a mount effect confirms the real media query -- same
@@ -36,7 +53,6 @@
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { useScroll, useTransform } from "framer-motion";
-import { useInView } from "@/lib/use-in-view";
 import { flagpoleCallouts } from "@/lib/flagpole-showcase-content";
 import { FlagpoleCallout } from "./FlagpoleCallout";
 import { FlagpoleShowcaseStatic } from "./FlagpoleShowcaseStatic";
@@ -48,14 +64,33 @@ const FlagpoleFrameSequence = dynamic(
 
 export function FlagpoleShowcase() {
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const mountRef = useRef<HTMLDivElement>(null);
   const [checked, setChecked] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(true);
-  const { ref: mountRef, inView } = useInView<HTMLDivElement>({ rootMargin: "800px 0px 800px 0px" });
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
     setPrefersReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     setChecked(true);
   }, []);
+
+  // Depends on [checked, prefersReducedMotion], not []: this component
+  // returns null for one tick before the effect above resolves, so the
+  // ref'd div below doesn't exist in the tree yet on the very first
+  // render -- a [] effect would find mountRef.current still null and,
+  // since its deps never change again, never attach anything. Waiting for
+  // checked/prefersReducedMotion to settle guarantees the div has actually
+  // rendered by the time this runs (or, if reduced motion, that it never
+  // will -- the effect then just no-ops, which is correct).
+  useEffect(() => {
+    const node = mountRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
+      rootMargin: "800px 0px 800px 0px",
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [checked, prefersReducedMotion]);
 
   const { scrollYProgress } = useScroll({
     target: wrapperRef,

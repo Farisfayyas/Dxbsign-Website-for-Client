@@ -25,6 +25,17 @@
 // eventually crosses into the section. hitTest already only matches
 // inside the three row rects, so listening globally is safe -- cursor
 // movement elsewhere on the page just won't match any row.
+//
+// Both listeners are gated behind a local, continuously-toggling
+// IntersectionObserver (`visible`) -- without it they're attached
+// unconditionally for the whole life of the Home page, and each call
+// forces up to 3 getBoundingClientRect() reads (one per row) regardless
+// of whether this section is anywhere near the viewport. Confirmed live:
+// after one mousemove ever crossed this section, scrolling all the way
+// down to the footer still fired 200+ forced layout reads purely from
+// scroll events, nowhere near this section. Gating on visibility -- same
+// pattern as HeroSlider.tsx's autoplay gate -- stops both listeners from
+// doing any work at all while scrolled away.
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -57,6 +68,8 @@ export function WhyClientsChoose() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const lastY = useRef<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
 
   function hitTest(y: number) {
     return rowRefs.current.findIndex((row) => {
@@ -67,6 +80,24 @@ export function WhyClientsChoose() {
   }
 
   useEffect(() => {
+    const node = containerRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), {
+      rootMargin: "600px 0px 600px 0px",
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!visible) {
+      // Scrolled away: a cached cursor Y from before doesn't mean anything
+      // for this section's rows anymore, and any leftover highlight should
+      // clear rather than sit lit until the cursor happens to move again.
+      lastY.current = null;
+      setActiveIndex(null);
+      return;
+    }
     function onMouseMove(e: globalThis.MouseEvent) {
       lastY.current = e.clientY;
       const hit = hitTest(e.clientY);
@@ -74,9 +105,10 @@ export function WhyClientsChoose() {
     }
     window.addEventListener("mousemove", onMouseMove, { passive: true });
     return () => window.removeEventListener("mousemove", onMouseMove);
-  }, []);
+  }, [visible]);
 
   useEffect(() => {
+    if (!visible) return;
     function onScroll() {
       if (lastY.current == null) return;
       const hit = hitTest(lastY.current);
@@ -84,10 +116,10 @@ export function WhyClientsChoose() {
     }
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [visible]);
 
   return (
-    <div className="section-x section-y bg-mist" onMouseLeave={() => setActiveIndex(null)}>
+    <div ref={containerRef} className="section-x section-y bg-mist" onMouseLeave={() => setActiveIndex(null)}>
       <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_1.1fr]">
         <div>
           <ScrollColorText
