@@ -160,14 +160,21 @@ export function FlagpoleFrameSequence({ rotationY }: { rotationY: MotionValue<nu
     // this the image fills ~94% of the canvas height edge to edge, leaving
     // almost no letterbox room for VERTICAL_ANCHOR to redistribute (measured
     // live: only ~50px of spare vertical space total on a 900px-tall
-    // canvas). This trades a little size for guaranteed real breathing room
-    // above the finial on every viewport shape, not just ones where the
-    // crop happens to be narrower than the screen.
+    // canvas). This trades a little size for guaranteed real letterbox room
+    // to redistribute vertically.
     const CONTENT_SCALE = 0.85;
     const scale = Math.min(cssW / img.width, cssH / img.height) * CONTENT_SCALE;
     const drawW = img.width * scale;
     const drawH = img.height * scale;
-    const VERTICAL_ANCHOR = 0.08; // fraction of the letterbox space above the image; 0.5 would be dead-centered
+    // VERTICAL_ANCHOR: fraction of the letterbox space placed above the
+    // image (0.5 would be dead-centered). Set near 1 -- almost all the
+    // spare vertical space goes above -- so the pole's base lands right at
+    // the canvas's bottom edge (the sticky viewport reads as "the ground"),
+    // which as a side effect pushes the finial ball at the top down clear
+    // of the header instead of sitting right against it. An earlier 0.08
+    // did the opposite: pinned the image near the top, leaving a large
+    // empty gap of background below the pole's base.
+    const VERTICAL_ANCHOR = 1;
     ctx.drawImage(img, (cssW - drawW) / 2, (cssH - drawH) * VERTICAL_ANCHOR, drawW, drawH);
   }, []);
 
