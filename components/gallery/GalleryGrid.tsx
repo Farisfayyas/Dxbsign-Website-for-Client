@@ -8,29 +8,37 @@ import { PhotoLightbox } from "@/components/ui/PhotoLightbox";
 import { useFilteredGrid } from "@/lib/use-filtered-grid";
 import { galleryItems, type GalleryCategory } from "@/lib/site-images";
 import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
+import { useDirection } from "@/lib/direction-context";
+import { translateTag } from "@/lib/tag-translations";
 
-const tabs: { key: GalleryCategory | "all"; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "flagpole", label: "Flagpoles" },
-  { key: "indoor", label: "Indoor Signs" },
-  { key: "outdoor", label: "Outdoor Signs" },
-  { key: "traffic", label: "Traffic Signs" },
-  { key: "safety", label: "Safety Signs" },
-  { key: "signboard", label: "Signboards" },
-  { key: "vehicle", label: "Vehicle Graphics" },
-  { key: "canopy", label: "Canopies" },
-  { key: "window", label: "Window Graphics" },
-  { key: "aluminium", label: "Aluminium & Glass" },
-  { key: "rollup", label: "Displays" },
+const tabs: { key: GalleryCategory | "all"; label: string; labelAr: string }[] = [
+  { key: "all", label: "All", labelAr: "الكل" },
+  { key: "flagpole", label: "Flagpoles", labelAr: "سواري الأعلام" },
+  { key: "indoor", label: "Indoor Signs", labelAr: "اللافتات الداخلية" },
+  { key: "outdoor", label: "Outdoor Signs", labelAr: "اللافتات الخارجية" },
+  { key: "traffic", label: "Traffic Signs", labelAr: "لافتات المرور" },
+  { key: "safety", label: "Safety Signs", labelAr: "لافتات السلامة" },
+  { key: "signboard", label: "Signboards", labelAr: "اللوحات الإعلانية" },
+  { key: "vehicle", label: "Vehicle Graphics", labelAr: "رسومات المركبات" },
+  { key: "canopy", label: "Canopies", labelAr: "المظلات" },
+  { key: "window", label: "Window Graphics", labelAr: "رسومات النوافذ" },
+  { key: "aluminium", label: "Aluminium & Glass", labelAr: "الألمنيوم والزجاج" },
+  { key: "rollup", label: "Displays", labelAr: "أنظمة العرض" },
 ];
 
 export function GalleryGrid() {
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
   const { filter, selectFilter, filtered } = useFilteredGrid(galleryItems, (g) => g.category);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   return (
     <>
-      <FilterTabs tabs={tabs} active={filter} onChange={selectFilter} />
+      <FilterTabs
+        tabs={tabs.map((t) => ({ key: t.key, label: isAr ? t.labelAr : t.label }))}
+        active={filter}
+        onChange={selectFilter}
+      />
 
       <div className="section-x section-y">
         <motion.div layout className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
@@ -59,7 +67,7 @@ export function GalleryGrid() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/0 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 <span className="absolute left-2.5 top-2.5 bg-black/40 px-[7px] py-1 font-serif text-[9px] font-semibold uppercase tracking-[0.04em] text-white">
-                  {g.tag}
+                  {translateTag(g.tag, isAr)}
                 </span>
               </motion.button>
             ))}
@@ -68,7 +76,7 @@ export function GalleryGrid() {
       </div>
 
       <PhotoLightbox
-        slides={filtered.map((g) => ({ image: g.image, tag: g.tag }))}
+        slides={filtered.map((g) => ({ image: g.image, tag: translateTag(g.tag, isAr) }))}
         index={lightboxIndex}
         onClose={() => setLightboxIndex(null)}
         onNavigate={(dir) =>

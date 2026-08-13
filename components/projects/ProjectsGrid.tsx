@@ -8,23 +8,31 @@ import { PhotoLightbox } from "@/components/ui/PhotoLightbox";
 import { useFilteredGrid } from "@/lib/use-filtered-grid";
 import { projects, type ProjectCategory } from "@/lib/site-images";
 import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
+import { useDirection } from "@/lib/direction-context";
+import { translateTag } from "@/lib/tag-translations";
 
-const tabs: { key: ProjectCategory | "all"; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "flagpole", label: "Flagpoles" },
-  { key: "signboard", label: "Signboards" },
-  { key: "wayfinding", label: "Wayfinding" },
-  { key: "traffic", label: "Traffic & Safety" },
-  { key: "window", label: "Window Graphics" },
+const tabs: { key: ProjectCategory | "all"; label: string; labelAr: string }[] = [
+  { key: "all", label: "All", labelAr: "الكل" },
+  { key: "flagpole", label: "Flagpoles", labelAr: "سواري الأعلام" },
+  { key: "signboard", label: "Signboards", labelAr: "اللوحات الإعلانية" },
+  { key: "wayfinding", label: "Wayfinding", labelAr: "الإرشاد والتوجيه" },
+  { key: "traffic", label: "Traffic & Safety", labelAr: "المرور والسلامة" },
+  { key: "window", label: "Window Graphics", labelAr: "رسومات النوافذ" },
 ];
 
 export function ProjectsGrid() {
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
   const { filter, selectFilter, filtered } = useFilteredGrid(projects, (p) => p.category);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   return (
     <>
-      <FilterTabs tabs={tabs} active={filter} onChange={selectFilter} />
+      <FilterTabs
+        tabs={tabs.map((t) => ({ key: t.key, label: isAr ? t.labelAr : t.label }))}
+        active={filter}
+        onChange={selectFilter}
+      />
 
       <div className="section-x section-y">
         <motion.div layout className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-7">
@@ -58,10 +66,10 @@ export function ProjectsGrid() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   </div>
                   <div className="mt-3.5 font-serif text-[11px] font-semibold uppercase tracking-[0.06em] text-[oklch(55%_0.08_250)]">
-                    {p.tag}
+                    {translateTag(p.tag, isAr)}
                   </div>
-                  <div className="mt-1.5 text-base font-semibold text-ink">{p.title}</div>
-                  <div className="mt-1 text-[13px] text-ink/60">{p.location}</div>
+                  <div className="mt-1.5 text-base font-semibold text-ink">{isAr ? p.titleAr : p.title}</div>
+                  <div className="mt-1 text-[13px] text-ink/60">{isAr ? p.locationAr : p.location}</div>
                 </button>
               </motion.div>
             ))}
@@ -70,7 +78,12 @@ export function ProjectsGrid() {
       </div>
 
       <PhotoLightbox
-        slides={filtered.map((p) => ({ image: p.image, tag: p.tag, title: p.title, location: p.location }))}
+        slides={filtered.map((p) => ({
+          image: p.image,
+          tag: translateTag(p.tag, isAr),
+          title: isAr ? p.titleAr : p.title,
+          location: isAr ? p.locationAr : p.location,
+        }))}
         index={lightboxIndex}
         onClose={() => setLightboxIndex(null)}
         onNavigate={(dir) =>

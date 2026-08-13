@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import { clientLogos } from "@/lib/site-images";
+import { useDirection } from "@/lib/direction-context";
 
 // Auto-scrolling infinite loop, real client logos (see build-spec.md's
 // arabesco-inspired "logo carousel" pattern). Pure-CSS animation (not
@@ -8,12 +11,14 @@ import { clientLogos } from "@/lib/site-images";
 // arabesco's own treatment: a centered column, not edge-to-edge, with
 // larger, full-color logos (not grayscale-by-default).
 export function ClientLogoCarousel() {
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
   const track = [...clientLogos, ...clientLogos];
 
   return (
     <div className="border-y border-border-soft bg-white py-12">
       <div className="section-x mb-7 text-center font-serif text-[13px] font-semibold uppercase tracking-[0.12em] text-ink/60">
-        Our Clients
+        {isAr ? "عملاؤنا" : "Our Clients"}
       </div>
       <div
         className="mx-auto w-full max-w-[92%] overflow-hidden md:max-w-[62%]"

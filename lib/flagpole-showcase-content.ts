@@ -37,8 +37,11 @@ export type FlagpoleCallout = {
   // icon-in-circle card treatment didn't read as premium enough.
   icon: LucideIcon;
   eyebrow: string;
+  eyebrowAr: string;
   stat: string;
+  statAr: string;
   description: string;
+  descriptionAr: string;
   rotationDeg: number;
   side: "left" | "right";
   vAlign: "top" | "middle" | "bottom";
@@ -49,8 +52,11 @@ export const flagpoleCallouts: FlagpoleCallout[] = [
     id: "material",
     icon: Layers,
     eyebrow: "Material",
+    eyebrowAr: "المادة",
     stat: "Aluminum or GRP",
+    statAr: "ألمنيوم أو ألياف زجاجية",
     description: "Selected per project for the ideal balance of strength and weight.",
+    descriptionAr: "تُختار لكل مشروع لتحقيق التوازن الأمثل بين القوة والوزن.",
     rotationDeg: 65,
     side: "left",
     vAlign: "top",
@@ -59,8 +65,11 @@ export const flagpoleCallouts: FlagpoleCallout[] = [
     id: "wind",
     icon: Wind,
     eyebrow: "Wind Rating",
+    eyebrowAr: "تحمّل الرياح",
     stat: "150 km/h",
+    statAr: "150 كم/س",
     description: "Engineered to withstand sustained Gulf-force winds without compromise.",
+    descriptionAr: "مصممة هندسيًا لتحمّل رياح الخليج المستمرة دون أي تنازل عن الجودة.",
     rotationDeg: 155,
     side: "right",
     vAlign: "middle",
@@ -69,8 +78,11 @@ export const flagpoleCallouts: FlagpoleCallout[] = [
     id: "finish",
     icon: Palette,
     eyebrow: "Finish",
+    eyebrowAr: "التشطيب",
     stat: "UV & Salt-Air Resistant",
+    statAr: "مقاوم للأشعة فوق البنفسجية والهواء المالح",
     description: "A coating built to endure the Gulf's heat, humidity, and coastal air.",
+    descriptionAr: "طلاء مصمم لتحمّل حرارة الخليج ورطوبته وهواءه الساحلي.",
     rotationDeg: 245,
     side: "left",
     vAlign: "bottom",
@@ -79,8 +91,11 @@ export const flagpoleCallouts: FlagpoleCallout[] = [
     id: "cert",
     icon: ShieldCheck,
     eyebrow: "Certified",
+    eyebrowAr: "معتمدة",
     stat: "ISO 9001:2015",
+    statAr: "الأيزو 9001:2015",
     description: "Every pole manufactured under an internationally audited quality system.",
+    descriptionAr: "تُصنَّع كل سارية وفق نظام جودة مدقَّق دوليًا.",
     rotationDeg: 335,
     side: "right",
     vAlign: "top",

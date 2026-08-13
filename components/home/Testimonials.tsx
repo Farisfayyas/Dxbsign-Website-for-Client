@@ -11,16 +11,20 @@ import { Quote } from "lucide-react";
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { testimonials } from "@/lib/site-config";
+import { useDirection } from "@/lib/direction-context";
 
 export function Testimonials() {
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
+
   return (
     <Reveal>
       <div className="section-x section-y">
         <div className="mb-10 max-w-[640px]">
           <div className="mb-3 font-serif text-xs font-semibold uppercase tracking-[0.1em] text-[oklch(55%_0.08_250)]">
-            Client Feedback
+            {isAr ? "آراء العملاء" : "Client Feedback"}
           </div>
-          <h2 className="text-[28px] font-bold text-ink">What Clients Say</h2>
+          <h2 className="text-[28px] font-bold text-ink">{isAr ? "ماذا يقول عملاؤنا" : "What Clients Say"}</h2>
         </div>
 
         <div className="grid grid-cols-1 gap-px bg-border sm:grid-cols-3">
@@ -35,7 +39,7 @@ export function Testimonials() {
             >
               <Quote size={26} strokeWidth={1.75} className="text-blue/30" aria-hidden />
               <p className="flex-1 font-serif text-[15px] italic leading-relaxed text-ink/80">
-                &ldquo;{t.quote}&rdquo;
+                &ldquo;{isAr ? t.quoteAr : t.quote}&rdquo;
               </p>
               <div className="border-t border-border-soft pt-4 text-sm font-semibold text-ink">
                 {t.name}

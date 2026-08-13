@@ -1,6 +1,13 @@
 import { Resend } from "resend";
-import { contactSchema } from "@/lib/contact-schema";
+import { getContactSchema } from "@/lib/contact-schema";
 import { site } from "@/lib/site-config";
+
+// Server-side validation only checks success/failure and reads parsed
+// field values -- the per-field message text (English here) never
+// reaches the client; the client shows its own fixed messages below,
+// not parsed.error details, so which language this schema instance
+// uses doesn't matter for behavior.
+const contactSchema = getContactSchema(false);
 
 export async function POST(req: Request) {
   let body: unknown;

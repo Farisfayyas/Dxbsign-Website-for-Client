@@ -160,7 +160,9 @@ export type ProjectItem = {
   category: ProjectCategory;
   tag: string;
   title: string;
+  titleAr: string;
   location: string;
+  locationAr: string;
   image: SiteImage;
 };
 
@@ -169,7 +171,9 @@ export const featuredProjects: ProjectItem[] = [
     category: "flagpole",
     tag: "Flagpoles",
     title: "Flagpole Installation",
+    titleAr: "تركيب سارية علم",
     location: "Government Complex, Abu Dhabi",
+    locationAr: "مجمع حكومي، أبوظبي",
     image: {
       src: "/images/flagpoles/flagpole-01.png",
       alt: "UAE and corporate flagpoles installed outside a government complex in Abu Dhabi",
@@ -181,7 +185,9 @@ export const featuredProjects: ProjectItem[] = [
     category: "flagpole",
     tag: "Flagpoles",
     title: "Flagpole & Flag Package",
+    titleAr: "باقة سارية وعلم",
     location: "Hotel Entrance, Abu Dhabi",
+    locationAr: "مدخل فندق، أبوظبي",
     image: {
       src: "/images/flagpoles/flagpole-03.png",
       alt: "Corporate flagpole with custom flag at a hotel entrance, lined with palm trees",
@@ -193,7 +199,9 @@ export const featuredProjects: ProjectItem[] = [
     category: "signboard",
     tag: "Signboards",
     title: "Illuminated 3D Signboard",
+    titleAr: "لوحة إعلانية ثلاثية الأبعاد مضاءة",
     location: "Retail Plaza, Mussafah",
+    locationAr: "مجمع تجاري، مصفح",
     image: {
       src: "/images/outdoor-signs/3d-signs/3d-sign-01.png",
       alt: "Illuminated dimensional 3D signboard on a retail facade",
@@ -208,7 +216,9 @@ export const projects: ProjectItem[] = [
     category: "flagpole",
     tag: "Flagpoles",
     title: "Flagpole Installation",
+    titleAr: "تركيب سارية علم",
     location: "Government Complex, Abu Dhabi",
+    locationAr: "مجمع حكومي، أبوظبي",
     image: {
       src: "/images/flagpoles/flagpole-01.png",
       alt: "UAE and corporate flagpoles installed outside a government complex in Abu Dhabi",
@@ -220,7 +230,9 @@ export const projects: ProjectItem[] = [
     category: "flagpole",
     tag: "Flagpoles",
     title: "Flagpole Set",
+    titleAr: "مجموعة سواري أعلام",
     location: "Corporate Headquarters, Abu Dhabi",
+    locationAr: "المقر الرئيسي لشركة، أبوظبي",
     image: {
       src: "/images/flagpoles/flagpole-02.png",
       alt: "Set of corporate flagpoles outside a headquarters building",
@@ -232,7 +244,9 @@ export const projects: ProjectItem[] = [
     category: "flagpole",
     tag: "Flagpoles",
     title: "Flagpole & Flag Package",
+    titleAr: "باقة سارية وعلم",
     location: "Hotel Entrance, Abu Dhabi",
+    locationAr: "مدخل فندق، أبوظبي",
     image: {
       src: "/images/flagpoles/flagpole-03.png",
       alt: "Corporate flagpole with custom flag at a hotel entrance, lined with palm trees",
@@ -244,7 +258,9 @@ export const projects: ProjectItem[] = [
     category: "flagpole",
     tag: "Flagpoles",
     title: "Flagpole Installation",
+    titleAr: "تركيب سارية علم",
     location: "Municipal Building, Mussafah",
+    locationAr: "مبنى بلدي، مصفح",
     image: {
       src: "/images/flagpoles/flagpole-04.png",
       alt: "Flagpole installation outside a municipal building in Mussafah",
@@ -256,7 +272,9 @@ export const projects: ProjectItem[] = [
     category: "flagpole",
     tag: "Flagpoles",
     title: "Flagpole Refurbishment",
+    titleAr: "تجديد سارية علم",
     location: "Industrial Facility, ICAD",
+    locationAr: "منشأة صناعية، آيكاد",
     image: {
       src: "/images/flagpoles/flagpole-06.png",
       alt: "Refurbished flagpole at an industrial facility in ICAD",
@@ -268,7 +286,9 @@ export const projects: ProjectItem[] = [
     category: "flagpole",
     tag: "Flagpoles",
     title: "Flagpole Entrance Package",
+    titleAr: "باقة سارية مدخل",
     location: "Residential Community, Abu Dhabi",
+    locationAr: "مجمع سكني، أبوظبي",
     image: {
       src: "/images/flagpoles/flagpole-07.png",
       alt: "Flagpole entrance package at a residential community in Abu Dhabi",
@@ -280,7 +300,9 @@ export const projects: ProjectItem[] = [
     category: "signboard",
     tag: "Signboards",
     title: "Illuminated 3D Signboard",
+    titleAr: "لوحة إعلانية ثلاثية الأبعاد مضاءة",
     location: "Retail Plaza, Mussafah",
+    locationAr: "مجمع تجاري، مصفح",
     image: {
       src: "/images/outdoor-signs/3d-signs/3d-sign-01.png",
       alt: "Illuminated dimensional 3D signboard on a retail facade",
@@ -292,7 +314,9 @@ export const projects: ProjectItem[] = [
     category: "wayfinding",
     tag: "Wayfinding",
     title: "Wayfinding System",
+    titleAr: "نظام إرشاد وتوجيه",
     location: "Hotel Complex, Abu Dhabi",
+    locationAr: "مجمع فندقي، أبوظبي",
     image: {
       src: "/images/projects/projects-client-work-crowne-plaza-wayfinding.png",
       alt: "Directional wayfinding sign for Crowne Plaza and Staybridge Suites parking",
@@ -304,7 +328,9 @@ export const projects: ProjectItem[] = [
     category: "traffic",
     tag: "Traffic & Safety",
     title: "Traffic Signage Package",
+    titleAr: "باقة لافتات مرور",
     location: "Residential Community, Abu Dhabi",
+    locationAr: "مجمع سكني، أبوظبي",
     image: {
       src: "/images/traffic-signs/traffic-sign-01.png",
       alt: "Traffic and regulatory signage installed in a residential community",
@@ -316,7 +342,9 @@ export const projects: ProjectItem[] = [
     category: "window",
     tag: "Window Graphics",
     title: "Window Graphics Installation",
+    titleAr: "تركيب رسومات نوافذ",
     location: "Corporate Office, Abu Dhabi",
+    locationAr: "مكتب شركة، أبوظبي",
     image: {
       src: "/images/window-graphics/window-graphics-01.png",
       alt: "Window graphics installed on a corporate office storefront",

@@ -2,14 +2,18 @@
 
 import { motion } from "framer-motion";
 import { whatsapp } from "@/lib/site-config";
+import { useDirection } from "@/lib/direction-context";
 
 export function WhatsAppFloat() {
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
+
   return (
     <motion.a
       href={whatsapp.href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Chat with us on WhatsApp"
+      aria-label={isAr ? "راسلنا عبر واتساب" : "Chat with us on WhatsApp"}
       whileHover={{ scale: 1.08 }}
       transition={{ duration: 0.2 }}
       className="fixed bottom-7 right-7 z-[999] hidden h-[60px] w-[60px] items-center justify-center rounded-full bg-whatsapp shadow-[0_10px_26px_rgba(0,0,0,0.32)] lg:flex"

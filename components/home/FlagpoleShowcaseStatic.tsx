@@ -11,8 +11,12 @@ import Image from "next/image";
 import { heroImage } from "@/lib/site-images";
 import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
 import { flagpoleCallouts } from "@/lib/flagpole-showcase-content";
+import { useDirection } from "@/lib/direction-context";
 
 export function FlagpoleShowcaseStatic() {
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
+
   return (
     <div className="section-x section-y bg-mist2">
       <div className="mx-auto flex max-w-[1100px] flex-col items-center gap-12 lg:flex-row lg:items-center lg:gap-16">
@@ -29,9 +33,11 @@ export function FlagpoleShowcaseStatic() {
         </div>
         <div className="flex w-full flex-col gap-5">
           <div className="font-serif text-xs font-semibold uppercase tracking-[0.1em] text-[oklch(55%_0.08_250)]">
-            Built To Last
+            {isAr ? "مصممة لتدوم" : "Built To Last"}
           </div>
-          <h2 className="text-[28px] font-bold leading-[1.15] text-ink">Every Detail, Engineered</h2>
+          <h2 className="text-[28px] font-bold leading-[1.15] text-ink">
+            {isAr ? "كل تفصيل، مدروس هندسيًا" : "Every Detail, Engineered"}
+          </h2>
           <div className="flex flex-col divide-y divide-border">
             {flagpoleCallouts.map((c) => (
               <div key={c.id} className="flex items-start gap-4 py-4 first:pt-0 last:pb-0">
@@ -39,8 +45,8 @@ export function FlagpoleShowcaseStatic() {
                   <c.icon size={20} strokeWidth={1.75} />
                 </span>
                 <div>
-                  <div className="mb-1 text-[15px] font-semibold text-ink">{c.stat}</div>
-                  <div className="text-sm leading-relaxed text-ink/65">{c.description}</div>
+                  <div className="mb-1 text-[15px] font-semibold text-ink">{isAr ? c.statAr : c.stat}</div>
+                  <div className="text-sm leading-relaxed text-ink/65">{isAr ? c.descriptionAr : c.description}</div>
                 </div>
               </div>
             ))}

@@ -1,17 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { contactSchema, projectTypeOptions, type ContactFormValues } from "@/lib/contact-schema";
+import { getContactSchema, projectTypeOptions, projectTypeOptionsAr, type ContactFormValues } from "@/lib/contact-schema";
 import { buildQuoteWhatsAppLink, site } from "@/lib/site-config";
+import { useDirection } from "@/lib/direction-context";
 
 const inputClass =
   "border border-border-soft px-[14px] py-3 text-sm transition-colors duration-200 focus:border-blue focus:outline-none";
 
 export function ContactForm() {
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
   const [submitted, setSubmitted] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const contactSchema = useMemo(() => getContactSchema(isAr), [isAr]);
   const {
     register,
     handleSubmit,
@@ -39,21 +43,27 @@ export function ContactForm() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setServerError(data.error || "Something went wrong. Please try again.");
+        setServerError(data.error || (isAr ? "حدث خطأ ما. يرجى المحاولة مرة أخرى." : "Something went wrong. Please try again."));
         return;
       }
       setSubmitted(true);
     } catch {
-      setServerError("Something went wrong. Please check your connection and try again.");
+      setServerError(
+        isAr
+          ? "حدث خطأ ما. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى."
+          : "Something went wrong. Please check your connection and try again."
+      );
     }
   }
 
   if (submitted) {
     return (
       <div className="border border-border-soft bg-white p-10">
-        <div className="mb-2.5 text-xl font-bold text-ink">Thank you. Your request has been received.</div>
+        <div className="mb-2.5 text-xl font-bold text-ink">
+          {isAr ? "شكرًا لك. تم استلام طلبك." : "Thank you. Your request has been received."}
+        </div>
         <div className="text-sm leading-relaxed text-ink/70">
-          A member of our team will contact you shortly. For urgent enquiries, call{" "}
+          {isAr ? "سيتواصل معك أحد أعضاء فريقنا قريبًا. للاستفسارات العاجلة، اتصل على " : "A member of our team will contact you shortly. For urgent enquiries, call "}
           <a href={site.phone.mobileHref} className="font-medium text-blue">
             {site.phone.mobile}
           </a>
@@ -67,38 +77,38 @@ export function ContactForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-[18px] border border-border-soft bg-white p-9" noValidate>
       <div className="grid grid-cols-1 gap-[18px] sm:grid-cols-2">
         <label className="flex flex-col gap-1.5 text-[13px] font-semibold text-ink-soft">
-          Name
+          {isAr ? "الاسم" : "Name"}
           <input {...register("name")} className={inputClass} />
           {errors.name && <span className="text-xs font-normal text-red">{errors.name.message}</span>}
         </label>
         <label className="flex flex-col gap-1.5 text-[13px] font-semibold text-ink-soft">
-          Company
+          {isAr ? "الشركة" : "Company"}
           <input {...register("company")} className={inputClass} />
         </label>
       </div>
       <div className="grid grid-cols-1 gap-[18px] sm:grid-cols-2">
         <label className="flex flex-col gap-1.5 text-[13px] font-semibold text-ink-soft">
-          Email
+          {isAr ? "البريد الإلكتروني" : "Email"}
           <input type="email" {...register("email")} className={inputClass} />
           {errors.email && <span className="text-xs font-normal text-red">{errors.email.message}</span>}
         </label>
         <label className="flex flex-col gap-1.5 text-[13px] font-semibold text-ink-soft">
-          Phone
+          {isAr ? "الهاتف" : "Phone"}
           <input type="tel" {...register("phone")} className={inputClass} />
         </label>
       </div>
       <label className="flex flex-col gap-1.5 text-[13px] font-semibold text-ink-soft">
-        Project Type
+        {isAr ? "نوع المشروع" : "Project Type"}
         <select {...register("projectType")} className={`${inputClass} bg-white`}>
           {projectTypeOptions.map((opt) => (
             <option key={opt} value={opt}>
-              {opt}
+              {isAr ? projectTypeOptionsAr[opt] : opt}
             </option>
           ))}
         </select>
       </label>
       <label className="flex flex-col gap-1.5 text-[13px] font-semibold text-ink-soft">
-        Project Details
+        {isAr ? "تفاصيل المشروع" : "Project Details"}
         <textarea rows={5} {...register("message")} className={`${inputClass} resize-y`} />
         {errors.message && <span className="text-xs font-normal text-red">{errors.message.message}</span>}
       </label>
@@ -113,7 +123,7 @@ export function ContactForm() {
           disabled={isSubmitting}
           className="w-fit bg-ink px-7 py-[15px] text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-ink-soft disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isSubmitting ? "Sending…" : "Submit Request"}
+          {isSubmitting ? (isAr ? "جارٍ الإرسال…" : "Sending…") : isAr ? "إرسال الطلب" : "Submit Request"}
         </button>
         <button
           type="button"
@@ -125,11 +135,13 @@ export function ContactForm() {
           }}
           className="text-sm font-semibold text-whatsapp hover:underline"
         >
-          Or send via WhatsApp instead →
+          {isAr ? "أو أرسل عبر واتساب بدلًا من ذلك ←" : "Or send via WhatsApp instead →"}
         </button>
       </div>
       <p className="text-xs text-ink/50">
-        WhatsApp opens with these details pre-filled - you still tap send yourself.
+        {isAr
+          ? "سيفتح واتساب مع تعبئة هذه التفاصيل مسبقًا - وستضغط زر الإرسال بنفسك."
+          : "WhatsApp opens with these details pre-filled - you still tap send yourself."}
       </p>
     </form>
   );

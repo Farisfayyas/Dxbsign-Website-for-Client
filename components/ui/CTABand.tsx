@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { Reveal } from "./Reveal";
 import { site } from "@/lib/site-config";
+import { useDirection } from "@/lib/direction-context";
 
 type Variant = "dark" | "light" | "plain";
 
@@ -32,6 +35,8 @@ export function CTABand({
   heading: string;
   variant?: Variant;
 }) {
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
   const s = variantStyles[variant];
   return (
     <Reveal y={20}>
@@ -39,7 +44,7 @@ export function CTABand({
         <div>
           <h2 className={`mb-2 text-[26px] font-bold ${s.heading}`}>{heading}</h2>
           <div className={`text-sm ${s.sub}`}>
-            Speak with our team.{" "}
+            {isAr ? "تواصل مع فريقنا. " : "Speak with our team. "}
             <a href={site.phone.mobileHref} className="font-medium text-blue hover:underline">
               {site.phone.mobile}
             </a>
@@ -49,7 +54,7 @@ export function CTABand({
           href="/contact"
           className={`whitespace-nowrap px-8 py-4 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 ${s.btn}`}
         >
-          Request a Quote
+          {isAr ? "اطلب عرض سعر" : "Request a Quote"}
         </Link>
       </div>
     </Reveal>

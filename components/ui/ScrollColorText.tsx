@@ -40,8 +40,7 @@
 // Round 3: blur should only read while scrolling down (revealing) --
 // scrolling back up should just reverse the colour/opacity sweep with
 // no blur at all. Tracks direction off scrollYProgress itself (compare
-// each new value against the last) rather than the native wheel event,
-// since Lenis (lib/smooth-scroll.tsx) intercepts wheel input directly --
+// each new value against the last) rather than the native wheel event --
 // scrollYProgress is the one signal guaranteed to reflect actual
 // on-screen motion regardless of input method. Also narrowed the
 // completion end of the scroll window (0.15 -> 0.25) so the sweep

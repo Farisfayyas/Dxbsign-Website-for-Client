@@ -10,14 +10,19 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { faqs } from "@/lib/site-config";
+import { useDirection } from "@/lib/direction-context";
 
 export function FAQSection() {
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
     <Reveal>
       <div className="section-x section-y bg-mist">
-        <h2 className="mb-8 text-[28px] font-bold text-ink">Frequently Asked Questions</h2>
+        <h2 className="mb-8 text-[28px] font-bold text-ink">
+          {isAr ? "الأسئلة الشائعة" : "Frequently Asked Questions"}
+        </h2>
         <div className="mx-auto flex max-w-[820px] flex-col divide-y divide-border overflow-hidden bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           {faqs.map((f, i) => {
             const isOpen = openIndex === i;
@@ -30,7 +35,7 @@ export function FAQSection() {
                   className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors duration-300 hover:bg-mist/60"
                 >
                   <span className="text-[15px] font-semibold text-ink">
-                    {f.q}
+                    {isAr ? f.qAr : f.q}
                   </span>
                   <ChevronDown
                     size={18}
@@ -54,7 +59,7 @@ export function FAQSection() {
                         transitionDelay: isOpen ? "0.1s" : "0s",
                       }}
                     >
-                      {f.a}
+                      {isAr ? f.aAr : f.a}
                     </div>
                   </div>
                 </div>

@@ -26,6 +26,7 @@
 
 import { motion, useTransform, type MotionValue } from "framer-motion";
 import type { FlagpoleCallout as FlagpoleCalloutData } from "@/lib/flagpole-showcase-content";
+import { useDirection } from "@/lib/direction-context";
 
 const WINDOW = 0.085;
 
@@ -52,6 +53,8 @@ export function FlagpoleCallout({
   callout: FlagpoleCalloutData;
   progress: MotionValue<number>;
 }) {
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
   const center = callout.rotationDeg / 360;
   const range: [number, number, number, number] = [
     Math.max(0, center - WINDOW * 1.5),
@@ -80,12 +83,14 @@ export function FlagpoleCallout({
     >
       <motion.div style={{ scaleX: lineScale }} className={`mb-3 h-px w-10 bg-blue ${LINE_ORIGIN[callout.side]}`} />
       <div className="font-serif text-[11px] font-semibold uppercase tracking-[0.14em] text-ink/45">
-        {callout.eyebrow}
+        {isAr ? callout.eyebrowAr : callout.eyebrow}
       </div>
       <div className="mt-2 text-[clamp(24px,3.1vw,40px)] font-bold leading-[1.05] tracking-tight text-ink">
-        {callout.stat}
+        {isAr ? callout.statAr : callout.stat}
       </div>
-      <div className="mt-2.5 text-[14.5px] leading-relaxed text-ink/60">{callout.description}</div>
+      <div className="mt-2.5 text-[14.5px] leading-relaxed text-ink/60">
+        {isAr ? callout.descriptionAr : callout.description}
+      </div>
     </motion.div>
   );
 }

@@ -9,27 +9,39 @@
 import { motion } from "framer-motion";
 import { useInView } from "@/lib/use-in-view";
 import { site } from "@/lib/site-config";
+import { useDirection } from "@/lib/direction-context";
 
 const milestones = [
   {
     marker: "2008",
+    markerAr: "2008",
     title: "Founded",
+    titleAr: "التأسيس",
     desc: "Dubai Sign LLC established in ICAD 3, Mussafah, Abu Dhabi.",
+    descAr: "تأسست شركة دبي ساين ذ.م.م في آيكاد 3، مصفح، أبوظبي.",
   },
   {
     marker: `${site.yearsInBusiness}`,
+    markerAr: `${site.yearsInBusiness}`,
     title: "Years in Continuous Operation",
+    titleAr: "عامًا من العمل المستمر",
     desc: "Serving government, hospitality, and industrial clients across Abu Dhabi, Dubai, and the UAE.",
+    descAr: "نخدم عملاء من القطاعات الحكومية والفندقية والصناعية في أبوظبي ودبي ودولة الإمارات.",
   },
   {
     marker: "Today",
+    markerAr: "اليوم",
     title: "Flagpole-First Manufacturing",
+    titleAr: "التركيز على تصنيع سواري الأعلام",
     desc: "ISO 9001:2015 certified. Approved government and enterprise vendor.",
+    descAr: "حاصلة على شهادة الأيزو 9001:2015. مورّد معتمد لدى الجهات الحكومية والشركات.",
   },
 ];
 
 export function CompanyTimeline() {
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.25 });
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
 
   return (
     <div ref={ref} className="relative">
@@ -55,9 +67,11 @@ export function CompanyTimeline() {
               <span className="h-2 w-2 rounded-full bg-blue" />
             </span>
             <div className="md:mt-5">
-              <div className="font-serif text-lg font-semibold text-blue">{m.marker}</div>
-              <div className="mt-1 text-base font-semibold text-ink">{m.title}</div>
-              <div className="mt-1.5 max-w-[280px] text-sm leading-relaxed text-ink/70">{m.desc}</div>
+              <div className="font-serif text-lg font-semibold text-blue">
+                {isAr ? m.markerAr : m.marker}
+              </div>
+              <div className="mt-1 text-base font-semibold text-ink">{isAr ? m.titleAr : m.title}</div>
+              <div className="mt-1.5 max-w-[280px] text-sm leading-relaxed text-ink/70">{isAr ? m.descAr : m.desc}</div>
             </div>
           </motion.div>
         ))}

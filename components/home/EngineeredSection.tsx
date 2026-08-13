@@ -1,8 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import { Wind, Layers, Palette, ShieldCheck } from "lucide-react";
 import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import type { SiteImage } from "@/lib/site-images";
 import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
+import { useDirection } from "@/lib/direction-context";
 
 // arabesco's "text reveal + two offset photo cards" pattern (docx
 // "second pic"): copy on one side, a stacked/offset image pair on the
@@ -18,13 +21,16 @@ import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
 // project README before launch. ISO 9001:2015 is a confirmed, live fact
 // used elsewhere on the site (footer, FAQ).
 const specs = [
-  { icon: Wind, label: "Wind Rating", value: "Up to 150 km/h" },
-  { icon: Layers, label: "Material", value: "Aluminum or GRP" },
-  { icon: Palette, label: "Finish", value: "UV & salt-air resistant" },
-  { icon: ShieldCheck, label: "Certified", value: "ISO 9001:2015" },
+  { icon: Wind, label: "Wind Rating", labelAr: "تحمّل الرياح", value: "Up to 150 km/h", valueAr: "حتى 150 كم/س" },
+  { icon: Layers, label: "Material", labelAr: "المادة", value: "Aluminum or GRP", valueAr: "ألمنيوم أو ألياف زجاجية (GRP)" },
+  { icon: Palette, label: "Finish", labelAr: "التشطيب", value: "UV & salt-air resistant", valueAr: "مقاوم للأشعة فوق البنفسجية والهواء المالح" },
+  { icon: ShieldCheck, label: "Certified", labelAr: "معتمدة", value: "ISO 9001:2015", valueAr: "الأيزو 9001:2015" },
 ];
 
 export function EngineeredSection({ images }: { images: [SiteImage, SiteImage] }) {
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
+
   return (
     <div className="section-x section-y bg-mist2">
       <div className="mx-auto flex max-w-[1220px] flex-col items-center gap-14 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
@@ -39,13 +45,15 @@ export function EngineeredSection({ images }: { images: [SiteImage, SiteImage] }
             the scroll budget to the flagpole section below. */}
         <StaggerReveal className="flex flex-col gap-5 lg:max-w-[440px]" stagger={0.15}>
           <div className="font-serif text-xs font-semibold uppercase tracking-[0.1em] text-[oklch(55%_0.08_250)]">
-            Built For This Climate
+            {isAr ? "مصممة لهذا المناخ" : "Built For This Climate"}
           </div>
           <h2 className="max-w-[440px] text-[30px] font-bold leading-[1.15] text-ink">
-            Engineered for the UAE&rsquo;s Climate
+            {isAr ? "مصممة هندسيًا لمناخ دولة الإمارات" : "Engineered for the UAE’s Climate"}
           </h2>
           <p className="max-w-[440px] text-[15px] leading-relaxed text-ink/75">
-            Every flagpole and structure we manufacture is built to withstand sustained desert heat, coastal humidity, and high wind loads, using materials and finishes specified for long-term outdoor performance in the Gulf. It is not general-purpose equipment adapted for local conditions. It is designed for them from the start.
+            {isAr
+              ? "كل سارية علم وهيكل نُصنّعه مصمم لتحمّل حرارة الصحراء المستمرة، ورطوبة السواحل، وأحمال الرياح العالية، باستخدام مواد وتشطيبات مخصصة لأداء طويل الأمد في الهواء الطلق بمناخ الخليج. إنها ليست معدات عامة تم تكييفها مع الظروف المحلية، بل مصممة لهذه الظروف منذ البداية."
+              : "Every flagpole and structure we manufacture is built to withstand sustained desert heat, coastal humidity, and high wind loads, using materials and finishes specified for long-term outdoor performance in the Gulf. It is not general-purpose equipment adapted for local conditions. It is designed for them from the start."}
           </p>
         </StaggerReveal>
 
@@ -57,9 +65,9 @@ export function EngineeredSection({ images }: { images: [SiteImage, SiteImage] }
               </span>
               <div>
                 <div className="font-serif text-[10.5px] font-semibold uppercase tracking-[0.06em] text-ink/50">
-                  {s.label}
+                  {isAr ? s.labelAr : s.label}
                 </div>
-                <div className="mt-0.5 text-[13.5px] font-medium leading-snug text-ink">{s.value}</div>
+                <div className="mt-0.5 text-[13.5px] font-medium leading-snug text-ink">{isAr ? s.valueAr : s.value}</div>
               </div>
             </div>
           ))}

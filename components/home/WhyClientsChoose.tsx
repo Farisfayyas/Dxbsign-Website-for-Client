@@ -13,9 +13,8 @@
 // still while the page scrolls under it (wheel/trackpad with no mouse
 // movement), a different row ends up under the cursor and the highlight
 // needs to follow. Caches the last known cursor Y and re-runs the same
-// hit-test on scroll -- Lenis (lib/smooth-scroll.tsx) runs in its
-// default mode with no virtual scroll container, so a plain window
-// scroll listener sees it.
+// hit-test on scroll -- a plain window scroll listener is enough since
+// scrolling is native (no virtual scroll container in this codebase).
 //
 // Cursor tracking is a window-level listener, not a container-scoped
 // onMouseMove -- on a fresh page load, if the very first mouse movement
@@ -41,6 +40,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Award, ShieldCheck, Workflow } from "lucide-react";
 import { ScrollColorText } from "@/components/ui/ScrollColorText";
+import { useDirection } from "@/lib/direction-context";
 
 // Same three facts as whyChooseUsShort (site-config.ts), but with the
 // fuller descriptions already written for whyChooseUsFull (About page),
@@ -50,21 +50,29 @@ const credentials = [
   {
     icon: Award,
     title: "18 Years of Experience",
+    titleAr: "18 عامًا من الخبرة",
     desc: "Serving Abu Dhabi and the UAE since 2008 across government, hospitality, and industrial sectors.",
+    descAr: "نخدم أبوظبي ودولة الإمارات منذ عام 2008 في القطاعات الحكومية والفندقية والصناعية.",
   },
   {
     icon: ShieldCheck,
     title: "ISO 9001 Certified",
+    titleAr: "حاصلة على شهادة الأيزو 9001",
     desc: "Quality managed manufacturing processes audited to international standard.",
+    descAr: "عمليات تصنيع مدارة بالجودة ومدققة وفق المعايير الدولية.",
   },
   {
     icon: Workflow,
     title: "End-to-End Service",
+    titleAr: "خدمة متكاملة من الألف إلى الياء",
     desc: "Design, manufacture, installation, and maintenance handled by a single accountable team.",
+    descAr: "التصميم والتصنيع والتركيب والصيانة، يتولاها فريق واحد مسؤول عن كل مرحلة.",
   },
 ];
 
 export function WhyClientsChoose() {
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const lastY = useRef<number | null>(null);
@@ -123,13 +131,17 @@ export function WhyClientsChoose() {
       <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[1fr_1.1fr]">
         <div>
           <ScrollColorText
-            heading="Why Clients Choose Dubai Sign"
+            heading={isAr ? "لماذا يختار العملاء دبي ساين" : "Why Clients Choose Dubai Sign"}
             headingClassName="mb-4 text-[28px] font-bold"
-            paragraph="Eighteen years of specification-led manufacturing for the UAE's most demanding clients, delivered by one accountable team from first drawing to ongoing maintenance."
+            paragraph={
+              isAr
+                ? "ثمانية عشر عامًا من التصنيع القائم على المواصفات لأكثر عملاء دولة الإمارات تطلبًا، ينفذها فريق واحد مسؤول من أول رسم وحتى الصيانة المستمرة."
+                : "Eighteen years of specification-led manufacturing for the UAE's most demanding clients, delivered by one accountable team from first drawing to ongoing maintenance."
+            }
             paragraphClassName="max-w-[560px] text-[22px] font-medium leading-relaxed"
           />
           <Link href="/about" className="mt-5 inline-block text-sm font-semibold text-blue hover:underline">
-            Learn more about us →
+            {isAr ? "اعرف المزيد عنا ←" : "Learn more about us →"}
           </Link>
         </div>
         <div className="flex flex-col divide-y divide-border">
@@ -149,8 +161,8 @@ export function WhyClientsChoose() {
                 <w.icon size={20} strokeWidth={1.75} />
               </span>
               <div>
-                <div className="mb-1 text-[15px] font-semibold text-ink">{w.title}</div>
-                <div className="text-sm leading-relaxed text-ink/65">{w.desc}</div>
+                <div className="mb-1 text-[15px] font-semibold text-ink">{isAr ? w.titleAr : w.title}</div>
+                <div className="text-sm leading-relaxed text-ink/65">{isAr ? w.descAr : w.desc}</div>
               </div>
             </div>
           ))}

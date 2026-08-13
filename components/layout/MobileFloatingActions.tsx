@@ -9,13 +9,17 @@
 
 import { Phone } from "lucide-react";
 import { site, whatsapp } from "@/lib/site-config";
+import { useDirection } from "@/lib/direction-context";
 
 export function MobileFloatingActions() {
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
+
   return (
     <>
       <a
         href={site.phone.mobileHref}
-        aria-label="Call us"
+        aria-label={isAr ? "اتصل بنا" : "Call us"}
         className="fixed bottom-7 left-7 z-[999] flex h-[60px] w-[60px] items-center justify-center rounded-full bg-ink shadow-[0_10px_26px_rgba(0,0,0,0.32)] lg:hidden"
       >
         <Phone size={26} strokeWidth={1.8} className="text-white" aria-hidden />
@@ -24,7 +28,7 @@ export function MobileFloatingActions() {
         href={whatsapp.href}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Chat with us on WhatsApp"
+        aria-label={isAr ? "راسلنا عبر واتساب" : "Chat with us on WhatsApp"}
         className="fixed bottom-7 right-7 z-[999] flex h-[60px] w-[60px] items-center justify-center rounded-full bg-whatsapp shadow-[0_10px_26px_rgba(0,0,0,0.32)] lg:hidden"
       >
         <svg width="28" height="28" viewBox="0 0 16 16" fill="#fff" aria-hidden="true">

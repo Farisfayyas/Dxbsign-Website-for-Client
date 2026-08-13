@@ -14,12 +14,15 @@ import Image from "next/image";
 import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 import type { SiteImage } from "@/lib/site-images";
 import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
+import { useDirection } from "@/lib/direction-context";
 
 const INTERVAL_MS = 5500;
 const DRAG_OFFSET_THRESHOLD = 80;
 const DRAG_VELOCITY_THRESHOLD = 500;
 
 export function HeroSlider({ slides }: { slides: SiteImage[] }) {
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -115,7 +118,7 @@ export function HeroSlider({ slides }: { slides: SiteImage[] }) {
           <button
             key={s.src}
             type="button"
-            aria-label={`Show photo ${i + 1}`}
+            aria-label={isAr ? `عرض الصورة ${i + 1}` : `Show photo ${i + 1}`}
             onClick={() => setIndex(i)}
             className="h-2 rounded-full bg-white/60 transition-all duration-300"
             style={{ width: i === index ? "22px" : "8px", backgroundColor: i === index ? "#fff" : "rgba(255,255,255,0.5)" }}

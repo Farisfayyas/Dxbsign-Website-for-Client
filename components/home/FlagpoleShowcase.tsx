@@ -9,10 +9,9 @@
 // viewport), not GSAP ScrollTrigger's pin:true -- GSAP isn't installed,
 // and this matches the same Framer Motion useScroll/useTransform
 // convention every other scroll-linked effect in this codebase already
-// uses (see ScrollColorText.tsx), which stays in sync with Lenis
-// automatically since Lenis runs in native (non-virtual) scroll mode.
-// Reversal on scroll-up needs no special handling: rotationY is a pure
-// function of the live bidirectional scrollYProgress value.
+// uses (see ScrollColorText.tsx). Reversal on scroll-up needs no special
+// handling: rotationY is a pure function of the live bidirectional
+// scrollYProgress value.
 //
 // FlagpoleFrameSequence (the baked-WebP canvas scrubber, see that file
 // for why it replaced an earlier real-time three.js scene) is still

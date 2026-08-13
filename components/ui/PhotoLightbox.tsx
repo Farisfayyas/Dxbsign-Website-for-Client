@@ -5,6 +5,7 @@ import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { SiteImage } from "@/lib/site-images";
 import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
+import { useDirection } from "@/lib/direction-context";
 
 export type LightboxSlide = {
   image: SiteImage;
@@ -24,6 +25,8 @@ export function PhotoLightbox({
   onClose: () => void;
   onNavigate: (dir: 1 | -1) => void;
 }) {
+  const { dir } = useDirection();
+  const isAr = dir === "rtl";
   const [entered, setEntered] = useState(false);
   const open = index !== null;
 
@@ -65,7 +68,7 @@ export function PhotoLightbox({
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close"
+          aria-label={isAr ? "إغلاق" : "Close"}
           className="absolute right-3 top-3 z-10 flex h-[34px] w-[34px] items-center justify-center rounded-full bg-black/50 text-white transition-colors hover:bg-black/70"
         >
           <X size={16} />
@@ -93,7 +96,7 @@ export function PhotoLightbox({
             <button
               type="button"
               onClick={() => onNavigate(-1)}
-              aria-label="Previous photo"
+              aria-label={isAr ? "الصورة السابقة" : "Previous photo"}
               className="flex h-[38px] w-[38px] items-center justify-center border border-border-soft bg-white text-ink-soft transition-colors hover:bg-mist"
             >
               <ChevronLeft size={18} />
@@ -101,7 +104,7 @@ export function PhotoLightbox({
             <button
               type="button"
               onClick={() => onNavigate(1)}
-              aria-label="Next photo"
+              aria-label={isAr ? "الصورة التالية" : "Next photo"}
               className="flex h-[38px] w-[38px] items-center justify-center border border-border-soft bg-white text-ink-soft transition-colors hover:bg-mist"
             >
               <ChevronRight size={18} />
