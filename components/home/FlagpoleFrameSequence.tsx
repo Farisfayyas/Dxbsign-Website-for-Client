@@ -107,8 +107,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useMotionValueEvent, type MotionValue } from "framer-motion";
 
-const DESKTOP_FRAME_COUNT = 80; // stride 3 in the processing script -- see the Round 5 note there
-const MOBILE_FRAME_COUNT = 30;
+const DESKTOP_FRAME_COUNT = 64; // stride 3 of 192 source frames -- see process-flagpole-frames.mjs's Round 6 note
+const MOBILE_FRAME_COUNT = 32; // stride 6 of 192 source frames
 
 function framePath(n: number, isDesktop: boolean) {
   const prefix = isDesktop ? "" : "mobile/";
