@@ -384,7 +384,7 @@ export const galleryItems: GalleryItem[] = [
   { category: "indoor", tag: "Reception", image: { src: "/images/indoor-signs/reception/reception-03.png", alt: "Illuminated reception backdrop signage, Abu Dhabi", width: 500, height: 500 } },
   { category: "indoor", tag: "Reception", image: { src: "/images/indoor-signs/reception/reception-04.png", alt: "Reception desk signage in a corporate lobby", width: 500, height: 500 } },
   { category: "indoor", tag: "Reception", image: { src: "/images/indoor-signs/reception/reception-05.png", alt: "Illuminated reception backdrop signage, Abu Dhabi", width: 500, height: 500 } },
-  { category: "indoor", tag: "Reception", image: { src: "/images/indoor-signs/reception/reception-06.png", alt: "Dimensional reception signage in an office lobby", width: 500, height: 500 } },
+  { category: "indoor", tag: "Reception", image: { src: "/images/indoor-signs/reception/reception-06.jpg", alt: "Dimensional reception signage in an office lobby", width: 500, height: 500 } },
   { category: "indoor", tag: "Reception", image: { src: "/images/indoor-signs/reception/reception-07.png", alt: "Illuminated reception backdrop signage, Abu Dhabi", width: 500, height: 500 } },
   { category: "indoor", tag: "Reception", image: { src: "/images/indoor-signs/reception/reception-08.png", alt: "Reception desk signage in a corporate lobby", width: 500, height: 500 } },
   { category: "indoor", tag: "Reception", image: { src: "/images/indoor-signs/reception/reception-09.png", alt: "Illuminated reception backdrop signage, Abu Dhabi", width: 500, height: 500 } },
