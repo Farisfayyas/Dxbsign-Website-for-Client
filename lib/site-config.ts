@@ -54,7 +54,7 @@ export const site = {
     closes: "18:00",
   },
 
-  founded: "2008", // back-calculated from "18 years in business" — not independently confirmed by the client
+  founded: "2008", // client-confirmed directly
   yearsInBusiness: "18+",
 
   credentials: [

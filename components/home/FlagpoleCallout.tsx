@@ -23,12 +23,43 @@
 // Content lives entirely in lib/flagpole-showcase-content.ts -- nothing
 // here needs to change when the real client-confirmed figures replace
 // today's placeholder values.
+//
+// TRANSITION vs PLATEAU_HALF: direct feedback was that the readable hold
+// (steady, unblurred, opacity-1 dwell before the next callout starts
+// fading in) was too short to actually read the copy while scrolling, so
+// the plateau is widened to 2x its old width; the materialize/dissolve
+// transition itself is trimmed to 0.75x to compensate, so the total
+// per-callout scroll footprint doesn't balloon while the useful/readable
+// portion of it grows a lot. WINDOW is kept as the shared base unit (both
+// derive from it) rather than two unrelated magic numbers, and the accent
+// line's own lead-in deltas below are left as absolute WINDOW-relative
+// offsets, unscaled -- that's a fixed "arrives a beat early" cue, not
+// something this request touched.
 
 import { motion, useTransform, type MotionValue } from "framer-motion";
 import type { FlagpoleCallout as FlagpoleCalloutData } from "@/lib/flagpole-showcase-content";
 import { useDirection } from "@/lib/direction-context";
 
 const WINDOW = 0.085;
+const TRANSITION = WINDOW * 0.75; // fade-in/out width each side of the plateau -- was WINDOW (1x)
+const PLATEAU_HALF = WINDOW; // half-width of the readable hold -- was WINDOW / 2, so full plateau width is now 2x
+
+// framer-motion's useTransform ranges feed the Web Animations API, which
+// throws if offsets aren't non-decreasing and within [0,1]. The old,
+// narrower WINDOW never pushed the two inner range points past 1 for the
+// last callout (center near 0.93); the doubled plateau does (0.93 + 0.085
+// = 1.0156), so unlike the old code -- which only clamped the outer two
+// points -- every point here is clamped AND forced non-decreasing against
+// the point before it.
+function clampMonotonic(points: number[]): [number, number, number, number] {
+  let prev = 0;
+  const out = points.map((p) => {
+    const c = Math.min(1, Math.max(0, p, prev));
+    prev = c;
+    return c;
+  });
+  return out as [number, number, number, number];
+}
 
 const SIDE_CLASS: Record<FlagpoleCalloutData["side"], string> = {
   left: "left-6 sm:left-10 md:left-16 items-start text-left",
@@ -56,18 +87,23 @@ export function FlagpoleCallout({
   const { dir } = useDirection();
   const isAr = dir === "rtl";
   const center = callout.rotationDeg / 360;
-  const range: [number, number, number, number] = [
-    Math.max(0, center - WINDOW * 1.5),
-    center - WINDOW * 0.5,
-    center + WINDOW * 0.5,
-    Math.min(1, center + WINDOW * 1.5),
-  ];
-  const lineRange: [number, number, number, number] = [
-    Math.max(0, center - WINDOW * 1.65),
-    center - WINDOW * 0.85,
-    center + WINDOW * 0.5,
-    Math.min(1, center + WINDOW * 1.5),
-  ];
+  const range = clampMonotonic([
+    center - PLATEAU_HALF - TRANSITION,
+    center - PLATEAU_HALF,
+    center + PLATEAU_HALF,
+    center + PLATEAU_HALF + TRANSITION,
+  ]);
+  // Accent line keeps its original lead-in relationship to the main
+  // range: starts drawing slightly before the copy begins fading in, and
+  // is fully drawn well before the copy finishes fading in -- both as
+  // fixed WINDOW-relative deltas off the (now wider, already-clamped)
+  // range.
+  const lineRange = clampMonotonic([
+    range[0] - WINDOW * 0.15,
+    range[1] - WINDOW * 0.35,
+    range[2],
+    range[3],
+  ]);
 
   const opacity = useTransform(progress, range, [0, 1, 1, 0]);
   const y = useTransform(progress, range, [24, 0, 0, -14]);

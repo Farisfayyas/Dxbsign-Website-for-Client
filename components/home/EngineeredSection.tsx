@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Wind, Layers, Palette, ShieldCheck } from "lucide-react";
+import { Ruler, Layers, Palette, ShieldCheck } from "lucide-react";
 import { StaggerReveal } from "@/components/ui/StaggerReveal";
 import type { SiteImage } from "@/lib/site-images";
 import { BLUR_PLACEHOLDER } from "@/lib/image-placeholder";
@@ -15,14 +15,16 @@ import { useDirection } from "@/lib/direction-context";
 // two ~440px-capped blocks inside a full-bleed grid left a large dead
 // zone between them.
 //
-// Wind Rating, Material, and Finish below are industry-typical figures
-// for tapered aluminum/GRP flagpoles in a Gulf climate, the same
-// not-yet-client-confirmed values used in FlagpoleSpecs.tsx -- see
-// project README before launch. ISO 9001:2015 is a confirmed, live fact
-// used elsewhere on the site (footer, FAQ).
+// Sizes and Material below are real client-confirmed figures. The Wind
+// Rating card that used to sit here was dropped entirely per direct
+// feedback (no confirmed number to publish) and replaced with Sizes
+// rather than left as a 3-card row. Finish is still the original
+// industry-typical placeholder -- a real figure is coming later, so it's
+// left alone here rather than guessed at. ISO 9001:2015 is a confirmed,
+// live fact used elsewhere on the site (footer, FAQ).
 const specs = [
-  { icon: Wind, label: "Wind Rating", labelAr: "تحمّل الرياح", value: "Up to 150 km/h", valueAr: "حتى 150 كم/س" },
-  { icon: Layers, label: "Material", labelAr: "المادة", value: "Aluminum or GRP", valueAr: "ألمنيوم أو ألياف زجاجية (GRP)" },
+  { icon: Ruler, label: "Sizes", labelAr: "المقاسات", value: "6m · 8m · 10m · 12m", valueAr: "6م · 8م · 10م · 12م" },
+  { icon: Layers, label: "Material", labelAr: "المادة", value: "Tapered aluminum (stainless on order)", valueAr: "ألمنيوم مدرّج (ستانلس ستيل حسب الطلب)" },
   { icon: Palette, label: "Finish", labelAr: "التشطيب", value: "UV & salt-air resistant", valueAr: "مقاوم للأشعة فوق البنفسجية والهواء المالح" },
   { icon: ShieldCheck, label: "Certified", labelAr: "معتمدة", value: "ISO 9001:2015", valueAr: "الأيزو 9001:2015" },
 ];

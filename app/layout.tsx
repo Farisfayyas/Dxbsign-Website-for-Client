@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
 import "./globals.css";
 import { DirectionProvider } from "@/lib/direction-context";
+import { SmoothScrollProvider } from "@/lib/smooth-scroll";
 import { ScrollProgressBar } from "@/components/ui/ScrollProgressBar";
 import { site } from "@/lib/site-config";
 import { organizationJsonLd } from "@/lib/seo";
@@ -76,7 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-full flex flex-col font-sans antialiased">
         <DirectionProvider>
           <ScrollProgressBar />
-          {children}
+          <SmoothScrollProvider>{children}</SmoothScrollProvider>
         </DirectionProvider>
       </body>
     </html>

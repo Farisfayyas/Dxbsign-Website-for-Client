@@ -1,12 +1,12 @@
 // Callout content for the scroll-driven 3D flagpole showcase
-// (components/home/FlagpoleShowcase.tsx). Same four facts already used as
-// static cards in EngineeredSection.tsx -- deliberately not expanded with
-// new, more specific claims here. Every one of those four is already
-// flagged in EngineeredSection.tsx's own comment as an industry-typical
-// figure, not yet client-confirmed; adding sharper new facts (exact height
-// range, anchor/foundation type, etc.) would only grow that pre-launch
-// confirmation debt. Once real manufacturing data comes in from Dubai
-// Sign, updating this file is the ONLY change needed -- eyebrow/stat/
+// (components/home/FlagpoleShowcase.tsx). Same facts used as static cards
+// in EngineeredSection.tsx. Material and sizes below are real
+// client-confirmed figures now; the old "wind" callout (a Wind-Rating
+// stat with no confirmed number behind it) was dropped per direct
+// feedback and replaced with "sizes" rather than left as a 3-callout
+// rotation. Finish and cert are unchanged. Once the remaining figures
+// (finish options, installation time, project count) are confirmed,
+// updating this file is the ONLY change needed -- eyebrow/stat/
 // description are the sole inputs to FlagpoleCallout.tsx's animation and
 // FlagpoleShowcaseStatic.tsx's fallback list; neither has any hardcoded
 // copy of its own.
@@ -27,7 +27,7 @@
 // quadrant back to back.
 
 import type { LucideIcon } from "lucide-react";
-import { Wind, Layers, Palette, ShieldCheck } from "lucide-react";
+import { Ruler, Layers, Palette, ShieldCheck } from "lucide-react";
 
 export type FlagpoleCallout = {
   id: string;
@@ -53,23 +53,23 @@ export const flagpoleCallouts: FlagpoleCallout[] = [
     icon: Layers,
     eyebrow: "Material",
     eyebrowAr: "المادة",
-    stat: "Aluminum or GRP",
-    statAr: "ألمنيوم أو ألياف زجاجية",
-    description: "Selected per project for the ideal balance of strength and weight.",
-    descriptionAr: "تُختار لكل مشروع لتحقيق التوازن الأمثل بين القوة والوزن.",
+    stat: "Tapered Aluminum",
+    statAr: "ألمنيوم مدرّج",
+    description: "Stainless steel also available, built to order.",
+    descriptionAr: "يتوفر أيضًا الستانلس ستيل حسب الطلب.",
     rotationDeg: 65,
     side: "left",
     vAlign: "top",
   },
   {
-    id: "wind",
-    icon: Wind,
-    eyebrow: "Wind Rating",
-    eyebrowAr: "تحمّل الرياح",
-    stat: "150 km/h",
-    statAr: "150 كم/س",
-    description: "Engineered to withstand sustained Gulf-force winds without compromise.",
-    descriptionAr: "مصممة هندسيًا لتحمّل رياح الخليج المستمرة دون أي تنازل عن الجودة.",
+    id: "sizes",
+    icon: Ruler,
+    eyebrow: "Available Sizes",
+    eyebrowAr: "المقاسات المتاحة",
+    stat: "6m – 12m",
+    statAr: "6م – 12م",
+    description: "Four standard heights, built to order to your site's exact requirement.",
+    descriptionAr: "أربعة ارتفاعات قياسية، تُصنَّع حسب الطلب وفق متطلبات موقعك بدقة.",
     rotationDeg: 155,
     side: "right",
     vAlign: "middle",

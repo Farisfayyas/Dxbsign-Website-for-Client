@@ -2,20 +2,23 @@
 
 // Real spec-sheet treatment for flagpoles specifically — the one arabesco/
 // hajster idea build-spec.md flagged as highest-value and flagpole-only
-// (the other 7 categories deliberately stay lighter). Values below are
-// industry-typical for tapered aluminum/GRP flagpoles in a Gulf climate,
-// not client-confirmed figures — see project README before launch.
+// (the other 7 categories deliberately stay lighter). Height, material,
+// and warranty below are real client-confirmed figures. Wind rating was
+// dropped entirely per direct feedback (no confirmed number to publish).
+// Finish, installation time, and total project count are still the
+// original industry-typical placeholders -- client said a reminder with
+// real figures for those is coming later, so they're deliberately left
+// alone here rather than guessed at.
 
-import { Ruler, Layers, Wind, ShieldCheck, Clock, Palette } from "lucide-react";
+import { Ruler, Layers, ShieldCheck, Clock, Palette } from "lucide-react";
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/ui/Reveal";
 import { whatsapp } from "@/lib/site-config";
 import { useDirection } from "@/lib/direction-context";
 
 const specs = [
-  { icon: Ruler, label: "Height Options", labelAr: "خيارات الارتفاع", value: "6m · 9m · 12m · 15m · 20m", valueAr: "6م · 9م · 12م · 15م · 20م" },
-  { icon: Layers, label: "Material", labelAr: "المادة", value: "Tapered aluminum or fiberglass (GRP)", valueAr: "ألمنيوم مدرّج أو ألياف زجاجية (GRP)" },
-  { icon: Wind, label: "Wind Rating", labelAr: "تحمّل الرياح", value: "Engineered up to 150 km/h sustained loads", valueAr: "مصممة هندسيًا لتحمّل رياح مستمرة تصل إلى 150 كم/س" },
+  { icon: Ruler, label: "Height Options", labelAr: "خيارات الارتفاع", value: "6m · 8m · 10m · 12m", valueAr: "6م · 8م · 10م · 12م" },
+  { icon: Layers, label: "Material", labelAr: "المادة", value: "Tapered aluminum (standard) · stainless steel on order", valueAr: "ألمنيوم مدرّج (قياسي) · ستانلس ستيل حسب الطلب" },
   { icon: Palette, label: "Finish", labelAr: "التشطيب", value: "Powder-coated or anodized, UV & salt-air resistant", valueAr: "طلاء بودرة أو أنودة، مقاوم للأشعة فوق البنفسجية والهواء المالح" },
   { icon: ShieldCheck, label: "Warranty", labelAr: "الضمان", value: "5-year structural warranty", valueAr: "ضمان إنشائي لمدة 5 سنوات" },
   { icon: Clock, label: "Installation", labelAr: "التركيب", value: "1–2 days per site, foundation-dependent", valueAr: "من 1 إلى 2 يوم لكل موقع، حسب نوع الأساس" },

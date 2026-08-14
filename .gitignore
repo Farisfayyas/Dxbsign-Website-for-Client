@@ -48,3 +48,5 @@ next-env.d.ts
 /design-handoff/
 # unused stock-photo options kept for possible future use — see SOURCES.md
 /stock-photo-candidates/
+
+.vercel
