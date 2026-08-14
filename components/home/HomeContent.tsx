@@ -90,6 +90,12 @@ export function HomeContent() {
                   <div className="text-sm text-ink/60">{isAr ? "سنوات من الخبرة" : "Years in Business"}</div>
                 </div>
                 <div>
+                  <div className="text-[34px] font-bold text-ink">
+                    <CountUp text={site.totalProjects} />
+                  </div>
+                  <div className="text-sm text-ink/60">{isAr ? "إجمالي المشاريع" : "Total Projects"}</div>
+                </div>
+                <div>
                   <div className="text-[34px] font-bold text-ink">ISO 9001</div>
                   <div className="text-sm text-ink/60">{isAr ? "معتمدة" : "Certified"}</div>
                 </div>

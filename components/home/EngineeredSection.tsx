@@ -15,17 +15,15 @@ import { useDirection } from "@/lib/direction-context";
 // two ~440px-capped blocks inside a full-bleed grid left a large dead
 // zone between them.
 //
-// Sizes and Material below are real client-confirmed figures. The Wind
-// Rating card that used to sit here was dropped entirely per direct
-// feedback (no confirmed number to publish) and replaced with Sizes
-// rather than left as a 3-card row. Finish is still the original
-// industry-typical placeholder -- a real figure is coming later, so it's
-// left alone here rather than guessed at. ISO 9001:2015 is a confirmed,
+// Sizes, Material, and Finish below are real client-confirmed figures.
+// The Wind Rating card that used to sit here was dropped entirely per
+// direct feedback (no confirmed number to publish) and replaced with
+// Sizes rather than left as a 3-card row. ISO 9001:2015 is a confirmed,
 // live fact used elsewhere on the site (footer, FAQ).
 const specs = [
   { icon: Ruler, label: "Sizes", labelAr: "المقاسات", value: "6m · 8m · 10m · 12m", valueAr: "6م · 8م · 10م · 12م" },
   { icon: Layers, label: "Material", labelAr: "المادة", value: "Tapered aluminum (stainless on order)", valueAr: "ألمنيوم مدرّج (ستانلس ستيل حسب الطلب)" },
-  { icon: Palette, label: "Finish", labelAr: "التشطيب", value: "UV & salt-air resistant", valueAr: "مقاوم للأشعة فوق البنفسجية والهواء المالح" },
+  { icon: Palette, label: "Finish", labelAr: "التشطيب", value: "Alloy 6063-T6, satin brush", valueAr: "سبيكة 6063-T6، ساتان مصقول بالفرشاة" },
   { icon: ShieldCheck, label: "Certified", labelAr: "معتمدة", value: "ISO 9001:2015", valueAr: "الأيزو 9001:2015" },
 ];
 

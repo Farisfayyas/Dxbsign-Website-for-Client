@@ -27,22 +27,22 @@
 // TRANSITION vs PLATEAU_HALF: direct feedback was that the readable hold
 // (steady, unblurred, opacity-1 dwell before the next callout starts
 // fading in) was too short to actually read the copy while scrolling, so
-// the plateau is widened to 2x its old width; the materialize/dissolve
-// transition itself is trimmed to 0.75x to compensate, so the total
-// per-callout scroll footprint doesn't balloon while the useful/readable
-// portion of it grows a lot. WINDOW is kept as the shared base unit (both
-// derive from it) rather than two unrelated magic numbers, and the accent
-// line's own lead-in deltas below are left as absolute WINDOW-relative
-// offsets, unscaled -- that's a fixed "arrives a beat early" cue, not
-// something this request touched.
+// the plateau is widened. A first pass also trimmed the materialize/
+// dissolve transition to 0.75x; a follow-up request put the transition
+// back to its original full width (1x) and settled the plateau at 1.75x
+// (down from an interim 2x) instead. WINDOW is kept as the shared base
+// unit (both derive from it) rather than two unrelated magic numbers, and
+// the accent line's own lead-in deltas below are left as absolute
+// WINDOW-relative offsets, unscaled -- that's a fixed "arrives a beat
+// early" cue, not something either request touched.
 
 import { motion, useTransform, type MotionValue } from "framer-motion";
 import type { FlagpoleCallout as FlagpoleCalloutData } from "@/lib/flagpole-showcase-content";
 import { useDirection } from "@/lib/direction-context";
 
 const WINDOW = 0.085;
-const TRANSITION = WINDOW * 0.75; // fade-in/out width each side of the plateau -- was WINDOW (1x)
-const PLATEAU_HALF = WINDOW; // half-width of the readable hold -- was WINDOW / 2, so full plateau width is now 2x
+const TRANSITION = WINDOW; // fade-in/out width each side of the plateau -- back to 1x (original width)
+const PLATEAU_HALF = WINDOW * 0.875; // half-width of the readable hold -- full plateau width is 1.75x the original
 
 // framer-motion's useTransform ranges feed the Web Animations API, which
 // throws if offsets aren't non-decreasing and within [0,1]. The old,

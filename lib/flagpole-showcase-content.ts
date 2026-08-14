@@ -1,13 +1,13 @@
 // Callout content for the scroll-driven 3D flagpole showcase
 // (components/home/FlagpoleShowcase.tsx). Same facts used as static cards
-// in EngineeredSection.tsx. Material and sizes below are real
+// in EngineeredSection.tsx. Material, sizes, and finish below are real
 // client-confirmed figures now; the old "wind" callout (a Wind-Rating
 // stat with no confirmed number behind it) was dropped per direct
 // feedback and replaced with "sizes" rather than left as a 3-callout
-// rotation. Finish and cert are unchanged. Once the remaining figures
-// (finish options, installation time, project count) are confirmed,
-// updating this file is the ONLY change needed -- eyebrow/stat/
-// description are the sole inputs to FlagpoleCallout.tsx's animation and
+// rotation. Cert is unchanged. Installation time and total project count
+// aren't shown in these four callouts at all (see EngineeredSection.tsx
+// and FlagpoleSpecs.tsx for those) -- eyebrow/stat/description are the
+// sole inputs to FlagpoleCallout.tsx's animation and
 // FlagpoleShowcaseStatic.tsx's fallback list; neither has any hardcoded
 // copy of its own.
 //
@@ -79,10 +79,10 @@ export const flagpoleCallouts: FlagpoleCallout[] = [
     icon: Palette,
     eyebrow: "Finish",
     eyebrowAr: "التشطيب",
-    stat: "UV & Salt-Air Resistant",
-    statAr: "مقاوم للأشعة فوق البنفسجية والهواء المالح",
-    description: "A coating built to endure the Gulf's heat, humidity, and coastal air.",
-    descriptionAr: "طلاء مصمم لتحمّل حرارة الخليج ورطوبته وهواءه الساحلي.",
+    stat: "Alloy 6063-T6",
+    statAr: "سبيكة 6063-T6",
+    description: "Polished satin brush finish, built to endure the Gulf's heat, humidity, and coastal air.",
+    descriptionAr: "تشطيب ساتان مصقول بالفرشاة، مصمم لتحمّل حرارة الخليج ورطوبته وهواءه الساحلي.",
     rotationDeg: 245,
     side: "left",
     vAlign: "bottom",

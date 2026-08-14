@@ -56,6 +56,7 @@ export const site = {
 
   founded: "2008", // client-confirmed directly
   yearsInBusiness: "18+",
+  totalProjects: "400+", // client-confirmed directly
 
   credentials: [
     "ISO 9001:2015 Certified",
