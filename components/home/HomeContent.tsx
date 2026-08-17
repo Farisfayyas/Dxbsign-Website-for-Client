@@ -91,7 +91,7 @@ export function HomeContent() {
                 </div>
                 <div>
                   <div className="text-[34px] font-bold text-ink">
-                    <CountUp text={site.totalProjects} />
+                    <CountUp text={site.totalProjects} from={350} />
                   </div>
                   <div className="text-sm text-ink/60">{isAr ? "إجمالي المشاريع" : "Total Projects"}</div>
                 </div>

@@ -30,13 +30,18 @@ const flagpole02Image: SiteImage = {
   height: 400,
 };
 
-// Home hero slider — 3 real flagpole photos, auto-rotating. Faris's own
-// pick: Dubai Sign's own work only, no stock photography.
+// Home hero slider — 3 photos, auto-rotating. Slides 1 and 3 are Dubai
+// Sign's own work (Faris's original pick: no stock photography). Slide 2
+// is a later, deliberate exception -- Faris asked directly for a stock
+// UAE flag photo here instead, sourced from Unsplash (free license, no
+// attribution required): a clean flag-and-pole shot against open sky,
+// chosen over several other candidates for its landscape 3:2 crop (matches
+// this slot's existing aspect) and its editorial, product-forward framing.
 export const heroSlides: SiteImage[] = [
   heroImage,
   {
-    src: "/images/flagpoles/flagpole-01.png",
-    alt: "UAE and another national flag on poles overlooking a city street in Abu Dhabi",
+    src: "/images/flagpoles/flagpole-10.jpg",
+    alt: "UAE flag waving on a flagpole against a clear blue sky",
     width: 600,
     height: 400,
   },
