@@ -1,8 +1,7 @@
 # Dubai Sign LLC — website
 
-Next.js (App Router) + TypeScript + Tailwind v4 rebuild of dxbsign.com,
-built from the approved Claude design handoff in `design-handoff/`
-(kept locally, not committed — see `.gitignore`).
+Next.js (App Router) + TypeScript + Tailwind v4 rebuild of dxbsign.com for a client.
+
 
 ## Stack
 
